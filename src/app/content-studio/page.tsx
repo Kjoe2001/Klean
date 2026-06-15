@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { CONTENT_TYPES } from '@/lib/content-types';
 import { canType, can } from '@/lib/plans';
 import { pollUrl } from '@/lib/image-presets';
+import SmartImage from '@/components/SmartImage';
 import Link from 'next/link';
 
 const TONES = ['Bold','Premium','Playful','Trusted','Youth','Corporate'];
@@ -160,8 +161,7 @@ export default function ContentStudio() {
 
 function RenderResult({ id, d }: any) {
   const Img = ({ p, seed }: any) => p ?
-    <img src={pollUrl(p + ', professional brand photography, vibrant', 700, 700, seed)} loading="lazy"
-      className="w-full h-36 object-cover rounded-xl mb-2 bg-slate-100" alt="" /> : null;
+    <SmartImage prompt={p + ', professional brand photography, vibrant'} w={700} h={700} seed={seed} className="h-36 mb-2" /> : null;
   if (d.items && id === 'hooks') return <ol className="list-decimal pl-5 space-y-1.5 text-sm font-semibold">{d.items.map((h: string, i: number) => <li key={i}>{h}</li>)}</ol>;
   if (d.items && id === 'post') return <div className="grid gap-2">{d.items.map((p: any, i: number) => (
     <div key={i} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3"><Img p={p.image_prompt} seed={i + 11} />

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { IMAGE_SIZES, IMAGE_MODES, pollUrl } from '@/lib/image-presets';
+import SmartImage from '@/components/SmartImage';
 
 const MODE_STYLE: Record<string,string> = {
   text2img: '', product: ', professional product photography, studio lighting, clean background',
@@ -17,16 +18,16 @@ export default function ImageStudio() {
   const [prompt, setPrompt] = useState('');
   const [mode, setMode] = useState('text2img');
   const [size, setSize] = useState(IMAGE_SIZES[0]);
-  const [images, setImages] = useState<{ url: string; prompt: string }[]>([]);
+  const [images, setImages] = useState<{ prompt: string; full: string; w: number; h: number; seed: number }[]>([]);
   const [busy, setBusy] = useState(false);
 
   const generate = async (regen = false) => {
     if (!prompt.trim() || busy) return;
     setBusy(true);
     const full = prompt + (MODE_STYLE[mode] || '') + ', high quality, no text';
-    const url = pollUrl(full, size.w, size.h);
-    await new Promise<void>(res => { const img = new Image(); img.onload = () => res(); img.onerror = () => res(); img.src = url; });
-    setImages(p => [{ url, prompt }, ...p]);
+    const seed = Math.floor(Math.random() * 9999);
+    const url = pollUrl(full, size.w, size.h, seed);
+    setImages(p => [{ prompt, full, w: size.w, h: size.h, seed }, ...p]);
     supabase.from('images').insert({ prompt, mode, size: size.id, url });
     setBusy(false);
   };
@@ -59,9 +60,11 @@ export default function ImageStudio() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {images.map((im, i) => (
           <div key={i} className="glass !rounded-2xl overflow-hidden animate-rise">
-            <img src={im.url} alt="" className="w-full object-cover" />
+            <div style={{ aspectRatio: `${im.w} / ${im.h}` }} className="w-full">
+              <SmartImage prompt={im.full} w={im.w} h={im.h} seed={im.seed} rounded="rounded-none" className="w-full h-full" />
+            </div>
             <div className="p-3 flex gap-2 flex-wrap">
-              <button className="pill !text-[11px]" onClick={() => download(im.url)}>⬇ Download</button>
+              <button className="pill !text-[11px]" onClick={() => download(pollUrl(im.full, im.w, im.h, im.seed))}>⬇ Download</button>
               <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(true); }}>↻ Regenerate</button>
               <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}>✏ Edit prompt</button>
             </div>
