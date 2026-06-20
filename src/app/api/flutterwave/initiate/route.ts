@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     if (!p || p.price <= 0) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
 
     const tx_ref = `zelvoo-${plan}-${userId}-${Date.now()}`;
+    const periodLabel = p.days === 6 ? '6-day access' : p.days === 7 ? '7-day access' : 'monthly';
     const res = await fetch('https://api.flutterwave.com/v3/payments', {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`, 'Content-Type': 'application/json' },
@@ -17,7 +18,11 @@ export async function POST(req: NextRequest) {
         currency: 'USD',
         redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment-success`,
         customer: { email },
-        customizations: { title: 'Zelvoo', description: `${p.name} plan — monthly`, logo: `${process.env.NEXT_PUBLIC_APP_URL}/logo.png` },
+        customizations: {
+          title: 'Zelvoo',
+          description: `${p.name} — ${periodLabel}, ${p.credits.toLocaleString()} credits`,
+          logo: `${process.env.NEXT_PUBLIC_APP_URL}/logo.png`,
+        },
         payment_options: 'card,mobilemoneyghana,banktransfer,ussd',
         meta: { userId, plan },
       }),

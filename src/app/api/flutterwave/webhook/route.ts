@@ -1,4 +1,4 @@
-import { planCredits } from '@/lib/plans';
+import { planCredits, PLANS } from '@/lib/plans';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-server';
 
@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
   if (pay) await db.from('transactions').insert({ payment_id: pay.id, raw: event });
 
   if ((event.event === 'charge.completed' || event['event.type'] === 'CARD_TRANSACTION') && data.status === 'successful' && userId && plan) {
-    const periodEnd = new Date(Date.now() + 30 * 86400000).toISOString();
+    const days = PLANS[plan as keyof typeof PLANS]?.days ?? 30;
+    const periodEnd = new Date(Date.now() + days * 86400000).toISOString();
     await db.from('subscriptions').upsert(
       { user_id: userId, plan, status: 'active', flw_tx_ref: data.tx_ref, current_period_end: periodEnd, updated_at: new Date().toISOString() },
       { onConflict: 'user_id' } as any);
