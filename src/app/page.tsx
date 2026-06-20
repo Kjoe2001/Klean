@@ -7,8 +7,8 @@ export default function Landing() {
     <>
       <MarketingNav />
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full bg-secondary/20 blur-3xl animate-blob" />
-        <div className="absolute -bottom-36 -left-24 w-[460px] h-[460px] rounded-full bg-primary/20 blur-3xl animate-blob" />
+        <div className="absolute -top-32 -right-20 w-[360px] h-[360px] rounded-full bg-secondary/15 blur-2xl" />
+        <div className="absolute -bottom-36 -left-24 w-[380px] h-[380px] rounded-full bg-primary/15 blur-2xl" />
       </div>
       <header className="max-w-5xl mx-auto text-center px-5 pt-20 pb-10 animate-rise">
         <div className="font-mono text-[11px] font-bold tracking-[.2em] text-primary mb-4">AFRICA'S AI MARKETING OPERATING SYSTEM</div>

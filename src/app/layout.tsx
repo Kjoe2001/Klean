@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { Sora, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['600','700','800'] });
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const jbmono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jbmono', weight: ['500','700'] });
+const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['600','700','800'], display: 'swap' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const jbmono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jbmono', weight: ['500','700'], display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'Zelvo — The AI Marketing Operating System',
-  description: 'Generate content, images, campaigns and insights. Africa\'s AI marketing OS for brands, agencies and creators.',
+  description: "Generate content, images, campaigns and insights. Africa's AI marketing OS for brands, agencies and creators.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

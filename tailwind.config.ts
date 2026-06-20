@@ -13,9 +13,8 @@ export default {
       boxShadow: { glass: '0 10px 40px rgba(15,23,42,.08)', glow: '0 8px 32px rgba(124,58,237,.35)' },
       keyframes: {
         rise: { from: { opacity: '0', transform: 'translateY(12px)' }, to: { opacity: '1', transform: 'none' } },
-        blob: { '0%,100%': { transform: 'translate(0,0) scale(1)' }, '50%': { transform: 'translate(24px,-28px) scale(1.06)' } },
       },
-      animation: { rise: 'rise .5s ease backwards', blob: 'blob 16s ease-in-out infinite' },
+      animation: { rise: 'rise .5s ease backwards' },
     },
   },
   plugins: [],
