@@ -5,6 +5,7 @@ import Ring from '@/components/Ring';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { CONTENT_TYPES } from '@/lib/content-types';
+import { spendCredits } from '@/lib/credits';
 import { canType, can } from '@/lib/plans';
 import { pollUrl } from '@/lib/image-presets';
 import SmartImage from '@/components/SmartImage';
@@ -46,6 +47,9 @@ export default function ContentStudio() {
     setLoadingIds(new Set(ids));
     await Promise.all(ids.map(async id => {
       try {
+        const credit = await spendCredits('text');
+        if (!credit.ok) { setResults(p => ({ ...p, [id]: { __error: 'Out of credits — upgrade to keep generating.' } })); return; }
+        window.dispatchEvent(new Event('credits:changed'));
         const r = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: id, brief, brand: brandKit }) });
         const j = await r.json();
@@ -160,16 +164,16 @@ export default function ContentStudio() {
 }
 
 function RenderResult({ id, d }: any) {
-  const Img = ({ p, seed }: any) => p ?
-    <SmartImage prompt={p + ', professional brand photography, vibrant'} w={700} h={700} seed={seed} className="h-36 mb-2" /> : null;
+  const Img = ({ p }: any) => p ?
+    <SmartImage prompt={p + ', professional brand photography, vibrant'} w={1024} h={1024} className="h-36 mb-2" /> : null;
   if (d.items && id === 'hooks') return <ol className="list-decimal pl-5 space-y-1.5 text-sm font-semibold">{d.items.map((h: string, i: number) => <li key={i}>{h}</li>)}</ol>;
   if (d.items && id === 'post') return <div className="grid gap-2">{d.items.map((p: any, i: number) => (
-    <div key={i} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3"><Img p={p.image_prompt} seed={i + 11} />
+    <div key={i} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3"><Img p={p.image_prompt} />
       <div className="flex justify-between gap-2"><b className="text-sm">{p.title}</b><span className="text-[10px] font-mono text-primary">{p.format}</span></div>
       <div className="text-[13px] text-slate-500 my-1">{p.idea}</div>
       <div className="text-xs text-success font-semibold">CTA → {p.cta}</div></div>))}</div>;
   if (d.items && id === 'carousel') return <div className="grid gap-2">{d.items.map((s: any) => (
-    <div key={s.slide} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3"><Img p={s.image_prompt} seed={s.slide + 3} />
+    <div key={s.slide} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3"><Img p={s.image_prompt} />
       <span className="text-[10px] font-mono font-bold text-secondary">SLIDE {s.slide}</span>
       <div className="font-bold text-sm">{s.title}</div><div className="text-[13px] text-slate-500">{s.body}</div></div>))}</div>;
   return <pre className="text-[12px] whitespace-pre-wrap leading-relaxed font-inter bg-slate-50 dark:bg-white/5 rounded-xl p-4 max-h-96 overflow-auto">{

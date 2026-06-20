@@ -9,18 +9,20 @@ const STEPS = ['You', 'Brand', 'Goal', 'Plan'];
 const ROLES = ['Brand / founder', 'Agency', 'Creator', 'Marketing team'];
 const GOALS = ['Post consistently', 'Run a campaign', 'Grow followers', 'Win more clients'];
 const INDUSTRIES = ['Retail', 'Food & Beverage', 'Tech / SaaS', 'Real estate', 'Fashion', 'Other'];
+const USE_CASES = ['Social media content', 'Ads & campaigns', 'Client work', 'Product marketing', 'Personal brand', 'Just exploring'];
 
 export default function Welcome() {
   const router = useRouter();
   const { profile } = useProfile();
   const [i, setI] = useState(0);
-  const [data, setData] = useState<any>({ role: '', company: '', industry: '', goal: '' });
+  const [data, setData] = useState<any>({ role: '', company: '', industry: '', goal: '', usecase: '' });
   const [saving, setSaving] = useState(false);
 
   const finish = async () => {
     setSaving(true);
     if (profile?.id) await supabase.from('profiles').update({
-      role_type: data.role, company: data.company, industry: data.industry, goal: data.goal, onboarded: true,
+      role_type: data.role, company: data.company, industry: data.industry,
+      goal: data.goal, use_case: data.usecase, onboarded: true,
     }).eq('id', profile.id);
     router.push('/dashboard');
   };
@@ -56,17 +58,19 @@ export default function Welcome() {
             <Opt list={INDUSTRIES} k="industry" /></>}
           {i === 2 && <><div className="font-mono text-[10px] font-bold tracking-widest text-primary">YOUR GOAL</div>
             <h1 className="font-sora font-extrabold text-2xl mt-1">What do you want first?</h1>
-            <Opt list={GOALS} k="goal" /></>}
+            <Opt list={GOALS} k="goal" />
+            <div className="text-[12px] text-slate-500 mt-5 mb-1 font-semibold">What will you mainly use Zelvoo for?</div>
+            <Opt list={USE_CASES} k="usecase" /></>}
           {i === 3 && <><div className="font-mono text-[10px] font-bold tracking-widest text-primary">YOU'RE ALL SET</div>
             <h1 className="font-sora font-extrabold text-2xl mt-1">Your 7-day trial is live 🎉</h1>
             <p className="text-slate-500 text-sm mt-2">Based on “{data.goal || 'your goal'}”, we'll drop you straight into the right module with a starter checklist.</p>
             <div className="rounded-xl bg-slate-50 dark:bg-white/5 p-4 mt-4 text-[13px] space-y-1.5">
-              <div>👤 {data.role || '—'}</div><div>🏢 {data.company || '—'} · {data.industry || '—'}</div><div>🎯 {data.goal || '—'}</div>
+              <div>👤 {data.role || '—'}</div><div>🏢 {data.company || '—'} · {data.industry || '—'}</div><div>🎯 {data.goal || '—'}</div><div>🧩 {data.usecase || '—'}</div>
             </div></>}
           <div className="flex gap-2 mt-6">
             {i > 0 && <button onClick={() => setI(i - 1)} className="pill !py-3 flex-1">← Back</button>}
             {i < 3 ? <button onClick={() => setI(i + 1)} className="cta !py-3 flex-[2]">Continue →</button>
-                   : <button onClick={finish} disabled={saving} className="cta !py-3 flex-[2]">{saving ? 'Setting up…' : 'Enter Zelvo →'}</button>}
+                   : <button onClick={finish} disabled={saving} className="cta !py-3 flex-[2]">{saving ? 'Setting up…' : 'Enter Zelvoo →'}</button>}
           </div>
         </Card>
       </div>

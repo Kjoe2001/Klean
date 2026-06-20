@@ -1,3 +1,4 @@
+import { planCredits } from '@/lib/plans';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-server';
 
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
       const { userId, plan } = d.meta || {};
       if (userId && plan) {
         const db = supabaseAdmin();
-        await db.from('profiles').update({ plan }).eq('id', userId);
+        await db.from('profiles').update({ plan, credits: planCredits(plan), credits_period_start: new Date().toISOString(), plan_started_at: new Date().toISOString() }).eq('id', userId);
         await db.from('subscriptions').upsert({ user_id: userId, plan, status: 'active', flw_tx_ref: d.tx_ref,
           current_period_end: new Date(Date.now() + 30*86400000).toISOString() }, { onConflict: 'user_id' } as any);
       }

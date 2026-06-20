@@ -5,13 +5,13 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 /** Shared engine for Campaign Builder, Trends, Competitors, Analytics insights */
 const TOOLS: Record<string,{schema:string, sys:string, search?:boolean}> = {
-  campaign: { sys: 'You are Zelvo\'s campaign strategist.', schema:
+  campaign: { sys: 'You are Zelvoo\'s campaign strategist.', schema:
     '{"strategy":"3 sentences","media_plan":[{"channel":"...","share":"%","rationale":"..."}],"content_plan":[{"week":1,"theme":"...","assets":["..."]}],"influencer_plan":["3 tiers with roles"],"kpi_forecast":[{"kpi":"...","target":"..."}],"budget_allocation":[{"item":"...","percent":0}],"timeline":[{"phase":"...","weeks":"..."}]}' },
-  trends: { search: true, sys: 'You are Zelvo\'s trend discovery engine. Use web search for CURRENT trends.', schema:
+  trends: { search: true, sys: 'You are Zelvoo\'s trend discovery engine. Use web search for CURRENT trends.', schema:
     '{"trending_hashtags":["8"],"viral_content":[{"format":"...","why":"..."}],"search_trends":["5"],"recommendations":["4 specific content moves"],"hot_topics":[{"topic":"...","angle":"..."}]}' },
-  competitor: { search: true, sys: 'You are Zelvo\'s competitor intelligence analyst. Use web search to research the competitor.', schema:
+  competitor: { search: true, sys: 'You are Zelvoo\'s competitor intelligence analyst. Use web search to research the competitor.', schema:
     '{"overview":"2 sentences","social_performance":[{"platform":"...","assessment":"..."}],"campaign_ideas":["3 they could not copy"],"content_gaps":["3"],"opportunities":["3 specific moves"]}' },
-  insights: { sys: 'You are Zelvo\'s analytics insight engine.', schema:
+  insights: { sys: 'You are Zelvoo\'s analytics insight engine.', schema:
     '{"insights":["4 specific observations"],"actions":["3 prioritized recommendations"],"forecast":"one sentence"}' },
 };
 

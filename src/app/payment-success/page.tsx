@@ -22,7 +22,7 @@ function Success() {
         {state === 'ok' && <>
           <div className="text-5xl mb-3">🎉</div>
           <h1 className="font-sora font-extrabold text-xl">Payment successful!</h1>
-          <p className="text-sm text-slate-500 mt-2">Your {plan && <b className="capitalize">{plan} </b>}plan is active. Welcome to the full Zelvo.</p>
+          <p className="text-sm text-slate-500 mt-2">Your {plan && <b className="capitalize">{plan} </b>}plan is active. Welcome to the full Zelvoo.</p>
           <Link href="/dashboard" className="cta inline-block px-8 py-3.5 text-sm mt-6">Go to dashboard →</Link></>}
         {state === 'fail' && <>
           <div className="text-5xl mb-3">😕</div>

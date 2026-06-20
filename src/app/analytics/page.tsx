@@ -27,7 +27,7 @@ export default function Analytics() {
       </div>
       <GlassCard>
         <h3 className="font-sora font-bold text-sm mb-2">🧠 AI Insights</h3>
-        <textarea className="field min-h-[90px] mb-3" placeholder="Paste any exported metrics (CSV rows, screenshots transcribed, platform stats) and Zelvo will analyze them…"
+        <textarea className="field min-h-[90px] mb-3" placeholder="Paste any exported metrics (CSV rows, screenshots transcribed, platform stats) and Zelvoo will analyze them…"
           value={pasted} onChange={e => setPasted(e.target.value)} />
         <button className="cta px-6 py-3 text-sm" disabled={busy} onClick={run}>{busy ? 'Analyzing…' : 'Generate insights'}</button>
         {insights && (

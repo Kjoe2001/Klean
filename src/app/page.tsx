@@ -51,7 +51,7 @@ export default function Landing() {
         ))}
       </section>
       <footer className="text-center text-xs text-slate-400 pb-10 space-x-4">
-        <span>© 2026 Zelvo</span>
+        <span>© 2026 Zelvoo</span>
         <Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link>
         <Link href="/refund-policy">Refunds</Link><Link href="/cookies">Cookies</Link><Link href="/contact">Contact</Link>
       </footer>

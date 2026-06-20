@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const { content, brief } = await req.json();
     const msg = await client.messages.create({
       model: 'claude-sonnet-4-6', max_tokens: 400,
-      system: 'You are Zelvo\'s performance prediction engine. Respond ONLY with minified JSON.',
+      system: 'You are Zelvoo\'s performance prediction engine. Respond ONLY with minified JSON.',
       messages: [{ role: 'user', content:
         `Score this content for brand ${brief?.brand} (${brief?.platform}). Schema: {"virality":0-100,"engagement":0-100,"readability":0-100,"brand_fit":0-100,"verdict":"max 20 words"}\nCONTENT:\n${JSON.stringify(content).slice(0, 3000)}` }],
     });

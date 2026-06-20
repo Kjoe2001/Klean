@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     if (!SCHEMAS[type]) return NextResponse.json({ error: 'Unknown content type' }, { status: 400 });
 
     const brandCtx = brand ? `\nBRAND KIT (follow strictly): tone="${brand.tone||''}", taglines="${brand.taglines||''}", guidelines="${brand.guidelines||''}", colors=${JSON.stringify(brand.colors||[])}` : '';
-    const system = `You are Zelvo, the most advanced AI content engine. Produce immediately usable, platform-native marketing content. Zero fluff.${brandCtx}
+    const system = `You are Zelvoo, the most advanced AI content engine. Produce immediately usable, platform-native marketing content. Zero fluff.${brandCtx}
 BRIEF: Brand: ${brief.brand} | Industry: ${brief.industry} | Audience: ${brief.audience} | Tone: ${brief.tone} | Platform: ${brief.platform} | Focus: ${brief.focus||'brand growth'}
 Respond ONLY with valid minified JSON. No fences, no preamble.`;
 

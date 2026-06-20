@@ -194,3 +194,137 @@ language sql security definer set search_path = public as $$
   );
 $$;
 revoke execute on function admin_stats() from anon, authenticated;
+
+-- ============================================================
+-- JOURNEY / GROWTH LAYER (V2.1)
+-- ============================================================
+
+-- Activation & onboarding flags on profiles
+alter table if exists profiles add column if not exists onboarded boolean default false;
+alter table if exists profiles add column if not exists activation jsonb default '{}'::jsonb;
+alter table if exists profiles add column if not exists role_type text;
+alter table if exists profiles add column if not exists goal text;
+
+-- Saved prompts
+create table if not exists prompts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  title text not null, body text not null, tag text, favorite boolean default false,
+  created_at timestamptz default now()
+);
+
+-- Template usage tracking
+create table if not exists template_uses (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  template_id text not null, created_at timestamptz default now()
+);
+
+-- Approvals
+create table if not exists approvals (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid, content_id uuid references content on delete cascade,
+  client_id uuid, requested_by uuid references auth.users,
+  status text default 'pending', note text, score int,
+  created_at timestamptz default now(), updated_at timestamptz default now()
+);
+
+-- Integrations (per workspace connected services + tokens)
+create table if not exists integrations (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  provider text not null, status text default 'connected',
+  access_token text, refresh_token text, meta jsonb,
+  created_at timestamptz default now()
+);
+
+-- Coupons
+create table if not exists coupons (
+  id uuid primary key default gen_random_uuid(),
+  code text unique not null, percent_off int, months int default 1,
+  plan text, max_redemptions int, redeemed int default 0,
+  active boolean default true, expires_at timestamptz, created_at timestamptz default now()
+);
+
+-- Affiliate / partner
+create table if not exists affiliates (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  ref_code text unique not null, clicks int default 0, signups int default 0,
+  paid_referrals int default 0, earned_cents bigint default 0,
+  payout_method text, created_at timestamptz default now()
+);
+create table if not exists referrals (
+  id uuid primary key default gen_random_uuid(),
+  affiliate_id uuid references affiliates on delete cascade,
+  referred_user uuid references auth.users, status text default 'signup',
+  commission_cents bigint default 0, created_at timestamptz default now()
+);
+create table if not exists partner_deals (
+  id uuid primary key default gen_random_uuid(),
+  partner_id uuid references auth.users on delete cascade,
+  account_name text, deal_type text, value_cents bigint, status text default 'registered',
+  created_at timestamptz default now()
+);
+
+-- Support tickets
+create table if not exists tickets (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  subject text, body text, status text default 'open', priority text default 'normal',
+  created_at timestamptz default now()
+);
+
+-- Academy progress
+create table if not exists lesson_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  lesson_id text not null, completed boolean default false,
+  created_at timestamptz default now(), unique(user_id, lesson_id)
+);
+
+-- Notifications (already referenced; ensure table exists)
+create table if not exists notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  icon text, title text, body text, link text, color text default 'primary',
+  read boolean default false, created_at timestamptz default now()
+);
+
+-- Enable RLS + owner policies on the new user-scoped tables
+do $$
+declare t text;
+begin
+  foreach t in array array['prompts','template_uses','integrations','affiliates','partner_deals','tickets','lesson_progress','notifications']
+  loop
+    execute format('alter table %I enable row level security', t);
+    execute format($f$create policy if not exists "own_%1$s" on %1$I for all using (auth.uid() = user_id) with check (auth.uid() = user_id)$f$, t);
+  end loop;
+end $$;
+
+-- Coupons readable by all authenticated users (for checkout validation), writable by service role only
+alter table coupons enable row level security;
+create policy if not exists "coupons_read" on coupons for select using (auth.role() = 'authenticated');
+
+-- ============================================================
+-- CREDITS, PLAN PERIODS, ONBOARDING DATA (V2.2)
+-- ============================================================
+alter table if exists profiles add column if not exists credits int default 30;
+alter table if exists profiles add column if not exists credits_period_start timestamptz default now();
+alter table if exists profiles add column if not exists plan_started_at timestamptz default now();
+alter table if exists profiles add column if not exists use_case text;
+alter table if exists profiles add column if not exists phone text;
+
+-- New signups start on trial with 30 credits (handled by the signup trigger / default).
+-- When a plan is purchased, the Flutterwave webhook should set:
+--   credits = <plan credits>, credits_period_start = now(), plan_started_at = now()
+
+-- Credit ledger (optional audit trail of spends/top-ups)
+create table if not exists credit_log (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  delta int not null, reason text, balance_after int,
+  created_at timestamptz default now()
+);
+alter table credit_log enable row level security;
+create policy if not exists "own_credit_log" on credit_log for select using (auth.uid() = user_id);

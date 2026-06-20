@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
-import { IMAGE_SIZES, IMAGE_MODES, pollUrl } from '@/lib/image-presets';
-import SmartImage from '@/components/SmartImage';
+import { spendCredits } from '@/lib/credits';
+import { IMAGE_SIZES, IMAGE_MODES } from '@/lib/image-presets';
 
 const MODE_STYLE: Record<string,string> = {
   text2img: '', product: ', professional product photography, studio lighting, clean background',
@@ -18,17 +18,26 @@ export default function ImageStudio() {
   const [prompt, setPrompt] = useState('');
   const [mode, setMode] = useState('text2img');
   const [size, setSize] = useState(IMAGE_SIZES[0]);
-  const [images, setImages] = useState<{ prompt: string; full: string; w: number; h: number; seed: number }[]>([]);
+  const [images, setImages] = useState<{ prompt: string; full: string; w: number; h: number; url: string; status: 'loading'|'ok'|'error' }[]>([]);
   const [busy, setBusy] = useState(false);
 
-  const generate = async (regen = false) => {
+  const generate = async () => {
     if (!prompt.trim() || busy) return;
     setBusy(true);
+    const credit = await spendCredits('image');
+    if (!credit.ok) { setBusy(false); alert('Out of credits — upgrade in Billing to generate more images.'); return; }
+    window.dispatchEvent(new Event('credits:changed'));
     const full = prompt + (MODE_STYLE[mode] || '') + ', high quality, no text';
-    const seed = Math.floor(Math.random() * 9999);
-    const url = pollUrl(full, size.w, size.h, seed);
-    setImages(p => [{ prompt, full, w: size.w, h: size.h, seed }, ...p]);
-    supabase.from('images').insert({ prompt, mode, size: size.id, url });
+    const entry = { prompt, full, w: size.w, h: size.h, url: '', status: 'loading' as const };
+    setImages(p => [entry, ...p]);
+    try {
+      const r = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: full, w: size.w, h: size.h }) });
+      const d = await r.json();
+      setImages(p => p.map(im => im === entry ? { ...im, url: d.url || '', status: d.url ? 'ok' : 'error' } : im));
+      if (d.url) supabase.from('images').insert({ prompt, mode, size: size.id, url: d.url });
+    } catch {
+      setImages(p => p.map(im => im === entry ? { ...im, status: 'error' } : im));
+    }
     setBusy(false);
   };
 
@@ -60,12 +69,14 @@ export default function ImageStudio() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {images.map((im, i) => (
           <div key={i} className="glass !rounded-2xl overflow-hidden animate-rise">
-            <div style={{ aspectRatio: `${im.w} / ${im.h}` }} className="w-full">
-              <SmartImage prompt={im.full} w={im.w} h={im.h} seed={im.seed} rounded="rounded-none" className="w-full h-full" />
+            <div style={{ aspectRatio: `${im.w} / ${im.h}` }} className="w-full relative bg-slate-100 dark:bg-white/5">
+              {im.status === 'loading' && <div className="absolute inset-0 grid place-items-center"><div className="w-7 h-7 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div>}
+              {im.status === 'error' && <div className="absolute inset-0 grid place-items-center text-center p-3"><span className="text-[12px] text-slate-500">🖼 Couldn't generate<br/><button className="text-primary font-semibold" onClick={() => { setPrompt(im.prompt); generate(); }}>Try again</button></span></div>}
+              {im.url && <img src={im.url} alt="" className="w-full h-full object-cover" />}
             </div>
             <div className="p-3 flex gap-2 flex-wrap">
-              <button className="pill !text-[11px]" onClick={() => download(pollUrl(im.full, im.w, im.h, im.seed))}>⬇ Download</button>
-              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(true); }}>↻ Regenerate</button>
+              <button className="pill !text-[11px]" disabled={!im.url} onClick={() => download(im.url)}>⬇ Download</button>
+              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(); }}>↻ Regenerate</button>
               <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}>✏ Edit prompt</button>
             </div>
           </div>))}

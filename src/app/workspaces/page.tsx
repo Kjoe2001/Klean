@@ -25,7 +25,7 @@ export default function Workspaces() {
   return (
     <AppShell title="Workspaces" subtitle="Team collaboration with owner, admin, editor and viewer roles.">
       <div className="glass p-5 mb-5 flex gap-3">
-        <input className="field !w-72" placeholder="Workspace name — e.g. Zelvo Creative Team" value={name} onChange={e => setName(e.target.value)} />
+        <input className="field !w-72" placeholder="Workspace name — e.g. Zelvoo Creative Team" value={name} onChange={e => setName(e.target.value)} />
         <button className="cta px-6 py-3 text-sm" onClick={create}>＋ Create workspace</button>
       </div>
       <div className="grid md:grid-cols-2 gap-4">

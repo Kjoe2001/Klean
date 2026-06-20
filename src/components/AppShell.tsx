@@ -2,9 +2,16 @@
 import Sidebar from './Sidebar';
 import { useProfile } from './useProfile';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { NOTIFICATIONS } from '@/lib/journey';
+import CreditsBadge from '@/components/CreditsBadge';
 
 export default function AppShell({ children, title, subtitle, actions }: any) {
   const { profile, loading, trialDaysLeft, trialExpired } = useProfile();
+  const router = useRouter();
+  const unread = NOTIFICATIONS.filter(n => n.unread).length;
+  useEffect(() => { if (profile && profile.onboarded === false) router.replace('/welcome'); }, [profile]);
   if (loading) return <div className="min-h-screen grid place-items-center"><div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent animate-spin" /></div>;
   if (!profile) return null;
   return (
@@ -26,7 +33,14 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
             <h1 className="font-sora font-extrabold text-2xl">{title}</h1>
             {subtitle && <p className="text-slate-500 text-sm mt-1">{subtitle}</p>}
           </div>
-          {actions}
+          <div className="flex items-center gap-2">
+            <CreditsBadge />
+            <Link href="/notifications" className="relative glass !rounded-xl w-10 h-10 grid place-items-center hover:shadow-glow transition" title="Notifications">
+              <span>🔔</span>
+              {unread > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-secondary text-white text-[9px] font-bold grid place-items-center">{unread}</span>}
+            </Link>
+            {actions}
+          </div>
         </div>
         {children}
       </main>
