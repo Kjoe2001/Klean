@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" />
+      </head>
       <body className={`${sora.variable} ${inter.variable} ${jbmono.variable} font-inter text-ink dark:text-white`}>
         <script dangerouslySetInnerHTML={{ __html:
           `if(localStorage.getItem('zelvo_theme')==='dark')document.documentElement.classList.add('dark')` }} />

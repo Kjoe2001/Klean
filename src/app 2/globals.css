@@ -14,6 +14,25 @@ body { background: var(--bg-grad); min-height: 100vh; }
 .field { @apply w-full rounded-2xl border-2 border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm font-medium text-ink dark:text-white outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-400; }
 .sk { @apply animate-pulse rounded-lg bg-slate-200/70 dark:bg-white/10; }
 
+/* Premium "featured" surface — use sparingly, ONE per screen (the
+   highlighted plan, the current-plan card, etc.). Always near-black,
+   regardless of light/dark mode, for that Stripe/Linear "breaks the grid"
+   contrast moment. */
+.feature-card { @apply bg-feature text-white rounded-3xl ring-1 ring-feature-border relative; }
+.feature-muted { @apply text-feature-muted; }
+.feature-dim { @apply text-feature-dim; }
+
+.badge-popular { @apply absolute -top-2.5 left-3.5 bg-brand-gradient text-white text-[11px] font-semibold px-3 py-1 rounded-lg; }
+
+/* Material Symbols Outlined — loaded in layout.tsx. Default 20px, inherits
+   color from parent (set text-color via className, not inline style). */
+.msym { font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal;
+  font-size:20px; line-height:1; letter-spacing:normal; text-transform:none;
+  display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr;
+  vertical-align:-5px; -webkit-font-smoothing:antialiased; }
+.msym-sm { font-size:16px; vertical-align:-3px; }
+.msym-lg { font-size:28px; vertical-align:-7px; }
+
 /* v3 signature — animated gradient border for selected toggle cards */
 @keyframes gradspin { to { --ga: 360deg; } }
 @property --ga { syntax: '<angle>'; initial-value: 0deg; inherits: false; }

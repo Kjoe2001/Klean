@@ -10,20 +10,27 @@ export default function Landing() {
         <div className="absolute -top-32 -right-20 w-[360px] h-[360px] rounded-full bg-secondary/15 blur-2xl" />
         <div className="absolute -bottom-36 -left-24 w-[380px] h-[380px] rounded-full bg-primary/15 blur-2xl" />
       </div>
-      <header className="max-w-5xl mx-auto text-center px-5 pt-20 pb-10 animate-rise">
-        <div className="font-mono text-[11px] font-bold tracking-[.2em] text-primary mb-4">AFRICA'S AI MARKETING OPERATING SYSTEM</div>
-        <h1 className="font-sora font-extrabold text-4xl md:text-6xl leading-[1.06]">
-          Create 30 Days of Content<br /><span className="grad-text">in Minutes.</span>
-        </h1>
-        <p className="text-slate-500 max-w-xl mx-auto mt-5 text-[15.5px]">
-          Your entire marketing team, running on AI. 16 content types with generated images, full campaign
-          strategies, trends, competitor intel and client-ready decks — from one brief.
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-          <Link href="/signup" className="cta px-9 py-4 text-base">✨ Start your 7-day free trial</Link>
-          <Link href="/pricing" className="pill !px-6 !py-3.5 !text-sm">See pricing</Link>
+      <header className="max-w-4xl mx-auto px-5 pt-16 pb-10 animate-rise">
+        <div className="feature-card text-center px-6 py-12 md:px-12 md:py-16">
+          <div className="inline-flex items-center gap-1.5 bg-white/[0.06] px-3 py-1.5 rounded-full mb-5">
+            <span className="msym msym-sm text-secondary">auto_awesome</span>
+            <span className="text-[11px] feature-muted">AI marketing, built for Africa</span>
+          </div>
+          <h1 className="font-sora font-extrabold text-3xl md:text-5xl leading-[1.12] text-white">
+            One brief in.<br /><span className="grad-text">A month of marketing out.</span>
+          </h1>
+          <p className="feature-muted max-w-xl mx-auto mt-5 text-[15px]">
+            Your entire marketing team, running on AI. 16 content types with generated images, full campaign
+            strategies, trends, competitor intel and client-ready decks — from one brief.
+          </p>
+          <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
+            <Link href="/signup" className="bg-brand-gradient text-white font-sora font-bold rounded-full px-9 py-4 text-base transition hover:-translate-y-0.5">
+              <span className="msym msym-sm align-middle mr-1">bolt</span>Start your 7-day free trial
+            </Link>
+            <Link href="/pricing" className="bg-white/[0.08] text-white rounded-full !px-6 !py-3.5 !text-sm font-sora font-bold hover:bg-white/[0.12] transition">See pricing</Link>
+          </div>
+          <div className="text-xs feature-dim mt-4">No credit card · Pay with Mobile Money, card or transfer · From $10/week</div>
         </div>
-        <div className="text-xs text-slate-400 mt-3">No credit card · Pay with Mobile Money, card or transfer · From $19/mo</div>
       </header>
       <section className="max-w-5xl mx-auto px-5 pb-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

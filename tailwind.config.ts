@@ -7,6 +7,12 @@ export default {
       colors: {
         primary: '#7C3AED', secondary: '#FF6B2C', accent: '#38BDF8', success: '#10B981',
         ink: '#0F172A', mist: '#F8FAFC',
+        // premium "featured" surface — used sparingly for the one highlighted
+        // card/section per screen (Pro plan, current plan, etc.)
+        feature: { DEFAULT: '#1C1730', border: '#2E2750', text: '#D8D2F0', muted: '#A89FCB', dim: '#8A80AD' },
+      },
+      backgroundImage: {
+        'brand-gradient': 'linear-gradient(90deg, #FF6B2C, #7C3AED)',
       },
       fontFamily: { sora: ['var(--font-sora)'], inter: ['var(--font-inter)'], mono: ['var(--font-jbmono)'] },
       borderRadius: { '2xl': '1.25rem', '3xl': '1.75rem' },

@@ -39,10 +39,12 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
       <Sidebar profile={profile} trialDaysLeft={daysLeft} />
       <main className="flex-1 min-w-0 animate-rise">
         {banner && (
-          <div className={`glass !rounded-2xl px-5 py-3 mb-4 flex flex-wrap items-center gap-3 ${banner.tone === 'danger' ? 'border-red-300' : banner.tone === 'warn' ? 'border-amber-300' : ''}`}>
-            <span>{banner.tone === 'danger' ? '🔒' : banner.tone === 'warn' ? '⚡' : '⏳'}</span>
-            <div className="flex-1 text-[13px]">{banner.node}</div>
-            <Link href={banner.href} className="cta text-xs px-5 py-2">{banner.cta}</Link>
+          <div className={`feature-card px-5 py-3 mb-4 flex flex-wrap items-center gap-3`}>
+            <span className={`msym ${banner.tone === 'danger' ? 'text-secondary' : banner.tone === 'warn' ? 'text-amber-400' : 'text-feature-muted'}`}>
+              {banner.tone === 'danger' ? 'lock' : banner.tone === 'warn' ? 'bolt' : 'hourglass_top'}
+            </span>
+            <div className="flex-1 text-[13px] feature-muted">{banner.node}</div>
+            <Link href={banner.href} className="text-xs px-5 py-2 rounded-full bg-brand-gradient text-white font-sora font-bold hover:-translate-y-0.5 transition">{banner.cta}</Link>
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
@@ -53,7 +55,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <div className="flex items-center gap-2">
             <CreditsBadge />
             <Link href="/notifications" className="relative glass !rounded-xl w-10 h-10 grid place-items-center hover:shadow-glow transition" title="Notifications">
-              <span>🔔</span>
+              <span className="msym text-slate-500 dark:text-slate-300">notifications</span>
               {unread > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-secondary text-white text-[9px] font-bold grid place-items-center">{unread}</span>}
             </Link>
             {actions}
