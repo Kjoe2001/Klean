@@ -58,7 +58,7 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
         <div className="text-center text-xs text-slate-500 mt-4">
           {mode === 'signup'
             ? <>Already have an account? <Link className="text-primary font-bold" href="/login">Log in</Link></>
-            : <><Link className="text-primary font-bold" href="/forgot-password">Forgot password?</Link> · <Link className="text-primary font-bold" href="/signup">Start free trial</Link></>}
+            : <><Link className="text-primary font-bold" href={plan ? `/forgot-password?plan=${plan}` : '/forgot-password'}>Forgot password?</Link> · <Link className="text-primary font-bold" href={plan ? `/signup?plan=${plan}` : '/signup'}>Start free trial</Link></>}
         </div>
       </div>
     </div>

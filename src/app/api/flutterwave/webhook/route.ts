@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       { user_id: userId, plan, status: 'active', flw_tx_ref: data.tx_ref, current_period_end: periodEnd, updated_at: new Date().toISOString() },
       { onConflict: 'user_id' } as any);
     await db.from('profiles').update({ plan, credits: planCredits(plan), credits_period_start: new Date().toISOString(), plan_started_at: new Date().toISOString() }).eq('id', userId);
+    await db.from('credit_log').insert({ user_id: userId, delta: planCredits(plan), balance_after: planCredits(plan), reason: `${plan.charAt(0).toUpperCase()}${plan.slice(1)} plan purchased` });
     if (pay) await db.from('invoices').insert({ user_id: userId, payment_id: pay.id, amount: data.amount, currency: data.currency, plan });
   }
 
