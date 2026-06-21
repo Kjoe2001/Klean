@@ -4,6 +4,7 @@ import AppShell from '@/components/AppShell';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
+import { getCredits } from '@/lib/credits';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -14,6 +15,7 @@ function BillingInner() {
   const [history, setHistory] = useState<any[]>([]);
   const params = useSearchParams();
   const [showHistory, setShowHistory] = useState(params.get('history') === '1');
+  const [liveCredits, setLiveCredits] = useState<number | null>(null);
   useEffect(() => { (async () => {
     const { data: p } = await supabase.from('payments').select('*').order('created_at', { ascending: false });
     setPayments(p || []);
@@ -25,7 +27,21 @@ function BillingInner() {
       const j = await r.json();
       setHistory(j.history || []);
     }
+    getCredits().then(c => setLiveCredits(c.credits));
   })(); }, []);
+
+  useEffect(() => {
+    const refresh = () => {
+      getCredits().then(c => setLiveCredits(c.credits));
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session?.access_token) return;
+        fetch('/api/credits?history=1', { headers: { Authorization: `Bearer ${session.access_token}` } })
+          .then(r => r.json()).then(j => setHistory(j.history || []));
+      });
+    };
+    window.addEventListener('credits:changed', refresh);
+    return () => window.removeEventListener('credits:changed', refresh);
+  }, []);
   if (!profile) return null;
   const order = ['weekly','starter','pro','studio','agency','enterprise'] as const;
 
@@ -38,7 +54,7 @@ function BillingInner() {
           {sub?.current_period_end && <div className="text-xs feature-muted">Renews {new Date(sub.current_period_end).toLocaleDateString()}</div>}
         </div>
         <button onClick={() => setShowHistory(s => !s)} className="rounded-full bg-white/[0.08] text-white text-[12.5px] font-sora font-bold px-4 py-2 hover:bg-white/[0.14] transition">
-          <span className="msym msym-sm align-middle mr-1">{profile.credits ?? 0} credits</span> · {showHistory ? 'Hide' : 'See'} usage
+          <span className="msym msym-sm align-middle mr-1">{liveCredits ?? profile.credits ?? 0} credits</span> · {showHistory ? 'Hide' : 'See'} usage
         </button>
         {profile.plan !== 'trial' && (
           <button className="pill !text-rose-400 !bg-white/[0.06] !border-white/10" onClick={async () => {
