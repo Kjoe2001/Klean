@@ -7,7 +7,8 @@
 
 body { background: var(--bg-grad); min-height: 100vh; }
 
-.glass { @apply bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-glass rounded-3xl; }
+.glass { @apply bg-white dark:bg-white/[0.04] border border-slate-100 dark:border-white/10 shadow-glass rounded-3xl; }
+.glass-subtle { @apply bg-slate-50/60 dark:bg-white/[0.03] border border-slate-100/80 dark:border-white/[0.06] rounded-2xl; }
 .grad-text { @apply bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent; }
 .cta { @apply bg-gradient-to-r from-secondary to-primary text-white font-sora font-bold rounded-full shadow-glow transition hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none; }
 .pill { @apply rounded-full text-xs font-semibold px-4 py-2 border border-slate-200 dark:border-white/15 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:shadow transition; }

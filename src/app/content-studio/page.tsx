@@ -73,7 +73,7 @@ export default function ContentStudio() {
         <div>
           <div className="glass p-6 mb-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-sora font-bold">🪄 Brief</h2>
+              <h2 className="font-sora font-bold"><span className="msym msym-sm text-primary align-middle mr-1">edit_note</span>Brief</h2>
               <select className="field !w-auto !py-2 text-xs" value={brandId} onChange={e => setBrandId(e.target.value)}>
                 <option value="">No Brand Kit</option>
                 {brands.map(b => <option key={b.id} value={b.id}>{b.name} (Brand Kit)</option>)}
@@ -104,27 +104,31 @@ export default function ContentStudio() {
               const sel = selected.has(t.id); const ld = loadingIds.has(t.id);
               return (
                 <button key={t.id} onClick={() => locked ? null : toggle(t.id)}
-                  className={`relative text-left rounded-2xl bg-white dark:bg-white/5 p-4 shadow-glass transition hover:-translate-y-0.5
-                    ${sel && !locked ? 'grad-border scale-[1.02]' : 'border-2 border-transparent'} ${locked ? 'opacity-90' : ''}`}>
+                  className={`relative text-left rounded-2xl p-4 transition hover:-translate-y-0.5
+                    ${sel && !locked ? 'feature-card' : 'bg-white dark:bg-white/5 shadow-glass'} ${locked ? 'opacity-90' : ''}`}>
                   {locked && (
                     <Link href="/billing" className="absolute inset-0 z-10 rounded-2xl bg-white/70 dark:bg-ink/70 backdrop-blur-[2px] grid place-items-center">
-                      <span className="text-[11px] font-sora font-bold grad-text">🔒 Upgrade</span>
+                      <span className="msym msym-sm text-secondary mr-1">lock</span><span className="text-[11px] font-sora font-bold grad-text align-middle">Upgrade</span>
                     </Link>)}
                   <div className="flex justify-between items-start">
-                    <span className="text-lg">{t.icon}</span>
+                    <span className={`msym ${sel && !locked ? 'text-feature-muted' : 'text-slate-400'}`}>{t.msym}</span>
                     {ld ? <span className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                      : <span className={`w-4.5 h-4.5 w-[18px] h-[18px] rounded-full grid place-items-center text-[10px] font-bold text-white ${sel ? 'bg-gradient-to-r from-secondary to-primary' : 'border-2 border-slate-300'}`}>{sel ? '✓' : ''}</span>}
+                      : <span className={`w-[18px] h-[18px] rounded-full grid place-items-center text-[10px] font-bold text-white ${sel ? 'bg-brand-gradient' : 'border-2 border-slate-300'}`}>
+                          {sel ? <span className="msym" style={{fontSize:'11px', verticalAlign:'-1px'}}>check</span> : ''}
+                        </span>}
                   </div>
-                  <div className="font-sora font-bold text-[12.5px] mt-1.5">{t.label}</div>
-                  <div className="text-[10.5px] text-slate-500">{t.desc}</div>
+                  <div className={`font-sora font-bold text-[12.5px] mt-1.5 ${sel && !locked ? 'text-white' : ''}`}>{t.label}</div>
+                  <div className={`text-[10.5px] ${sel && !locked ? 'feature-dim' : 'text-slate-500'}`}>{t.desc}</div>
+                  <div className={`text-[9.5px] mt-1.5 font-mono ${sel && !locked ? 'feature-dim' : 'text-slate-400'}`}>1 credit</div>
                 </button>
               );
             })}
           </div>
 
           <button onClick={generate} disabled={busy || !ready || !selected.size}
-            className="cta w-full py-4 mt-5 text-[15px] sticky bottom-4">
-            {busy ? `✨ Generating ${loadingIds.size}…` : !ready ? 'Fill the brief to start' : `✨ Generate Content (${selected.size})`}
+            className="w-full py-4 mt-5 text-[15px] sticky bottom-4 rounded-full bg-brand-gradient text-white font-sora font-bold disabled:opacity-50 transition hover:-translate-y-0.5">
+            <span className="msym msym-sm align-middle mr-1.5">auto_awesome</span>
+            {busy ? `Generating ${loadingIds.size}…` : !ready ? 'Fill the brief to start' : `Generate Content (${selected.size})`}
           </button>
         </div>
 
@@ -132,18 +136,18 @@ export default function ContentStudio() {
         <div className="space-y-4">
           {!Object.keys(results).length && !busy && (
             <div className="glass p-12 text-center">
-              <div className="text-3xl mb-2">✨</div>
-              <div className="font-sora font-bold">Your content lands here</div>
+              <span className="msym text-primary" style={{fontSize:'32px'}}>auto_awesome</span>
+              <div className="font-sora font-bold mt-2">Your content lands here</div>
               <p className="text-sm text-slate-500 mt-1">Results stream in live and save to your Library automatically.</p>
             </div>)}
           {CONTENT_TYPES.filter(t => results[t.id] || loadingIds.has(t.id)).map(t => (
             <div key={t.id} className="glass p-5 animate-rise">
               <div className="flex items-center gap-3 mb-3">
-                <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-primary grid place-items-center text-sm">{t.icon}</span>
+                <span className="w-8 h-8 rounded-xl bg-brand-gradient grid place-items-center"><span className="msym msym-sm text-white">{t.msym}</span></span>
                 <span className="font-sora font-bold text-[14px] flex-1">{t.label}</span>
                 {loadingIds.has(t.id) && <span className="text-[11px] text-primary font-semibold">thinking…</span>}
                 {results[t.id] && !results[t.id].__error &&
-                  <button className="pill !text-[11px]" onClick={() => navigator.clipboard.writeText(JSON.stringify(results[t.id], null, 2))}>⧉ Copy</button>}
+                  <button className="pill !text-[11px]" onClick={() => navigator.clipboard.writeText(JSON.stringify(results[t.id], null, 2))}><span className="msym" style={{fontSize:"13px",verticalAlign:"-2px"}}>content_copy</span> Copy</button>}
               </div>
               {loadingIds.has(t.id) ? <div className="space-y-2"><div className="sk h-3 w-5/6" /><div className="sk h-3 w-2/3" /><div className="sk h-3 w-3/4" /></div>
                 : results[t.id].__error ? <p className="text-rose-500 text-sm">{results[t.id].__error}</p>

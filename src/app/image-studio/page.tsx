@@ -49,21 +49,22 @@ export default function ImageStudio() {
 
   return (
     <AppShell title="AI Image Studio" subtitle="Product photography, ad creatives, thumbnails, billboards — text to visual in seconds.">
-      <div className="glass p-6 mb-5">
-        <textarea className="field min-h-[80px]" placeholder="Describe the image… e.g. African woman holding a glass of fresh juice in a sunlit modern kitchen"
+      <div className="feature-card p-6 mb-5">
+        <textarea className="field !bg-white/[0.06] !border-white/10 !text-white placeholder:text-feature-dim min-h-[80px]" placeholder="Describe the image… e.g. African woman holding a glass of fresh juice in a sunlit modern kitchen"
           value={prompt} onChange={e => setPrompt(e.target.value)} />
         <div className="flex flex-wrap gap-2 mt-4 mb-3">
           {IMAGE_MODES.map(m => (
             <button key={m.id} onClick={() => setMode(m.id)}
-              className={`pill !text-[12px] ${mode === m.id ? '!bg-gradient-to-r from-secondary to-primary !text-white !border-transparent' : ''}`}>{m.label}</button>))}
+              className={`pill !text-[12px] ${mode === m.id ? '!bg-brand-gradient !text-white !border-transparent' : '!bg-white/[0.06] !border-white/10 !text-feature-muted'}`}>{m.label}</button>))}
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {IMAGE_SIZES.map(s => (
             <button key={s.id} onClick={() => setSize(s)}
-              className={`pill !text-[11px] ${size.id === s.id ? '!border-primary !text-primary font-bold' : ''}`}>{s.label}</button>))}
+              className={`pill !text-[11px] ${size.id === s.id ? '!border-secondary !text-secondary font-bold !bg-white/[0.06]' : '!bg-white/[0.06] !border-white/10 !text-feature-dim'}`}>{s.label}</button>))}
         </div>
-        <button className="cta px-8 py-3.5 text-sm" disabled={busy || !prompt.trim()} onClick={() => generate()}>
-          {busy ? '🎨 Painting…' : '🎨 Generate image'}
+        <button className="rounded-full bg-brand-gradient text-white font-sora font-bold px-8 py-3.5 text-sm transition hover:-translate-y-0.5 disabled:opacity-50" disabled={busy || !prompt.trim()} onClick={() => generate()}>
+          <span className="msym msym-sm align-middle mr-1.5">{busy ? 'hourglass_top' : 'auto_awesome'}</span>
+          {busy ? 'Painting…' : 'Generate image · 3 credits'}
         </button>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -71,13 +72,13 @@ export default function ImageStudio() {
           <div key={i} className="glass !rounded-2xl overflow-hidden animate-rise">
             <div style={{ aspectRatio: `${im.w} / ${im.h}` }} className="w-full relative bg-slate-100 dark:bg-white/5">
               {im.status === 'loading' && <div className="absolute inset-0 grid place-items-center"><div className="w-7 h-7 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div>}
-              {im.status === 'error' && <div className="absolute inset-0 grid place-items-center text-center p-3"><span className="text-[12px] text-slate-500">🖼 Couldn't generate<br/><button className="text-primary font-semibold" onClick={() => { setPrompt(im.prompt); generate(); }}>Try again</button></span></div>}
+              {im.status === 'error' && <div className="absolute inset-0 grid place-items-center text-center p-3"><span className="text-[12px] text-slate-500"><span className="msym msym-sm text-slate-400 block mx-auto mb-1">broken_image</span>Couldn't generate<br/><button className="text-primary font-semibold" onClick={() => { setPrompt(im.prompt); generate(); }}>Try again</button></span></div>}
               {im.url && <img src={im.url} alt="" className="w-full h-full object-cover" />}
             </div>
             <div className="p-3 flex gap-2 flex-wrap">
-              <button className="pill !text-[11px]" disabled={!im.url} onClick={() => download(im.url)}>⬇ Download</button>
-              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(); }}>↻ Regenerate</button>
-              <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}>✏ Edit prompt</button>
+              <button className="pill !text-[11px]" disabled={!im.url} onClick={() => download(im.url)}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>download</span> Download</button>
+              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(); }}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>refresh</span> Regenerate</button>
+              <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>edit</span> Edit prompt</button>
             </div>
           </div>))}
       </div>
