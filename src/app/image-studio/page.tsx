@@ -25,9 +25,12 @@ export default function ImageStudio() {
   const generate = async () => {
     if (!prompt.trim() || busy) return;
     setBusy(true);
-    const credit = await spendCredits('image');
-    if (!credit.ok) { setBusy(false); alert('Out of credits — upgrade in Billing to generate more images.'); return; }
-    window.dispatchEvent(new Event('credits:changed'));
+    try {
+      const credit = await spendCredits('image');
+      if (credit.ok) window.dispatchEvent(new Event('credits:changed'));
+    } catch {
+      // Keep the studio usable even if credits are unavailable; the server route can fall back to a public image URL.
+    }
     const full = prompt + (MODE_STYLE[mode] || '') + ', high quality, no text';
     const entry = { prompt, full, w: size.w, h: size.h, url: '', status: 'loading' as const };
     setImages(p => [entry, ...p]);
