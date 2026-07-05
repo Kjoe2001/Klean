@@ -1,25 +1,25 @@
 'use client';
-import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes, type SelectHTMLAttributes, type ReactNode } from 'react';
 
 /* ─── Input ─────────────────────────────────────────────────────────── */
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> {
   label?: string;
   error?: string;
   hint?: string;
-  prefix?: ReactNode;
+  prefixIcon?: ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, prefix, className = '', ...props }, ref) => (
+  ({ label, error, hint, prefixIcon, className = '', ...props }, ref) => (
     <div className="flex flex-col gap-1.5">
       {label && <label className="text-sm font-semibold text-[#0A0E27]">{label}</label>}
       <div className="relative">
-        {prefix && (
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B7280]">{prefix}</span>
+        {prefixIcon && (
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B7280]">{prefixIcon}</span>
         )}
         <input
           ref={ref}
-          className={`field ${prefix ? 'pl-10' : ''} ${error ? 'border-danger focus:ring-danger/15' : ''} ${className}`}
+          className={`field ${prefixIcon ? 'pl-10' : ''} ${error ? 'border-danger focus:ring-danger/15' : ''} ${className}`}
           aria-invalid={!!error}
           {...props}
         />
@@ -54,7 +54,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 Textarea.displayName = 'Textarea';
 
 /* ─── Select ─────────────────────────────────────────────────────────── */
-interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   children: ReactNode;
