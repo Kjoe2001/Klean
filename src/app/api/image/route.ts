@@ -54,15 +54,20 @@ export async function POST(req: NextRequest) {
 
         if (pred.status !== 'failed') {
           const url = Array.isArray(pred.output) ? pred.output[0] : pred.output;
-          if (url) return NextResponse.json({ url });
+          if (url) {
+            console.log('Replicate succeeded, returning image URL');
+            return NextResponse.json({ url, source: 'replicate' });
+          }
         }
       } catch (error: any) {
-        console.warn('Replicate image generation failed, using fallback image URL', error?.message || error);
+        // Log provider error details to server logs for debugging
+        console.error('Replicate image generation error:', error?.message || error, { detail: error });
+        console.warn('Replicate image generation failed, using fallback image URL');
       }
     }
 
     const fallbackUrl = buildFallbackImageUrl(prompt, w, h);
-    return NextResponse.json({ url: fallbackUrl });
+    return NextResponse.json({ url: fallbackUrl, source: 'fallback' });
   } catch (e: any) {
     return NextResponse.json({ error: e.message || 'Image error' }, { status: 500 });
   }

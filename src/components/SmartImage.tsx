@@ -74,9 +74,20 @@ export default function SmartImage({
         </button>
       )}
       {url && (
-        <img src={url} alt="" loading="lazy"
+        <img src={url} alt="" loading="lazy" crossOrigin="anonymous"
           onLoad={() => setStatus('ok')}
-          onError={() => setStatus('error')}
+          onError={() => {
+            console.warn('SmartImage: image load error for', url);
+            try {
+              const fallback = buildFallbackImageUrl(prompt || '', w, h);
+              if (url && !url.includes('pollinations.ai') && fallback !== url) {
+                setUrl(fallback);
+                setStatus('loading');
+                return;
+              }
+            } catch (e) {}
+            setStatus('error');
+          }}
           className={`w-full h-full object-cover transition-opacity duration-500 ${status === 'ok' ? 'opacity-100' : 'opacity-0'}`} />
       )}
     </div>
