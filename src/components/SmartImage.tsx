@@ -4,6 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 /* AI image via server route (/api/image -> Replicate Flux).
    - posts the prompt, shows spinner, renders returned URL
    - tap-to-retry on failure, never blocks the page */
+function buildFallbackImageUrl(prompt: string, w: number, h: number) {
+  const encodedPrompt = encodeURIComponent(prompt);
+  const params = new URLSearchParams({ width: String(w), height: String(h), model: 'flux', nologo: 'true' });
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
+}
+
 export default function SmartImage({
   prompt,
   w = 1024,
@@ -29,6 +35,7 @@ export default function SmartImage({
     setUrl('');
     (async () => {
       try {
+        const fallbackUrl = buildFallbackImageUrl(prompt, w, h);
         const r = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -36,10 +43,15 @@ export default function SmartImage({
         });
         const d = await r.json();
         if (!alive.current) return;
-        if (d.url) { setUrl(d.url); /* status flips to ok on img load */ }
+        const resolvedUrl = d?.url || fallbackUrl;
+        if (resolvedUrl) { setUrl(resolvedUrl); setStatus('loading'); }
         else setStatus('error');
       } catch {
-        if (alive.current) setStatus('error');
+        if (alive.current) {
+          const fallbackUrl = buildFallbackImageUrl(prompt, w, h);
+          setUrl(fallbackUrl);
+          setStatus('loading');
+        }
       }
     })();
     return () => { alive.current = false; };

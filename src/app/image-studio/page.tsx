@@ -15,6 +15,12 @@ const MODE_STYLE: Record<string,string> = {
   campaign: ', premium brand campaign artwork, cinematic, art directed',
 };
 
+function buildFallbackImageUrl(prompt: string, w: number, h: number) {
+  const encodedPrompt = encodeURIComponent(prompt);
+  const params = new URLSearchParams({ width: String(w), height: String(h), model: 'flux', nologo: 'true' });
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
+}
+
 export default function ImageStudio() {
   const [prompt, setPrompt] = useState('');
   const [mode, setMode] = useState('text2img');
@@ -32,15 +38,19 @@ export default function ImageStudio() {
       // Keep the studio usable even if credits are unavailable; the server route can fall back to a public image URL.
     }
     const full = prompt + (MODE_STYLE[mode] || '') + ', high quality, no text';
-    const entry = { prompt, full, w: size.w, h: size.h, url: '', status: 'loading' as const };
+    const fallbackUrl = buildFallbackImageUrl(full, size.w, size.h);
+    const entry = { prompt, full, w: size.w, h: size.h, url: fallbackUrl, status: 'loading' as const };
     setImages(p => [entry, ...p]);
     try {
       const r = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: full, w: size.w, h: size.h }) });
       const d = await r.json();
-      setImages(p => p.map(im => im === entry ? { ...im, url: d.url || '', status: d.url ? 'ok' : 'error' } : im));
-      if (d.url) supabase.from('images').insert({ prompt, mode, size: size.id, url: d.url });
+      const resolvedUrl = d?.url || fallbackUrl;
+      setImages(p => p.map(im => im === entry ? { ...im, url: resolvedUrl, status: 'ok' } : im));
+      if (resolvedUrl) {
+        try { await supabase.from('images').insert({ prompt, mode, size: size.id, url: resolvedUrl }); } catch {}
+      }
     } catch {
-      setImages(p => p.map(im => im === entry ? { ...im, status: 'error' } : im));
+      setImages(p => p.map(im => im === entry ? { ...im, url: fallbackUrl, status: 'ok' } : im));
     }
     setBusy(false);
   };
