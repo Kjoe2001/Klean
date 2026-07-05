@@ -136,11 +136,23 @@ export default function ContentStudio() {
         {/* RESULTS */}
         <div className="space-y-4">
           {!Object.keys(results).length && !busy && (
-            <div className="glass p-12 text-center">
-              <Icon name="auto_awesome" className="text-primary text-[32px]" />
-              <div className="font-sora font-bold mt-2">Your content lands here</div>
-              <p className="text-sm text-slate-500 mt-1">Results stream in live and save to your Library automatically.</p>
-            </div>)}
+            <>
+              <div className="glass p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="font-mono text-[10px] font-bold tracking-[0.25em] text-primary">FIRST RUN</div>
+                    <div className="font-sora font-bold mt-1">Start with one brief and let the pack build around it.</div>
+                    <p className="text-sm text-slate-500 mt-1">A Brand Kit and a clear audience usually give the strongest first results.</p>
+                  </div>
+                  <Link href="/brand-kit" className="rounded-full border border-slate-200 dark:border-white/10 px-3.5 py-2 text-sm font-sora font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition">Open Brand Kit</Link>
+                </div>
+              </div>
+              <div className="glass p-12 text-center">
+                <Icon name="auto_awesome" className="text-primary text-[32px]" />
+                <div className="font-sora font-bold mt-2">Your content lands here</div>
+                <p className="text-sm text-slate-500 mt-1">Results stream in live and save to your Library automatically.</p>
+              </div>
+            </>)}
           {CONTENT_TYPES.filter(t => results[t.id] || loadingIds.has(t.id)).map(t => (
             <div key={t.id} className="glass p-5 animate-rise">
               <div className="flex items-center gap-3 mb-3">
