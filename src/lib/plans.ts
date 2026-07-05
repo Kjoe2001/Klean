@@ -13,7 +13,7 @@ export const PLANS: Record<PlanKey, any> = {
   trial:  { name:'Free Trial', price:0, days:7, credits:30, tagline:'7 days · 30 credits',
     perks:['30 credits to explore','Hooks, Posts & Captions','A few AI images','Upgrade anytime'],
     features:{ contentTypes:['hooks','post','caption'], images:true, exports:false, trends:false, score:false, campaigns:false, competitors:false, clients:false, seats:1, brands:1 } },
-  weekly: { name:'Weekly', price:10, days:6, credits:150, tagline:'$10 · 6 days · 150 credits', popular:true,
+  weekly: { name:'Weekly', price:10, days:7, credits:150, tagline:'$10/week · 150 credits', popular:true,
     perks:['150 credits','All 16 content types','AI Image Studio','PDF + PowerPoint export','Perfect for a campaign sprint'],
     features:{ contentTypes:'all', images:true, exports:true, trends:true, score:true, campaigns:true, competitors:false, clients:false, seats:1, brands:2 } },
   starter:{ name:'Starter', price:19, days:30, credits:400, tagline:'Monthly · 400 credits',

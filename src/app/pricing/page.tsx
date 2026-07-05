@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import MarketingNav from '@/components/MarketingNav';
+import { Icon } from '@/components/Icon';
 import { PLANS } from '@/lib/plans';
 import { localCurrency } from '@/lib/currency';
 
@@ -20,21 +21,21 @@ export default function Pricing() {
       <MarketingNav />
       <main className="max-w-6xl mx-auto px-5 py-14 animate-rise">
         <h1 className="font-sora font-extrabold text-4xl text-center">Plans that scale with your <span className="grad-text">ambition</span></h1>
-        <p className="text-center text-slate-500 mt-3 mb-2">Start free with 30 credits · Pay with card, MTN MoMo, Telecel Cash, AirtelTigo or bank transfer.</p>
+        <p className="text-center text-slate-500 mt-3 mb-2">Free 7-day trial · 30 credits · No card required · Pay with card, MTN MoMo, Telecel Cash, AirtelTigo or bank transfer.</p>
         {cur && cur.code !== 'USD' && (
           <p className="text-center text-[12px] text-slate-400 mb-8">Showing approximate {cur.code} prices for {cur.country} · billed in USD via Flutterwave.</p>
         )}
         {(!cur || cur.code === 'USD') && <div className="mb-8" />}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {order.map(k => { const p = PLANS[k]; const ent = k === 'enterprise';
-            const unit = k === 'weekly' ? '/6 days' : '/mo';
+            const unit = k === 'weekly' ? '/week' : '/mo';
             const perDollar = p.price > 0 ? (p.credits / p.price).toFixed(1) : null;
             const isFeatured = p.popular || ent;
             return (
               <div key={k} className={`rounded-3xl p-6 relative ${isFeatured ? 'feature-card' : 'glass'}`}>
                 {p.popular && <span className="badge-popular">Most popular</span>}
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`msym msym-sm ${isFeatured ? 'text-feature-muted' : 'text-slate-400'}`}>{ICON[k]}</span>
+                  <Icon name={ICON[k]} className={isFeatured ? 'text-feature-muted' : 'text-slate-400'} />
                   <div className={`font-sora font-extrabold text-lg ${isFeatured ? 'text-white' : ''}`}>{p.name}</div>
                 </div>
                 <div className={`text-[11px] mb-3 ${isFeatured ? 'feature-dim' : 'text-slate-500'}`}>{p.tagline}</div>
@@ -49,7 +50,7 @@ export default function Pricing() {
                 <ul className="space-y-1.5 min-h-[150px] text-[12.5px]">
                   {p.perks.map((x: string) => (
                     <li key={x} className="flex gap-2">
-                      <span className={`msym msym-sm ${isFeatured ? 'text-secondary' : 'text-success'}`}>check</span>
+                      <Icon name="check" className={isFeatured ? 'text-secondary' : 'text-success'} />
                       <span className={isFeatured ? 'feature-muted' : ''}>{x}</span>
                     </li>
                   ))}

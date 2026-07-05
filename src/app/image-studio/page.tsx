@@ -4,6 +4,7 @@ import AppShell from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { spendCredits } from '@/lib/credits';
 import { IMAGE_SIZES, IMAGE_MODES } from '@/lib/image-presets';
+import { Icon } from '@/components/Icon';
 
 const MODE_STYLE: Record<string,string> = {
   text2img: '', product: ', professional product photography, studio lighting, clean background',
@@ -63,7 +64,7 @@ export default function ImageStudio() {
               className={`pill !text-[11px] ${size.id === s.id ? '!border-secondary !text-secondary font-bold !bg-white/[0.06]' : '!bg-white/[0.06] !border-white/10 !text-feature-dim'}`}>{s.label}</button>))}
         </div>
         <button className="rounded-full bg-brand-gradient text-white font-sora font-bold px-8 py-3.5 text-sm transition hover:-translate-y-0.5 disabled:opacity-50" disabled={busy || !prompt.trim()} onClick={() => generate()}>
-          <span className="msym msym-sm align-middle mr-1.5">{busy ? 'hourglass_top' : 'auto_awesome'}</span>
+          <Icon name={busy ? 'hourglass_top' : 'auto_awesome'} className="mr-1.5 align-middle" />
           {busy ? 'Painting…' : 'Generate image · 3 credits'}
         </button>
       </div>
@@ -72,13 +73,13 @@ export default function ImageStudio() {
           <div key={i} className="glass !rounded-2xl overflow-hidden animate-rise">
             <div style={{ aspectRatio: `${im.w} / ${im.h}` }} className="w-full relative bg-slate-100 dark:bg-white/5">
               {im.status === 'loading' && <div className="absolute inset-0 grid place-items-center"><div className="w-7 h-7 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div>}
-              {im.status === 'error' && <div className="absolute inset-0 grid place-items-center text-center p-3"><span className="text-[12px] text-slate-500"><span className="msym msym-sm text-slate-400 block mx-auto mb-1">broken_image</span>Couldn't generate<br/><button className="text-primary font-semibold" onClick={() => { setPrompt(im.prompt); generate(); }}>Try again</button></span></div>}
+              {im.status === 'error' && <div className="absolute inset-0 grid place-items-center text-center p-3"><span className="text-[12px] text-slate-500"><Icon name="broken_image" className="mx-auto mb-1 block text-slate-400" />Couldn't generate<br/><button className="text-primary font-semibold" onClick={() => { setPrompt(im.prompt); generate(); }}>Try again</button></span></div>}
               {im.url && <img src={im.url} alt="" className="w-full h-full object-cover" />}
             </div>
             <div className="p-3 flex gap-2 flex-wrap">
-              <button className="pill !text-[11px]" disabled={!im.url} onClick={() => download(im.url)}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>download</span> Download</button>
-              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(); }}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>refresh</span> Regenerate</button>
-              <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}><span className="msym" style={{fontSize:'13px',verticalAlign:'-2px'}}>edit</span> Edit prompt</button>
+              <button className="pill !text-[11px]" disabled={!im.url} onClick={() => download(im.url)}><Icon name="download" className="text-[13px] align-middle" /> Download</button>
+              <button className="pill !text-[11px]" onClick={() => { setPrompt(im.prompt); generate(); }}><Icon name="refresh" className="text-[13px] align-middle" /> Regenerate</button>
+              <button className="pill !text-[11px]" onClick={() => setPrompt(im.prompt)}><Icon name="edit" className="text-[13px] align-middle" /> Edit prompt</button>
             </div>
           </div>))}
       </div>

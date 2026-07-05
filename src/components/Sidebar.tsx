@@ -5,6 +5,7 @@ import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import { supabase } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
+import { Icon } from '@/components/Icon';
 
 const GROUPS: { title: string; items: { href: string; icon: string; label: string }[] }[] = [
   { title: 'Create', items: [
@@ -55,7 +56,7 @@ export default function Sidebar({ profile, trialDaysLeft }: any) {
       <div className="flex items-center justify-between mb-4 px-1"><Logo href="/dashboard" /><ThemeToggle /></div>
       <Link href="/billing" className="block rounded-xl border border-slate-200 dark:border-white/10 px-3 py-2 mb-3 hover:shadow transition">
         <div className="font-mono text-[10px] font-bold tracking-widest text-primary flex items-center gap-1">
-          <span className="msym" style={{fontSize:'13px', verticalAlign:'-2px'}}>{profile?.plan === 'trial' ? 'hourglass_top' : 'check_circle'}</span>
+          <Icon name={profile?.plan === 'trial' ? 'hourglass_top' : 'check_circle'} className="text-[13px]" />
           {profile?.plan === 'trial' ? `TRIAL · ${trialDaysLeft}D LEFT` : `${PLANS[profile?.plan]?.name?.toUpperCase()}`}
         </div>
         <div className="text-[11px] text-slate-500">{profile?.plan === 'trial' ? 'Upgrade from $10 →' : 'Manage plan →'}</div>
@@ -72,7 +73,7 @@ export default function Sidebar({ profile, trialDaysLeft }: any) {
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] transition ${
                       active ? 'bg-brand-gradient text-white font-semibold shadow-glow'
                              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'}`}>
-                    <span className="msym msym-sm w-4 text-center">{n.icon}</span>{n.label}
+                    <Icon name={n.icon} className="w-4 text-center" />{n.label}
                   </Link>
                 );
               })}

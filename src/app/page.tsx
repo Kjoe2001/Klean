@@ -1,6 +1,24 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import MarketingNav from '@/components/MarketingNav';
+import { FaqSection } from '@/components/FaqSection';
+import { Icon } from '@/components/Icon';
+import { SocialProof } from '@/components/SocialProof';
 import { CONTENT_TYPES } from '@/lib/content-types';
+
+export const metadata: Metadata = {
+  title: 'The AI Marketing Operating System | One Brief In, A Month of Marketing Out',
+  description:
+    "Africa's AI marketing OS. Generate 16 content types, AI images, full campaign strategies, trend & competitor intel from one brief. Pay with Mobile Money or card. Free 7-day trial.",
+  alternates: { canonical: 'https://www.zelvoo.app' },
+  openGraph: {
+    title: 'Zelvoo — One brief in. A month of marketing out.',
+    description: 'Your entire marketing team, running on AI. 16 content types, AI images, campaigns & client-ready decks.',
+    url: 'https://www.zelvoo.app',
+    siteName: 'Zelvoo',
+    type: 'website',
+  },
+};
 
 export default function Landing() {
   return (
@@ -13,7 +31,7 @@ export default function Landing() {
       <header className="max-w-4xl mx-auto px-5 pt-16 pb-10 animate-rise">
         <div className="feature-card text-center px-6 py-12 md:px-12 md:py-16">
           <div className="inline-flex items-center gap-1.5 bg-white/[0.06] px-3 py-1.5 rounded-full mb-5">
-            <span className="msym msym-sm text-secondary">auto_awesome</span>
+            <Icon name="auto_awesome" className="text-secondary" />
             <span className="text-[11px] feature-muted">AI marketing, built for Africa</span>
           </div>
           <h1 className="font-sora font-extrabold text-3xl md:text-5xl leading-[1.12] text-white">
@@ -25,11 +43,11 @@ export default function Landing() {
           </p>
           <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
             <Link href="/signup" className="bg-brand-gradient text-white font-sora font-bold rounded-full px-9 py-4 text-base transition hover:-translate-y-0.5">
-              <span className="msym msym-sm align-middle mr-1">bolt</span>Start your 7-day free trial
+              <Icon name="bolt" className="mr-1 align-middle" />Start your 7-day free trial
             </Link>
             <Link href="/pricing" className="bg-white/[0.08] text-white rounded-full !px-6 !py-3.5 !text-sm font-sora font-bold hover:bg-white/[0.12] transition">See pricing</Link>
           </div>
-          <div className="text-xs feature-dim mt-4">No credit card · Pay with Mobile Money, card or transfer · From $10/week</div>
+          <div className="text-xs feature-dim mt-4">Free 7-day trial · 30 credits · No card required</div>
         </div>
       </header>
       <section className="max-w-5xl mx-auto px-5 pb-16">
@@ -44,6 +62,9 @@ export default function Landing() {
         </div>
         <div className="text-center text-xs text-slate-400 mt-3">+ 8 more content types · AI Image Studio · Campaign Builder · Trend Discovery · Competitor Intel</div>
       </section>
+      <section className="max-w-5xl mx-auto px-5 pb-6">
+        <SocialProof />
+      </section>
       <section className="max-w-5xl mx-auto px-5 pb-20 grid md:grid-cols-3 gap-4">
         {[
           ['🪄','One brief, everything','Lock a brand brief once. Every hook, article, ad and image follows your Brand Kit automatically.'],
@@ -57,6 +78,7 @@ export default function Landing() {
           </div>
         ))}
       </section>
+      <FaqSection />
       <footer className="text-center text-xs text-slate-400 pb-10 space-x-4">
         <span>© 2026 Zelvoo</span>
         <Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link>

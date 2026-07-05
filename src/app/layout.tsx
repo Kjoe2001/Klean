@@ -7,7 +7,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 const jbmono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jbmono', weight: ['500','700'], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Zelvoo — The AI Marketing Operating System',
+  metadataBase: new URL('https://www.zelvoo.app'),
+  title: {
+    default: 'Zelvoo — The AI Marketing Operating System',
+    template: '%s | Zelvoo',
+  },
   description: "Generate content, images, campaigns and insights. Africa's AI marketing OS for brands, agencies and creators.",
 };
 

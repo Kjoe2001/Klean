@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getCredits } from '@/lib/credits';
 import { PLANS } from '@/lib/plans';
+import { Icon } from '@/components/Icon';
 
 /* Shows remaining credits. Listens for a window event so generations update it live. */
 export default function CreditsBadge() {
@@ -20,7 +21,7 @@ export default function CreditsBadge() {
   const low = c.credits <= total * 0.2;
   return (
     <Link href="/billing?history=1" className="glass !rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-glow transition" title="Credits remaining">
-      <span className={`msym msym-sm ${low ? 'text-secondary' : 'text-primary'}`}>bolt</span>
+      <Icon name="bolt" className={low ? 'text-secondary' : 'text-primary'} />
       <div>
         <div className={`text-[13px] font-bold leading-none ${low ? 'text-secondary' : 'text-primary'}`}>{c.credits} <span className="text-[10px] font-normal text-slate-400">credits</span></div>
         <div className="w-20 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mt-1 overflow-hidden">

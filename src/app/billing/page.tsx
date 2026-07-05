@@ -7,6 +7,7 @@ import { PLANS } from '@/lib/plans';
 import { getCredits } from '@/lib/credits';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Icon } from '@/components/Icon';
 
 function BillingInner() {
   const { profile } = useProfile();
@@ -54,7 +55,7 @@ function BillingInner() {
           {sub?.current_period_end && <div className="text-xs feature-muted">Renews {new Date(sub.current_period_end).toLocaleDateString()}</div>}
         </div>
         <button onClick={() => setShowHistory(s => !s)} className="rounded-full bg-white/[0.08] text-white text-[12.5px] font-sora font-bold px-4 py-2 hover:bg-white/[0.14] transition">
-          <span className="msym msym-sm align-middle mr-1">{liveCredits ?? profile.credits ?? 0} credits</span> · {showHistory ? 'Hide' : 'See'} usage
+          <span className="mr-1 align-middle">{liveCredits ?? profile.credits ?? 0} credits</span> · {showHistory ? 'Hide' : 'See'} usage
         </button>
         {profile.plan !== 'trial' && (
           <button className="pill !text-rose-400 !bg-white/[0.06] !border-white/10" onClick={async () => {
@@ -67,14 +68,14 @@ function BillingInner() {
       {showHistory && (
         <div className="glass p-5 mb-5 animate-rise">
           <div className="font-sora font-bold text-sm mb-3 flex items-center gap-2">
-            <span className="msym msym-sm text-primary">receipt_long</span>What your credits were used for
+            <Icon name="receipt_long" className="text-primary" />What your credits were used for
           </div>
           {!history.length && <p className="text-slate-400 text-sm">No usage yet — generate something in Content or Image Studio and it'll show up here.</p>}
           <div className="space-y-1.5 max-h-80 overflow-y-auto">
             {history.map(h => (
               <div key={h.id} className="flex items-center justify-between text-[13px] py-2 border-b border-slate-50 dark:border-white/5 last:border-0">
                 <div className="flex items-center gap-2.5">
-                  <span className="msym msym-sm text-slate-400">{h.delta < 0 ? 'remove_circle' : 'add_circle'}</span>
+                  <Icon name={h.delta < 0 ? 'remove_circle' : 'add_circle'} className="text-slate-400" />
                   <span>{h.reason || 'Usage'}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-400 text-[12px]">
@@ -105,7 +106,7 @@ function BillingInner() {
             </div>); })}
       </div>
 
-      <h3 className="font-sora font-bold mb-3 flex items-center gap-2"><span className="msym msym-sm text-slate-400">history</span>Billing history</h3>
+      <h3 className="font-sora font-bold mb-3 flex items-center gap-2"><Icon name="history" className="text-slate-400" />Billing history</h3>
       <div className="glass overflow-hidden">
         <table className="w-full text-[13px]">
           <thead><tr className="text-left text-[11px] text-slate-400 border-b border-slate-100 dark:border-white/10">
@@ -118,7 +119,7 @@ function BillingInner() {
                 <td className="font-mono">{p.currency} {p.amount}</td>
                 <td className="capitalize">{p.method || '—'}</td>
                 <td><span className={`text-[10px] font-bold px-2 py-1 rounded-full ${p.status === 'successful' ? 'bg-success/15 text-success' : 'bg-rose-100 text-rose-500'}`}>{p.status?.toUpperCase()}</span></td>
-                <td><button className="pill !text-[10px]" onClick={() => window.print()}><span className="msym" style={{fontSize:'12px',verticalAlign:'-2px'}}>print</span> Invoice</button></td>
+                <td><button className="pill !text-[10px]" onClick={() => window.print()}><Icon name="print" className="text-[12px] align-middle" /> Invoice</button></td>
               </tr>))}
             {!payments.length && <tr><td colSpan={6} className="p-8 text-center text-slate-400 text-sm">No payments yet.</td></tr>}
           </tbody>

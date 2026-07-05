@@ -4,6 +4,7 @@ import Link from 'next/link';
 import AppShell from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import Activation from '@/components/Activation';
+import { Icon } from '@/components/Icon';
 import { useProfile } from '@/components/useProfile';
 
 export default function Dashboard() {
@@ -39,7 +40,7 @@ export default function Dashboard() {
       <div className="grid sm:grid-cols-2 gap-4">
         {quick.map(([href,icon,t,d]) => (
           <Link key={href as string} href={href as string} className="glass p-6 hover:-translate-y-1 hover:shadow-glow transition block">
-            <span className="msym text-primary" style={{fontSize:'26px'}}>{icon}</span>
+            <Icon name={icon as string} className="text-primary text-[26px]" />
             <div className="font-sora font-bold mt-2">{t}</div>
             <div className="text-sm text-slate-500">{d}</div>
           </Link>

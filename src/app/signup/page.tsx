@@ -36,7 +36,7 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
       <div className="glass w-full max-w-md p-9 animate-rise">
         <div className="flex justify-center mb-5"><Logo /></div>
         <h1 className="font-sora font-extrabold text-xl text-center">{mode === 'signup' ? 'Start your free trial' : 'Welcome back'}</h1>
-        <p className="text-center text-slate-500 text-xs mt-1 mb-6">{mode === 'signup' ? '7 days free · No credit card required' : 'Log in to your Zelvoo dashboard'}</p>
+        <p className="text-center text-slate-500 text-xs mt-1 mb-6">{mode === 'signup' ? 'Free 7-day trial · 30 credits · No card required' : 'Log in to your Zelvoo dashboard'}</p>
         <button onClick={() => oauth('google')} className="pill w-full !py-3 !text-[13.5px] flex items-center justify-center gap-2 mb-2">
           <span className="font-bold text-[15px]">G</span> Continue with Google
         </button>

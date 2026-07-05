@@ -7,6 +7,7 @@ export default function MarketingNav() {
       <div className="max-w-6xl mx-auto flex items-center gap-6 px-5 py-3.5">
         <Logo />
         <div className="ml-auto flex items-center gap-5 text-[13.5px] font-medium text-slate-500">
+          <Link href="/features" className="hidden sm:block hover:text-ink dark:hover:text-white">Features</Link>
           <Link href="/pricing" className="hidden sm:block hover:text-ink dark:hover:text-white">Pricing</Link>
           <Link href="/about" className="hidden sm:block hover:text-ink dark:hover:text-white">About</Link>
           <Link href="/login">Log in</Link>
