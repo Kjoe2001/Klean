@@ -22,7 +22,11 @@ function buildFallbackImageUrl(prompt: string, w: number, h: number) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, w = 1024, h = 1024 } = await req.json();
+    const { prompt, w = 1024, h = 1024, smoke = false } = await req.json();
+    if (smoke) {
+      console.log('Image route smoke test received');
+      return NextResponse.json({ ok: true, smoke: true });
+    }
     if (!prompt) return NextResponse.json({ error: 'Missing prompt' }, { status: 400 });
 
     const token = process.env.REPLICATE_API_TOKEN;
