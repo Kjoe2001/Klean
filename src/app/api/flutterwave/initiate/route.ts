@@ -22,26 +22,19 @@ export async function POST(req: NextRequest) {
 
     const tx_ref = `zelvoo-${plan}-${userId}-${Date.now()}`;
     const periodLabel = p.days === 6 ? '6-day access' : p.days === 7 ? '7-day access' : 'monthly';
-    const res = await fetch('https://api.flutterwave.com/v3/payments', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tx_ref,
-        amount: localAmount,
-        currency: cur.code,
-        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment-success`,
-        customer: { email },
-        customizations: {
-          title: 'Zelvoo',
-          description: `${p.name} — ${periodLabel}, ${p.credits.toLocaleString()} credits`,
-          logo: `${process.env.NEXT_PUBLIC_APP_URL}/logo.png`,
-        },
-        payment_options: 'card,mobilemoneyghana,banktransfer,ussd',
-        meta: { userId, plan, country: profile?.country || 'US', localAmount },
-      }),
+    const description = `${p.name} — ${periodLabel}, ${p.credits.toLocaleString()} credits`;
+
+    // Params only — the actual charge happens client-side via Flutterwave's inline
+    // checkout (FlutterwaveCheckout), which keeps the customer on zelvoo.app instead
+    // of redirecting to a hosted Flutterwave page. Amount/currency are computed here,
+    // server-side, so the client can't tamper with the price.
+    return NextResponse.json({
+      tx_ref,
+      amount: localAmount,
+      currency: cur.code,
+      planName: p.name,
+      description,
+      meta: { userId, plan, country: profile?.country || 'US', localAmount },
     });
-    const data = await res.json();
-    if (data.status !== 'success') return NextResponse.json({ error: data.message }, { status: 400 });
-    return NextResponse.json({ link: data.data.link, tx_ref });
   } catch (e: any) { return NextResponse.json({ error: e.message }, { status: 500 }); }
 }
