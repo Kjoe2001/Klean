@@ -10,6 +10,7 @@ const GROUPS: { title: string; items: { href: string; icon: string; label: strin
   { title: 'Create', items: [
     { href: '/dashboard',        icon: 'space_dashboard', label: 'Dashboard' },
     { href: '/content-studio',   icon: 'auto_awesome',    label: 'Content Studio' },
+    { href: '/image-studio',     icon: 'image',           label: 'Image Studio' },
     { href: '/campaign-builder', icon: 'ads_click',       label: 'Campaign Builder' },
     { href: '/templates',        icon: 'dashboard_customize', label: 'Templates' },
     { href: '/prompts',          icon: 'bookmark',        label: 'Saved Prompts' },

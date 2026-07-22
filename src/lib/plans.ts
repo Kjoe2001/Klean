@@ -6,6 +6,7 @@ export const CREDIT_COST: Record<string, number> = {
   campaign: 2,    // full campaign build
   score: 1,       // AI scoring pass
   intel: 1,       // trends / competitor research
+  image: 8,       // AI image generation (Flux 1.1 Pro Ultra)
 };
 
 export const PLANS: Record<PlanKey, any> = {
