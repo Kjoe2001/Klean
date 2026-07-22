@@ -32,7 +32,7 @@ export default function Support() {
               <input placeholder="Subject" className="field" />
               <textarea placeholder="How can we help?" rows={4} className="field" />
               <button onClick={() => setSent(true)} className="cta w-full !py-3">Submit ticket</button>
-              <div className="text-center text-[12px] text-slate-400 pt-1">or chat with <button className="text-primary font-semibold">Zelvoo Copilot →</button></div>
+              <div className="text-center text-[12px] text-slate-400 pt-1">Need urgent help? Include "URGENT" in the subject.</div>
             </div>
           )}
         </div>

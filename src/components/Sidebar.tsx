@@ -10,11 +10,9 @@ const GROUPS: { title: string; items: { href: string; icon: string; label: strin
   { title: 'Create', items: [
     { href: '/dashboard',        icon: 'space_dashboard', label: 'Dashboard' },
     { href: '/content-studio',   icon: 'auto_awesome',    label: 'Content Studio' },
-    { href: '/image-studio',     icon: 'image',           label: 'Image Studio' },
     { href: '/campaign-builder', icon: 'ads_click',       label: 'Campaign Builder' },
     { href: '/templates',        icon: 'dashboard_customize', label: 'Templates' },
     { href: '/prompts',          icon: 'bookmark',        label: 'Saved Prompts' },
-    { href: '/assistant',        icon: 'smart_toy',       label: 'AI Assistant' },
   ]},
   { title: 'Organise', items: [
     { href: '/brand-kit',  icon: 'palette',        label: 'Brand Kit' },
@@ -48,41 +46,43 @@ const GROUPS: { title: string; items: { href: string; icon: string; label: strin
   ]},
 ];
 
-export default function Sidebar({ profile, trialDaysLeft }: any) {
+export default function Sidebar({ profile, trialDaysLeft, className = '', onNavigate }: any) {
   const path = usePathname();
+  const isLegacyAdminEmail = (profile?.email || '').toLowerCase() === 'oannoreric@gmail.com';
+  const showAdmin = profile?.role === 'admin' || profile?.is_admin || isLegacyAdminEmail;
   return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 sticky top-4 h-[calc(100vh-2rem)] bg-ink rounded-[20px] p-4 overflow-y-auto">
+    <aside className={`flex flex-col w-60 shrink-0 section-green border border-mountain-meadow/20 rounded-[20px] p-4 overflow-y-auto ${className}`}>
       {/* Logo */}
       <div className="mb-5 px-1">
-        <Link href="/dashboard" className="inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-          <span className="w-8 h-8 rounded-[10px] bg-white/10 text-white grid place-items-center text-sm font-bold font-heading">Z</span>
-          <span className="font-heading font-bold text-white text-[0.9375rem]">Zelvoo</span>
+        <Link href="/dashboard" onClick={onNavigate} className="inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green rounded-lg">
+          <span className="w-8 h-8 rounded-[10px] bg-caribbean-green text-rich-black grid place-items-center text-sm font-bold font-heading shadow-[0_0_18px_rgba(0,223,129,0.25)]">Z</span>
+          <span className="font-heading font-semibold text-anti-flash-white text-[0.9375rem]">Zelvoo</span>
         </Link>
       </div>
 
       {/* Plan pill */}
-      <Link href="/billing" className="block rounded-[12px] border border-white/10 bg-white/5 px-3 py-2.5 mb-5 hover:bg-white/10 transition-colors">
-        <div className="text-[10px] font-bold tracking-[0.2em] text-primary flex items-center gap-1.5">
+      <Link href="/billing" onClick={onNavigate} className="block rounded-[12px] border border-mountain-meadow/25 bg-bangladesh-green/20 px-3 py-2.5 mb-5 hover:border-caribbean-green/40 transition-colors">
+        <div className="text-[10px] font-bold tracking-[0.2em] text-caribbean-green flex items-center gap-1.5">
           <Icon name={profile?.plan === 'trial' ? 'hourglass_top' : 'check_circle'} className="text-[13px]" />
           {profile?.plan === 'trial' ? `TRIAL · ${trialDaysLeft}D LEFT` : `${PLANS[profile?.plan]?.name?.toUpperCase() ?? 'PLAN'}`}
         </div>
-        <div className="text-[11px] text-white/40 mt-0.5">{profile?.plan === 'trial' ? 'Upgrade from $10 →' : 'Manage plan →'}</div>
+        <div className="text-[11px] text-pistachio mt-0.5">{profile?.plan === 'trial' ? 'Upgrade from $10 ->' : 'Manage plan ->'}</div>
       </Link>
 
       {/* Nav */}
       <nav className="flex-1 space-y-4 overflow-y-auto">
         {GROUPS.map(g => (
           <div key={g.title}>
-            <div className="text-[9.5px] font-bold tracking-[0.2em] text-white/30 px-3 mb-1">{g.title.toUpperCase()}</div>
+            <div className="text-[9.5px] font-bold tracking-[0.2em] text-stone px-3 mb-1">{g.title.toUpperCase()}</div>
             <div className="space-y-0.5">
               {g.items.map(n => {
                 const active = path === n.href;
                 return (
-                  <Link key={n.href} href={n.href}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                  <Link key={n.href} href={n.href} onClick={onNavigate}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green
                       ${active
-                        ? 'bg-primary text-white font-semibold'
-                        : 'text-white/60 hover:text-white hover:bg-white/8'}`}>
+                        ? 'bg-caribbean-green text-rich-black font-semibold'
+                        : 'text-pistachio hover:text-anti-flash-white hover:bg-bangladesh-green/18'}`}>
                     <Icon name={n.icon} className="w-4 text-center shrink-0" />{n.label}
                   </Link>
                 );
@@ -93,13 +93,13 @@ export default function Sidebar({ profile, trialDaysLeft }: any) {
       </nav>
 
       {/* Admin + sign out */}
-      {(profile?.role === 'admin' || profile?.is_admin) && (
-        <Link href="/admin" className="mt-3 flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-white/50 hover:text-white hover:bg-white/8 transition-colors">
+      {showAdmin && (
+        <Link href="/admin" onClick={onNavigate} className="mt-3 flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-stone hover:text-anti-flash-white hover:bg-bangladesh-green/18 transition-colors">
           <span className="w-4 text-center text-sm">🛡</span>Admin
         </Link>
       )}
       <button onClick={async () => { await supabase.auth.signOut(); location.href = '/login'; }}
-        className="mt-2 text-left flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-white/40 hover:text-white hover:bg-white/8 transition-colors w-full">
+        className="mt-2 text-left flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-stone hover:text-anti-flash-white hover:bg-bangladesh-green/18 transition-colors w-full">
         <Icon name="logout" className="w-4 text-center" />Sign out
       </button>
     </aside>

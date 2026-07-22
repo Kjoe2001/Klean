@@ -1,4 +1,4 @@
-import { planCredits } from '@/lib/plans';
+import { PLANS, planCredits, type PlanKey } from '@/lib/plans';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-server';
 
@@ -14,11 +14,13 @@ export async function POST(req: NextRequest) {
     if (out.status === 'success' && d.status === 'successful') {
       const { userId, plan } = d.meta || {};
       if (userId && plan) {
+        const planKey = plan as PlanKey;
+        const durationDays = PLANS[planKey]?.days || 30;
         const db = supabaseAdmin();
-        await db.from('profiles').update({ plan, credits: planCredits(plan), credits_period_start: new Date().toISOString(), plan_started_at: new Date().toISOString() }).eq('id', userId);
-    await db.from('credit_log').insert({ user_id: userId, delta: planCredits(plan), balance_after: planCredits(plan), reason: `${plan.charAt(0).toUpperCase()}${plan.slice(1)} plan purchased` });
+        await db.from('profiles').update({ plan, credits: planCredits(planKey), credits_period_start: new Date().toISOString(), plan_started_at: new Date().toISOString() }).eq('id', userId);
+        await db.from('credit_log').insert({ user_id: userId, delta: planCredits(planKey), balance_after: planCredits(planKey), reason: `${plan.charAt(0).toUpperCase()}${plan.slice(1)} plan purchased` });
         await db.from('subscriptions').upsert({ user_id: userId, plan, status: 'active', flw_tx_ref: d.tx_ref,
-          current_period_end: new Date(Date.now() + 30*86400000).toISOString() }, { onConflict: 'user_id' } as any);
+          current_period_end: new Date(Date.now() + durationDays * 86400000).toISOString() }, { onConflict: 'user_id' } as any);
       }
       return NextResponse.json({ ok: true, plan: d.meta?.plan });
     }

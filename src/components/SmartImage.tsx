@@ -4,12 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 /* AI image via server route (/api/image -> Replicate Flux).
    - posts the prompt, shows spinner, renders returned URL
    - tap-to-retry on failure, never blocks the page */
-function buildFallbackImageUrl(prompt: string, w: number, h: number) {
-  const encodedPrompt = encodeURIComponent(prompt);
-  const params = new URLSearchParams({ width: String(w), height: String(h), model: 'flux', nologo: 'true' });
-  return `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
-}
-
 export default function SmartImage({
   prompt,
   w = 1024,
@@ -35,7 +29,6 @@ export default function SmartImage({
     setUrl('');
     (async () => {
       try {
-        const fallbackUrl = buildFallbackImageUrl(prompt, w, h);
         const r = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -43,15 +36,10 @@ export default function SmartImage({
         });
         const d = await r.json();
         if (!alive.current) return;
-        const resolvedUrl = d?.url || fallbackUrl;
-        if (resolvedUrl) { setUrl(resolvedUrl); setStatus('loading'); }
+        if (d.url) { setUrl(d.url); /* status flips to ok on img load */ }
         else setStatus('error');
       } catch {
-        if (alive.current) {
-          const fallbackUrl = buildFallbackImageUrl(prompt, w, h);
-          setUrl(fallbackUrl);
-          setStatus('loading');
-        }
+        if (alive.current) setStatus('error');
       }
     })();
     return () => { alive.current = false; };
@@ -74,20 +62,9 @@ export default function SmartImage({
         </button>
       )}
       {url && (
-        <img src={url} alt="" loading="lazy" crossOrigin="anonymous"
+        <img src={url} alt="" loading="lazy"
           onLoad={() => setStatus('ok')}
-          onError={() => {
-            console.warn('SmartImage: image load error for', url);
-            try {
-              const fallback = buildFallbackImageUrl(prompt || '', w, h);
-              if (url && !url.includes('pollinations.ai') && fallback !== url) {
-                setUrl(fallback);
-                setStatus('loading');
-                return;
-              }
-            } catch (e) {}
-            setStatus('error');
-          }}
+          onError={() => setStatus('error')}
           className={`w-full h-full object-cover transition-opacity duration-500 ${status === 'ok' ? 'opacity-100' : 'opacity-0'}`} />
       )}
     </div>

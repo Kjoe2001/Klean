@@ -5,7 +5,6 @@ export type Step = { id: string; label: string; desc: string; href: string; icon
 export const ACTIVATION: Step[] = [
   { id: 'brand',    label: 'Set up your Brand Kit',     desc: 'Logo, colours, tone — auto-applied everywhere', href: '/brand-kit',     icon: '▣' },
   { id: 'generate', label: 'Generate your first content', desc: 'A full pack in under a minute',                href: '/content-studio', icon: '✦' },
-  { id: 'image',    label: 'Create an AI image',          desc: 'Turn a line of text into a visual',           href: '/image-studio',  icon: '🖼' },
   { id: 'schedule', label: 'Schedule your first post',    desc: 'Drop it on the calendar',                     href: '/calendar',      icon: '📅' },
   { id: 'campaign', label: 'Build a campaign',            desc: 'Strategy, budget and KPIs in one brief',      href: '/campaign-builder', icon: '◎' },
   { id: 'invite',   label: 'Invite a teammate',           desc: 'Collaborate in a shared workspace',           href: '/workspaces',    icon: '👥' },
@@ -13,14 +12,22 @@ export const ACTIVATION: Step[] = [
 ];
 
 export const TEMPLATES = [
-  { id: 't1', title: '30-Day Content Calendar', cat: 'Calendar', uses: '12.4k', tier: 'free',    icon: '📅', desc: 'A month of posts mapped to your brand in one click.' },
-  { id: 't2', title: 'Product Launch Campaign', cat: 'Campaign', uses: '8.1k',  tier: 'starter', icon: '🚀', desc: 'Teaser → launch → social proof, fully sequenced.' },
-  { id: 't3', title: 'Black Friday Blitz',       cat: 'Campaign', uses: '6.7k',  tier: 'pro',     icon: '🛍', desc: 'Countdown emails, ad copy and carousels.' },
-  { id: 't4', title: 'Founder Story Carousel',   cat: 'Social',   uses: '9.2k',  tier: 'free',    icon: '📖', desc: 'A 7-slide brand origin story that converts.' },
-  { id: 't5', title: 'Webinar Funnel',           cat: 'Email',    uses: '4.3k',  tier: 'pro',     icon: '🎥', desc: 'Invite, reminder and replay email sequence.' },
-  { id: 't6', title: 'Restaurant Weekly Specials', cat: 'Social', uses: '5.5k', tier: 'starter', icon: '🍽', desc: 'Mouth-watering posts with AI food imagery.' },
-  { id: 't7', title: 'Real-Estate Listing Pack', cat: 'Social',  uses: '3.9k',  tier: 'starter', icon: '🏠', desc: 'Listing captions, flyer and reel script.' },
-  { id: 't8', title: 'World Cup 2026 Engagement', cat: 'Campaign', uses: '7.8k', tier: 'pro',    icon: '⚽', desc: 'Match-day hooks and reactive content kit.' },
+  { id: 't1', title: '30-Day Content Calendar', cat: 'Calendar', uses: '12.4k', tier: 'free',    icon: '📅', desc: 'A month of posts mapped to your brand in one click.',
+    focus: 'A 30-day content calendar with a themed post idea for every day of the month.', types: ['post', 'caption', 'hooks'] },
+  { id: 't2', title: 'Product Launch Campaign', cat: 'Campaign', uses: '8.1k',  tier: 'starter', icon: '🚀', desc: 'Teaser → launch → social proof, fully sequenced.',
+    focus: 'A product launch campaign sequenced as teaser, launch day, then social-proof follow-up.', types: ['hooks', 'post', 'email', 'adcopy'] },
+  { id: 't3', title: 'Black Friday Blitz',       cat: 'Campaign', uses: '6.7k',  tier: 'pro',     icon: '🛍', desc: 'Countdown emails, ad copy and carousels.',
+    focus: 'A Black Friday countdown campaign with urgency-driven offers across email, ads and carousels.', types: ['email', 'adcopy', 'carousel'] },
+  { id: 't4', title: 'Founder Story Carousel',   cat: 'Social',   uses: '9.2k',  tier: 'free',    icon: '📖', desc: 'A 7-slide brand origin story that converts.',
+    focus: 'A founder origin-story carousel that builds trust and ends on a clear call to action.', types: ['carousel', 'caption'] },
+  { id: 't5', title: 'Webinar Funnel',           cat: 'Email',    uses: '4.3k',  tier: 'pro',     icon: '🎥', desc: 'Invite, reminder and replay email sequence.',
+    focus: 'A webinar funnel email sequence: invite, reminder, and replay follow-up.', types: ['email', 'newsletter'] },
+  { id: 't6', title: 'Restaurant Weekly Specials', cat: 'Social', uses: '5.5k', tier: 'starter', icon: '🍽', desc: 'Mouth-watering weekly social campaign copy.',
+    focus: "This week's specials, written to drive foot traffic and online orders.", types: ['post', 'caption', 'reel'] },
+  { id: 't7', title: 'Real-Estate Listing Pack', cat: 'Social',  uses: '3.9k',  tier: 'starter', icon: '🏠', desc: 'Listing captions, flyer and reel script.',
+    focus: 'A new property listing marketed with captions, a flyer-ready description and a reel script.', types: ['post', 'caption', 'reel'] },
+  { id: 't8', title: 'World Cup 2026 Engagement', cat: 'Campaign', uses: '7.8k', tier: 'pro',    icon: '⚽', desc: 'Match-day hooks and reactive content kit.',
+    focus: 'Reactive World Cup 2026 match-day content: hooks, posts and ad variants tied to the tournament.', types: ['hooks', 'post', 'adcopy'] },
 ];
 
 export const INTEGRATIONS = [
@@ -59,8 +66,8 @@ export const CASE_STUDIES = [
 export const COMMUNITY = [
   { id: 'p1', author: 'Ama K.', role: 'Founder, Accra', avatar: '🧕', title: 'How I hit 10k followers using only Zelvoo carousels', replies: 34, likes: 218, tag: 'Win' },
   { id: 'p2', author: 'Kojo M.', role: 'Agency owner', avatar: '🧑🏾‍💼', title: 'Show your Brand Kit setups — drop screenshots', replies: 51, likes: 142, tag: 'Discussion' },
-  { id: 'p3', author: 'Zelvoo Team', role: 'Official', avatar: '⚡', title: 'New: PowerPoint export now embeds AI images', replies: 12, likes: 405, tag: 'Announcement' },
-  { id: 'p4', author: 'Fatima S.', role: 'Creator', avatar: '👩🏽‍🎨', title: 'Best prompts for product photography mode?', replies: 27, likes: 98, tag: 'Question' },
+  { id: 'p3', author: 'Zelvoo Team', role: 'Official', avatar: '⚡', title: 'New: PowerPoint export now includes campaign-ready visuals', replies: 12, likes: 405, tag: 'Announcement' },
+  { id: 'p4', author: 'Fatima S.', role: 'Creator', avatar: '👩🏽‍🎨', title: 'Best prompt patterns for high-performing carousels?', replies: 27, likes: 98, tag: 'Question' },
 ];
 
 export const SUPPORT_FAQ = [

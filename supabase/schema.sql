@@ -7,6 +7,7 @@ create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text unique not null,
   name text, company text, industry text, country text, avatar_url text,
+  activation jsonb not null default '{}'::jsonb,
   plan text not null default 'trial',
   role text not null default 'user',          -- 'user' | 'admin'
   trial_started_at timestamptz default now(),
@@ -204,6 +205,7 @@ alter table if exists profiles add column if not exists onboarded boolean defaul
 alter table if exists profiles add column if not exists activation jsonb default '{}'::jsonb;
 alter table if exists profiles add column if not exists role_type text;
 alter table if exists profiles add column if not exists goal text;
+alter table if exists profiles add column if not exists unlimited_credits boolean default false;
 
 -- Saved prompts
 create table if not exists prompts (

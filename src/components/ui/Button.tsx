@@ -12,13 +12,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const base =
-  'inline-flex items-center justify-center gap-2 font-semibold font-heading select-none transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
+  'inline-flex items-center justify-center gap-2 font-medium font-heading select-none transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green focus-visible:ring-offset-2 focus-visible:ring-offset-rich-black disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-ink text-white rounded-full hover:bg-accent',
-  outline: 'bg-transparent text-ink border border-[#E5E7EB] rounded-[12px] hover:border-primary hover:bg-primary/5',
-  ghost:   'bg-transparent text-primary rounded-lg hover:bg-primary/6',
-  danger:  'bg-danger text-white rounded-full hover:bg-red-700',
+  primary: 'bg-caribbean-green text-rich-black rounded-full shadow-[0_0_24px_rgba(0,223,129,0.25)] hover:brightness-110 hover:shadow-[0_0_34px_rgba(0,223,129,0.35)]',
+  outline: 'bg-white text-bangladesh-green border border-bangladesh-green/25 rounded-[12px] backdrop-blur-md hover:border-caribbean-green/45 hover:brightness-110',
+  ghost:   'bg-transparent text-bangladesh-green rounded-lg hover:bg-mountain-meadow/10',
+  danger:  'bg-danger text-rich-black rounded-full hover:brightness-110',
 };
 
 const sizes: Record<Size, string> = {

@@ -1,9 +1,10 @@
 'use client';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useProfile } from '@/components/useProfile';
 import { PLANS } from '@/lib/plans';
 import Logo from '@/components/Logo';
+import { currencyForCountry, formatLocal, localCurrency } from '@/lib/currency';
 
 function Checkout() {
   const params = useSearchParams();
@@ -11,7 +12,13 @@ function Checkout() {
   const plan = PLANS[planKey];
   const { profile } = useProfile();
   const [busy, setBusy] = useState(false); const [err, setErr] = useState('');
+  const [cur, setCur] = useState<any>(null);
+  useEffect(() => { (async () => {
+    if (profile?.country) { setCur(currencyForCountry(profile.country)); return; }
+    setCur(await localCurrency());
+  })(); }, [profile?.country]);
   if (!profile || !plan || plan.price <= 0) return null;
+  const periodUnit = plan.days <= 7 ? '/week' : '/mo';
 
   const pay = async () => {
     setBusy(true); setErr('');
@@ -30,11 +37,12 @@ function Checkout() {
         <div className="flex justify-center mb-6"><Logo /></div>
         <h1 className="font-sora font-extrabold text-xl text-center">Checkout</h1>
         <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-5 my-6">
-          <div className="flex justify-between font-sora font-bold"><span>{plan.name} plan</span><span>${plan.price}/mo</span></div>
+          <div className="flex justify-between font-sora font-bold gap-3"><span>{plan.name} plan</span><span>{cur ? formatLocal(plan.price, cur).split('  ·  ')[0] : `$${plan.price}`}{periodUnit}</span></div>
+          {cur && cur.code !== 'USD' && <div className="mt-1 text-[11px] text-slate-500">{formatLocal(plan.price, cur).split('  ·  ')[1]}</div>}
           <ul className="mt-3 space-y-1 text-[12.5px] text-slate-500">{plan.perks.slice(0, 4).map((p: string) => <li key={p}>✓ {p}</li>)}</ul>
         </div>
         <button className="cta w-full py-4 text-[15px]" disabled={busy} onClick={pay}>
-          {busy ? 'Opening secure checkout…' : `Pay $${plan.price} securely →`}
+          {busy ? 'Opening secure checkout…' : `Pay ${cur ? formatLocal(plan.price, cur).split('  ·  ')[0] : `$${plan.price}`} securely →`}
         </button>
         {err && <p className="text-rose-500 text-xs mt-3 text-center">{err}</p>}
         <p className="text-[11px] text-slate-400 text-center mt-4">

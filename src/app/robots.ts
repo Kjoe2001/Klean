@@ -9,9 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/dashboard',
           '/content-studio',
-          '/image-studio',
           '/billing',
-          '/security',
           '/welcome',
           '/api/',
         ],

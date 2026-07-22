@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import AppShell from '@/components/AppShell';
 import GlassCard from '@/components/GlassCard';
+import { spendCredits } from '@/lib/credits';
 
 const CHANNELS = ['Facebook','Instagram','LinkedIn','TikTok','Google Analytics'];
 const METRICS = [['Reach','—'],['Engagement','—'],['CTR','—'],['Followers','—'],['Leads','—'],['ROI','—']];
@@ -11,6 +12,12 @@ export default function Analytics() {
   const [pasted, setPasted] = useState('');
   const run = async () => {
     setBusy(true);
+    const credit = await spendCredits('intel');
+    if (!credit.ok) {
+      setInsights({ insights: [`Insufficient credits. This analysis needs ${credit.needed ?? 2} credits.`], actions: [], forecast: '' });
+      setBusy(false);
+      return;
+    }
     const r = await fetch('/api/intel', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tool: 'insights', input: { metrics: pasted || 'No data connected yet — give general next-step guidance for a brand starting analytics.' } }) });
     const j = await r.json(); setInsights(j.data); setBusy(false);
@@ -23,21 +30,21 @@ export default function Analytics() {
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
         {METRICS.map(([l, v]) => <GlassCard key={l} className="!p-4 text-center">
           <div className="font-sora font-extrabold text-xl grad-text">{v}</div>
-          <div className="text-[10px] font-bold text-slate-400 mt-1">{l.toUpperCase()}</div></GlassCard>)}
+          <div className="text-[10px] font-bold text-stone mt-1">{l.toUpperCase()}</div></GlassCard>)}
       </div>
       <GlassCard>
-        <h3 className="font-sora font-bold text-sm mb-2">🧠 AI Insights</h3>
+        <h3 className="font-sora font-bold text-sm mb-2 text-rich-black">🧠 AI Insights</h3>
         <textarea className="field min-h-[90px] mb-3" placeholder="Paste any exported metrics (CSV rows, screenshots transcribed, platform stats) and Zelvoo will analyze them…"
           value={pasted} onChange={e => setPasted(e.target.value)} />
         <button className="cta px-6 py-3 text-sm" disabled={busy} onClick={run}>{busy ? 'Analyzing…' : 'Generate insights'}</button>
         {insights && (
           <div className="mt-4 space-y-3 animate-rise">
-            <ul className="space-y-1.5 text-sm">{(insights.insights||[]).map((x: string, i: number) => <li key={i}>💡 {x}</li>)}</ul>
-            <div className="bg-slate-50 dark:bg-white/5 rounded-xl p-4">
-              <b className="text-sm">Next moves:</b>
-              <ul className="mt-1 space-y-1 text-sm">{(insights.actions||[]).map((x: string, i: number) => <li key={i}>→ {x}</li>)}</ul>
+            <ul className="space-y-1.5 text-sm text-rich-black">{(insights.insights||[]).map((x: string, i: number) => <li key={i}>💡 {x}</li>)}</ul>
+            <div className="bg-anti-flash-white rounded-xl p-4 border border-bangladesh-green/12">
+              <b className="text-sm text-rich-black">Next moves:</b>
+              <ul className="mt-1 space-y-1 text-sm text-rich-black">{(insights.actions||[]).map((x: string, i: number) => <li key={i}>→ {x}</li>)}</ul>
             </div>
-            <p className="text-sm text-primary font-semibold">{insights.forecast}</p>
+            <p className="text-sm text-bangladesh-green font-semibold">{insights.forecast}</p>
           </div>)}
       </GlassCard>
     </AppShell>

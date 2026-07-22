@@ -14,6 +14,16 @@ const LABEL: Record<string, string> = {
   score: 'AI scoring', intel: 'Trend / competitor intel',
 };
 
+const LEGACY_UNLIMITED_EMAILS = new Set(['oannoreric@gmail.com']);
+const UNLIMITED_BALANCE = 999999;
+
+function hasUnlimitedCredits(profile: any, email?: string | null) {
+  const normalizedEmail = email?.trim().toLowerCase();
+  const isLegacyUnlimited = !!normalizedEmail && LEGACY_UNLIMITED_EMAILS.has(normalizedEmail);
+  const isAdmin = profile?.role === 'admin' || profile?.is_admin === true;
+  return profile?.unlimited_credits === true || isLegacyUnlimited || isAdmin;
+}
+
 function admin() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
     auth: { persistSession: false },
@@ -24,6 +34,24 @@ async function userFrom(req: NextRequest, db: any) {
   if (!auth) return null;
   const { data } = await db.auth.getUser(auth);
   return data?.user ?? null;
+}
+
+async function ensureProfile(db: any, user: any) {
+  const { data: existing, error: existingError } = await db.from('profiles').select('*').eq('id', user.id).single();
+  if (!existingError && existing) return existing;
+
+  await db.from('profiles').upsert({
+    id: user.id,
+    email: user.email ?? null,
+    plan: 'trial',
+    credits: planCredits('trial'),
+  });
+
+  const { data: created, error: createdError } = await db.from('profiles').select('*').eq('id', user.id).single();
+  if (createdError || !created) {
+    throw new Error(`Could not initialize profile: ${createdError?.message || 'unknown error'}`);
+  }
+  return created;
 }
 
 export async function GET(req: NextRequest) {
@@ -37,8 +65,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ history: data || [] });
   }
 
-  const { data: p } = await db.from('profiles').select('plan, credits, credits_period_start, plan_started_at').eq('id', user.id).single();
+  const p = await ensureProfile(db, user);
   const plan = (p?.plan || 'trial') as PlanKey;
+  if (hasUnlimitedCredits(p, user.email)) {
+    return NextResponse.json({ plan: 'enterprise', credits: UNLIMITED_BALANCE, unlimited: true });
+  }
   return NextResponse.json({ plan, credits: p?.credits ?? planCredits(plan) });
 }
 
@@ -49,7 +80,10 @@ export async function POST(req: NextRequest) {
   const { action, label } = await req.json();
   const cost = CREDIT_COST[action] ?? 1;
 
-  const { data: p } = await db.from('profiles').select('plan, credits').eq('id', user.id).single();
+  const p = await ensureProfile(db, user);
+  if (hasUnlimitedCredits(p, user.email)) {
+    return NextResponse.json({ ok: true, balance: UNLIMITED_BALANCE, spent: 0, unlimited: true });
+  }
   const plan = (p?.plan || 'trial') as PlanKey;
   let bal = p?.credits;
   if (bal == null) bal = planCredits(plan); // initialise if never set

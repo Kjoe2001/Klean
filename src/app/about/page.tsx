@@ -11,20 +11,111 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <>
+    <div className="section-light min-h-screen">
+      <div className="orb-fixed-light animate-orb" />
       <MarketingNav />
-      <main className="mx-auto max-w-3xl px-5 py-14 animate-rise">
-        <h1 className="mb-6 font-sora text-3xl font-extrabold">About Zelvoo</h1>
-        <div className="glass space-y-5 p-7 text-[14px] leading-relaxed text-slate-600 dark:text-slate-300">
-          <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">Marketing shouldn't be a luxury.</p>
-          <p>Zelvoo is Africa&apos;s AI Marketing Operating System — built in Accra for the world. We give brands, agencies, SMEs and creators an end-to-end engine: AI content across 16 formats, AI image generation, campaign strategy, trend and competitor intelligence, and client-ready exports.</p>
-          <p>Zelvoo was founded by a marketer, not a software company. After 15+ years leading marketing for some of Ghana&apos;s biggest retail, automotive and FMCG brands — and running an agency serving clients across the region — one problem kept repeating: world-class marketing takes a team most African businesses can&apos;t afford. The strategy frameworks, the content volume, the design output, the reporting — it all costs more than the businesses that need it most can pay.</p>
-          <p>AI changed that equation. Zelvoo packages fifteen years of real campaign playbooks into an engine any business can run: lock a brand brief once, and everything you generate — every hook, article, ad and image — follows it automatically.</p>
-          <p>Most SaaS assumes everyone has a credit card. We don&apos;t. Zelvoo accepts MTN MoMo, Telecel Cash, AirtelTigo Money, bank transfer and cards, displays prices in your local currency, and starts at $10 — because a tool built for African business should work the way African business works.</p>
-          <p>Make world-class marketing capability accessible to every African business — and every business everywhere.</p>
-          <Link href="/signup" className="inline-flex text-primary font-semibold">Start your free trial →</Link>
-        </div>
+      <main className="mx-auto max-w-6xl px-5 py-16 md:py-20 animate-rise relative z-10">
+        <section className="text-center max-w-3xl mx-auto mb-12">
+          <p className="eyebrow mb-4">Our Mission</p>
+          <h1 className="font-heading text-hero text-rich-black mb-5">
+            Marketing should never be a luxury.
+          </h1>
+          <p className="text-body-lg text-rich-black">
+            Zelvoo is Africa&apos;s AI Marketing Operating System, built in Accra for the world.
+            We help every serious business run world-class marketing without carrying world-class overhead.
+          </p>
+        </section>
+
+        <section className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] mb-12">
+          <div className="glass-card-light glass-highlight p-7 md:p-10 space-y-5 text-rich-black">
+            <div>
+              <p className="eyebrow mb-3">Built for Real Operators</p>
+              <h2 className="font-heading text-[clamp(2rem,4vw,3.35rem)] leading-[1.02] text-rich-black max-w-3xl">
+                Built in Accra for teams that need serious marketing output without a bloated team.
+              </h2>
+            </div>
+            <p className="text-body-lg text-rich-black max-w-2xl">
+              Zelvoo exists for companies that cannot afford slow execution, fragmented tools or agency-sized retainers. We turn strategy, content, campaigns and reporting into one operating system that small teams can actually run.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2 pt-2">
+              {[
+                ['Built in Accra', 'Designed around the pace, constraints and ambition of modern African businesses.'],
+                ['Ready everywhere', 'Structured to support brands selling locally, regionally and globally from day one.'],
+                ['One brand brain', 'Lock your positioning once and keep every output aligned across channels.'],
+                ['Practical payments', 'Supports cards, bank transfer and leading mobile money rails used across Ghana.'],
+              ].map(([title, copy]) => (
+                <div key={title} className="rounded-[18px] border border-mountain-meadow/10 bg-white/60 px-5 py-4">
+                  <p className="font-heading text-lg text-rich-black">{title}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-rich-black/78">{copy}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="section-dark rounded-[24px] border border-mountain-meadow/15 p-6 md:p-7">
+              <p className="eyebrow mb-3">At a Glance</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
+                {[
+                  ['16', 'Content formats from one brief'],
+                  ['1', 'Unified brand brain across every output'],
+                  ['7 days', 'Free trial to test real workflows'],
+                ].map(([value, label]) => (
+                  <div key={label} className="glass-card p-5">
+                    <p className="text-stat font-heading text-caribbean-green">{value}</p>
+                    <p className="mt-2 text-sm text-anti-flash-white/82">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass-card-light glass-highlight p-6 md:p-7 text-rich-black">
+              <p className="eyebrow mb-3">What This Means</p>
+              <div className="space-y-3 text-sm leading-relaxed">
+                <p>Zelvoo helps founders, lean marketing teams and agencies move from scattered execution to repeatable output.</p>
+                <p>Instead of stitching together strategy docs, post ideas, design prompts, campaign plans and reports manually, teams can run the entire workflow inside one system.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="glass-card-light glass-highlight p-7 md:p-9 space-y-5 text-[15px] leading-relaxed mb-10 text-rich-black">
+          <p className="text-lg font-medium text-rich-black">Zelvoo was founded by a marketer, not a software company.</p>
+          <p>After 15+ years leading marketing for major retail, automotive and FMCG brands, one pattern kept repeating: teams needed elite output, but budgets could not sustain elite-sized departments.</p>
+          <p>Strategy, copy, design, campaigns, reporting and optimization each demanded separate specialists. Most growth-stage companies could not afford that structure, so execution slowed and opportunities were lost.</p>
+          <p>AI changed that equation. Zelvoo packages proven campaign playbooks into one operating system: lock your brand brief once, then generate aligned hooks, posts, ads, strategy and client exports at scale.</p>
+          <p>We designed payments for African business realities too. Zelvoo supports MTN MoMo, Telecel Cash, AirtelTigo Money, bank transfer and cards, with local-currency display and practical entry pricing.</p>
+        </section>
+
+        <section className="section-dark rounded-[24px] border border-caribbean-green/30 p-6 md:p-8 mb-12 bg-gradient-to-br from-caribbean-green/5 to-transparent">
+          <div className="grid md:grid-cols-2 gap-5">
+          <div className="glass-card p-6 border-caribbean-green/40">
+            <p className="eyebrow mb-3 text-caribbean-green">What We Build</p>
+            <ul className="space-y-2 text-sm text-anti-flash-white">
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> AI content generation across 16 formats</li>
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Trend and competitor intelligence</li>
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Campaign planning and client-ready exports</li>
+            </ul>
+          </div>
+          <div className="glass-card p-6 border-caribbean-green/40">
+            <p className="eyebrow mb-3 text-caribbean-green">What We Aim For</p>
+            <ul className="space-y-2 text-sm text-anti-flash-white">
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Give small teams enterprise-grade marketing power</li>
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Reduce execution time from weeks to minutes</li>
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Keep brand consistency across every output</li>
+              <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Make global-quality growth accessible everywhere</li>
+            </ul>
+          </div>
+          </div>
+        </section>
+
+        <section className="text-center">
+          <p className="text-body text-rich-black mb-6">Make world-class marketing capability accessible to every African business, and every business everywhere.</p>
+          <Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-caribbean-green text-rich-black font-medium font-heading px-7 py-3.5 transition-all duration-150 hover:brightness-110 hover:shadow-[0_0_32px_rgba(0,223,129,0.35)]">
+            Start your free trial
+          </Link>
+        </section>
       </main>
-    </>
+    </div>
   );
 }

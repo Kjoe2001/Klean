@@ -18,10 +18,10 @@ export default function Trends() {
           <Block title="Trending hashtags"><div className="flex flex-wrap gap-2">{(r.trending_hashtags||[]).map((h: string, i: number) =>
             <span key={i} className="pill !text-[12px] !text-accent font-mono">#{h.replace(/^#/,'')}</span>)}</div></Block>
           <Block title="Viral content right now">{(r.viral_content||[]).map((v: any, i: number) => (
-            <div key={i} className="bg-slate-50 dark:bg-white/5 rounded-xl p-3 mb-2 text-sm"><b>{v.format}</b><div className="text-slate-500 text-[13px]">{v.why}</div></div>))}</Block>
+            <div key={i} className="bg-anti-flash-white rounded-xl p-3 mb-2 text-sm border border-bangladesh-green/12"><b className="text-rich-black">{v.format}</b><div className="text-stone text-[13px]">{v.why}</div></div>))}</Block>
           <Block title="Search trends"><Bullets items={r.search_trends} /></Block>
           <Block title="Hot topics + angles">{(r.hot_topics||[]).map((t: any, i: number) => (
-            <div key={i} className="mb-2 text-sm"><b className="text-primary">{t.topic}</b> — <span className="text-slate-500">{t.angle}</span></div>))}</Block>
+            <div key={i} className="mb-2 text-sm"><b className="text-bangladesh-green">{t.topic}</b> — <span className="text-stone">{t.angle}</span></div>))}</Block>
           <Block title="AI recommendations"><Bullets items={r.recommendations} /></Block>
         </>)} />
     </AppShell>

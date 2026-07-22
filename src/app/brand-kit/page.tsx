@@ -9,7 +9,28 @@ export default function BrandKit() {
   const [brands, setBrands] = useState<any[]>([]);
   const [form, setForm] = useState<any>(empty);
   const [editing, setEditing] = useState<string | null>(null);
-  const load = () => supabase.from('brands').select('*').order('created_at').then(({ data }) => setBrands(data || []));
+  const [status, setStatus] = useState('');
+
+  const load = async () => {
+    const { data, error } = await supabase.from('brands').select('*').order('created_at', { ascending: false });
+    if (error) {
+      setStatus(error.message || 'Could not load Brand Kits.');
+      return;
+    }
+    setBrands(data || []);
+  };
+
+  const ensureProfile = async (user: { id: string; email?: string | null; user_metadata?: any }) => {
+    // Some legacy users can exist in auth.users without a matching profiles row.
+    // brands.user_id references profiles(id), so create a minimal profile when missing.
+    const fallbackName = user.email?.split('@')[0] || 'user';
+    const fullName = user.user_metadata?.full_name || fallbackName;
+    await supabase.from('profiles').upsert(
+      { id: user.id, email: user.email || `${user.id}@placeholder.local`, name: fullName },
+      { onConflict: 'id' }
+    );
+  };
+
   useEffect(() => { load(); }, []);
 
   const uploadLogo = async (file: File) => {
@@ -23,11 +44,32 @@ export default function BrandKit() {
   };
 
   const save = async () => {
-    if (!form.name) return;
+    setStatus('');
+    if (!form.name?.trim()) {
+      setStatus('Brand name is required.');
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
-    if (editing) await supabase.from('brands').update(form).eq('id', editing);
-    else await supabase.from('brands').insert({ ...form, user_id: user!.id });
-    setForm(empty); setEditing(null); load();
+    if (!user) {
+      setStatus('Your session expired. Please log in again.');
+      return;
+    }
+
+    await ensureProfile(user);
+
+    if (editing) {
+      const { error } = await supabase.from('brands').update(form).eq('id', editing);
+      if (error) { setStatus(error.message || 'Could not save Brand Kit changes.'); return; }
+      setStatus('Brand Kit updated.');
+    } else {
+      const { error } = await supabase.from('brands').insert({ ...form, user_id: user.id });
+      if (error) { setStatus(error.message || 'Could not create Brand Kit.'); return; }
+      setStatus('Brand Kit created.');
+    }
+
+    setForm(empty);
+    setEditing(null);
+    await load();
   };
 
   return (
@@ -55,6 +97,7 @@ export default function BrandKit() {
             {form.logo_url ? '✓ Logo uploaded' : '⬆ Upload logo'}
             <input type="file" accept="image/*" className="hidden" onChange={e => e.target.files?.[0] && uploadLogo(e.target.files[0])} />
           </label>
+          {!!status && <p className="text-xs text-pistachio mb-3">{status}</p>}
           <button className="cta w-full py-3 text-sm" onClick={save}>{editing ? 'Save changes' : 'Create brand'}</button>
         </div>
         <div className="space-y-3">
@@ -68,7 +111,12 @@ export default function BrandKit() {
                 <div className="flex gap-1.5 mt-1.5">{(b.colors || []).map((c: string, i: number) => <span key={i} className="w-4 h-4 rounded-full border border-white" style={{ background: c }} />)}</div>
               </div>
               <button className="pill !text-[11px]" onClick={() => { setForm({ ...empty, ...b }); setEditing(b.id); }}>Edit</button>
-              <button className="pill !text-[11px] !text-rose-500" onClick={async () => { await supabase.from('brands').delete().eq('id', b.id); load(); }}>✕</button>
+              <button className="pill !text-[11px] !text-rose-500" onClick={async () => {
+                const { error } = await supabase.from('brands').delete().eq('id', b.id);
+                if (error) { setStatus(error.message || 'Could not delete Brand Kit.'); return; }
+                setStatus('Brand Kit deleted.');
+                await load();
+              }}>✕</button>
             </div>))}
           {!brands.length && <div className="glass p-10 text-center text-sm text-slate-500">No brands yet — create your first Brand Kit and every module will inherit it.</div>}
         </div>

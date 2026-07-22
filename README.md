@@ -24,6 +24,8 @@ npm run dev                     # http://localhost:3000
      `https://YOUR-REF.supabase.co/auth/v1/callback` -> paste Client ID/Secret into Supabase.
    - Azure: portal.azure.com -> App registrations -> same redirect URI -> paste into Supabase.
 5. Authentication -> URL Configuration -> set Site URL to your production domain.
+6. Optional (recommended for brand trust): configure a custom Auth domain in Supabase
+  (for example `auth.zelvoo.app`) so OAuth redirects do not show `*.supabase.co`.
 
 ## 3. Flutterwave setup
 1. dashboard.flutterwave.com -> Settings -> API -> copy public + secret keys.
@@ -38,6 +40,11 @@ npx vercel
 Add all `.env.example` variables in Vercel -> Settings -> Environment Variables.
 Set `NEXT_PUBLIC_APP_URL` to the production URL. Add your email to `ADMIN_EMAILS`
 and set your profile `role` to `admin` in the profiles table to unlock /admin.
+
+Social OAuth toggles:
+- `NEXT_PUBLIC_ENABLE_GOOGLE_OAUTH=true` enables Google button
+- `NEXT_PUBLIC_ENABLE_AZURE_OAUTH=true` enables Microsoft button
+- Defaults are `false` in `.env.example` so email/password remains the default auth path
 
 ## Key routes
 Marketing: / /pricing /about /contact /privacy /terms /refund-policy /cookies

@@ -19,8 +19,8 @@ export function CardHeader({ title, subtitle, action }: { title: string; subtitl
   return (
     <div className="flex items-start justify-between gap-4 mb-5">
       <div>
-        <h3 className="text-base font-semibold text-[#0A0E27]">{title}</h3>
-        {subtitle && <p className="text-sm text-[#6B7280] mt-0.5">{subtitle}</p>}
+        <h3 className="text-base font-semibold text-rich-black">{title}</h3>
+        {subtitle && <p className="text-sm text-stone mt-0.5">{subtitle}</p>}
       </div>
       {action}
     </div>

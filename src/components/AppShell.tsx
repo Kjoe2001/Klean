@@ -2,21 +2,47 @@
 import Sidebar from './Sidebar';
 import { useProfile } from './useProfile';
 import Link from 'next/link';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { NOTIFICATIONS } from '@/lib/journey';
+import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
+
+async function getAccessToken() {
+  let { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) return session.access_token;
+  await supabase.auth.getUser();
+  ({ data: { session } } = await supabase.auth.getSession());
+  if (session?.access_token) return session.access_token;
+  const refreshed = await supabase.auth.refreshSession();
+  return refreshed.data.session?.access_token || null;
+}
 
 export default function AppShell({ children, title, subtitle, actions }: any) {
   const { profile, loading, daysLeft, planExpired, outOfCredits, credits, plan } = useProfile();
   const router = useRouter();
-  const unread = NOTIFICATIONS.filter(n => n.unread).length;
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
 
   useEffect(() => { if (profile && profile.onboarded === false) router.replace('/welcome'); }, [profile]);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const token = await getAccessToken();
+      if (!token) return;
+      try {
+        const response = await fetch('/api/notifications', { headers: { Authorization: `Bearer ${token}` } });
+        const data = await response.json();
+        if (alive) setUnread(Number(data?.unread || 0));
+      } catch {}
+    })();
+    return () => { alive = false; };
+  }, [pathname]);
 
   if (loading) return (
-    <div className="min-h-screen bg-white grid place-items-center">
-      <div className="w-10 h-10 rounded-full border-[3px] border-primary border-t-transparent animate-spin" />
+    <div className="min-h-screen section-light grid place-items-center">
+      <div className="w-10 h-10 rounded-full border-[3px] border-caribbean-green border-t-transparent animate-spin" />
     </div>
   );
   if (!profile) return null;
@@ -38,29 +64,40 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
   }
 
   const bannerColors = {
-    info:   'bg-primary/6 border-primary/20 text-[#0A0E27]',
-    warn:   'bg-warning/8 border-warning/20 text-[#0A0E27]',
-    danger: 'bg-danger/8 border-danger/20 text-[#0A0E27]',
+    info:   'bg-bangladesh-green/12 border-bangladesh-green/25 text-rich-black',
+    warn:   'bg-warning/12 border-warning/35 text-rich-black',
+    danger: 'bg-danger/12 border-danger/35 text-rich-black',
   };
 
   // Credit pill variant
   const creditVariant = credits <= 5 ? 'danger' : credits <= 20 ? 'warning' : 'teal';
   const creditStyles = {
-    teal:    'bg-teal/10 text-teal border-teal/20',
-    warning: 'bg-warning/10 text-amber-700 border-warning/20',
-    danger:  'bg-danger/10 text-danger border-danger/20',
+    teal:    'bg-bangladesh-green/10 text-bangladesh-green border-bangladesh-green/30',
+    warning: 'bg-warning/15 text-warning border-warning/35',
+    danger:  'bg-danger/15 text-danger border-danger/35',
   };
 
   return (
-    <div className="flex gap-5 max-w-[1500px] mx-auto p-4 bg-[#F7F7FB] min-h-screen">
-      <Sidebar profile={profile} trialDaysLeft={daysLeft} />
+    <div className="section-light min-h-screen relative text-rich-black">
+      <div className="orb-fixed-light animate-orb" />
+      <div className="flex gap-5 max-w-[1500px] mx-auto p-3 md:p-4 relative z-10">
+      <Sidebar profile={profile} trialDaysLeft={daysLeft} className="hidden md:flex sticky top-4 h-[calc(100vh-2rem)]" />
       <main className="flex-1 min-w-0 animate-rise">
 
         {/* ── Top bar ────────────────────────────────────────────── */}
-        <header className="bg-white border border-[#E5E7EB] rounded-[20px] px-5 h-14 flex items-center justify-between gap-4 mb-5">
-          <div>
-            <h1 className="font-heading font-semibold text-[#0A0E27] text-base leading-tight">{title}</h1>
-            {subtitle && <p className="text-xs text-[#6B7280] mt-0.5 hidden sm:block">{subtitle}</p>}
+        <header className="glass-elevated-light glass-highlight rounded-[20px] px-4 md:px-5 min-h-14 py-2 flex items-center justify-between gap-3 md:gap-4 mb-5 border border-bangladesh-green/12">
+          <div className="flex items-start gap-2 md:gap-3 min-w-0">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="md:hidden w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center text-bangladesh-green"
+              aria-label="Open sidebar"
+            >
+              <Icon name="menu" />
+            </button>
+            <div className="min-w-0">
+            <h1 className="font-heading font-semibold text-rich-black text-base leading-tight truncate">{title}</h1>
+            {subtitle && <p className="text-xs text-stone mt-0.5 hidden sm:block">{subtitle}</p>}
+            </div>
           </div>
           <div className="flex items-center gap-2.5 shrink-0">
             {/* Credit balance pill */}
@@ -71,16 +108,16 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
             </Link>
             {/* Top up button */}
             <Link href="/billing"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-ink text-white text-xs font-semibold hover:bg-accent transition-colors">
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-caribbean-green text-rich-black text-xs font-medium hover:brightness-110 transition-colors">
               Top up
             </Link>
             {/* Notifications */}
             <Link href="/notifications"
-              className="relative w-9 h-9 rounded-[10px] border border-[#E5E7EB] bg-white grid place-items-center hover:border-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="relative w-11 h-11 md:w-9 md:h-9 rounded-[10px] border border-bangladesh-green/20 bg-white grid place-items-center hover:border-caribbean-green/45 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green"
               aria-label="Notifications">
-              <Icon name="notifications" className="text-[#6B7280]" />
+              <Icon name="notifications" className="text-bangladesh-green" />
               {unread > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-danger text-white text-[9px] font-bold grid place-items-center">{unread}</span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-danger text-rich-black text-[9px] font-bold grid place-items-center">{unread}</span>
               )}
             </Link>
             {actions}
@@ -92,7 +129,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <div className={`rounded-[14px] border px-4 py-3 mb-4 flex flex-wrap items-center gap-3 text-sm ${bannerColors[banner.tone]}`}>
             <div className="flex-1 text-[13px]">{banner.node}</div>
             <Link href={banner.href}
-              className="text-xs px-4 py-1.5 rounded-full bg-ink text-white font-semibold hover:bg-accent transition-colors shrink-0">
+              className="text-xs px-4 py-1.5 rounded-full bg-caribbean-green text-rich-black font-medium hover:brightness-110 transition-colors shrink-0">
               {banner.cta}
             </Link>
           </div>
@@ -100,6 +137,23 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
 
         {children}
       </main>
+      </div>
+
+      {mobileOpen && (
+        <>
+          <button
+            aria-label="Close sidebar"
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden fixed inset-0 bg-rich-black/50 z-40"
+          />
+          <Sidebar
+            profile={profile}
+            trialDaysLeft={daysLeft}
+            onNavigate={() => setMobileOpen(false)}
+            className="md:hidden fixed z-50 top-3 left-3 h-[calc(100vh-1.5rem)] max-w-[84vw]"
+          />
+        </>
+      )}
     </div>
   );
 }

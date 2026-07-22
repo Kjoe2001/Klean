@@ -16,7 +16,7 @@ export default function Competitors() {
         renderReport={(r: any) => (<>
           <Block title="Overview"><p className="text-sm leading-relaxed">{r.overview}</p></Block>
           <Block title="Social performance">{(r.social_performance||[]).map((s: any, i: number) => (
-            <div key={i} className="flex gap-3 text-sm mb-2"><b className="w-24 shrink-0 text-primary">{s.platform}</b><span className="text-slate-600 dark:text-slate-300">{s.assessment}</span></div>))}</Block>
+            <div key={i} className="flex gap-3 text-sm mb-2"><b className="w-24 shrink-0 text-bangladesh-green">{s.platform}</b><span className="text-stone">{s.assessment}</span></div>))}</Block>
           <Block title="Content gaps"><Bullets items={r.content_gaps} /></Block>
           <Block title="Campaign ideas they can't copy"><Bullets items={r.campaign_ideas} /></Block>
           <Block title="Your opportunities"><Bullets items={r.opportunities} /></Block>
