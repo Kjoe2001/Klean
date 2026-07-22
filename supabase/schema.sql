@@ -311,7 +311,7 @@ create policy if not exists "coupons_read" on coupons for select using (auth.rol
 -- ============================================================
 -- CREDITS, PLAN PERIODS, ONBOARDING DATA (V2.2)
 -- ============================================================
-alter table if exists profiles add column if not exists credits int default 30;
+alter table if exists profiles add column if not exists credits int default 50;
 alter table if exists profiles add column if not exists credits_period_start timestamptz default now();
 alter table if exists profiles add column if not exists plan_started_at timestamptz default now();
 alter table if exists profiles add column if not exists use_case text;
