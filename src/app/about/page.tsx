@@ -79,14 +79,6 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="glass-card-light glass-highlight p-7 md:p-9 space-y-5 text-[15px] leading-relaxed mb-10 text-rich-black">
-          <p className="text-lg font-medium text-rich-black">I didn&apos;t build Zelvoo as a software founder guessing at a market. I built it as the marketer who lived inside the problem for 15 years.</p>
-          <p>Across major retail, automotive and FMCG brands, I kept running into the same wall: the work called for an elite team, but the budget could only ever fund a fraction of one. So the strategy sat in a doc, the calendar went quiet, and campaigns that should have shipped in days took weeks — if they shipped at all.</p>
-          <p>Every one of those delays was a chance a competitor got to first. I got tired of watching good ideas die in the gap between what a brand deserved and what its team could actually produce.</p>
-          <p>Zelvoo is how I closed that gap. Lock your brand brief once, and it turns into aligned hooks, posts, ads, strategy and client-ready reports — the output of a full department, running at the speed of one person&apos;s ambition.</p>
-          <p>And I built it for where I&apos;m from. Zelvoo supports MTN MoMo, Telecel Cash, AirtelTigo Money, bank transfer and cards, priced in local currency, because world-class marketing shouldn&apos;t require a foreign budget.</p>
-        </section>
-
         <section className="section-dark rounded-[24px] border border-caribbean-green/30 p-6 md:p-8 mb-12 bg-gradient-to-br from-caribbean-green/5 to-transparent">
           <div className="grid md:grid-cols-2 gap-5">
           <div className="glass-card p-6 border-caribbean-green/40">
