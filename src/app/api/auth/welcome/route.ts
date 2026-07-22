@@ -10,7 +10,7 @@ function emailHtml(name: string) {
         <p style="margin:0 0 12px;">Your account is now confirmed. Welcome to Zelvoo.</p>
         <p style="margin:0 0 10px;font-weight:700;">Your free 7-day trial includes:</p>
         <ul style="margin:0 0 14px 18px;padding:0;">
-          <li>30 credits to generate campaign-ready content</li>
+          <li>50 credits to generate campaign-ready content</li>
           <li>Social posts, ad copy, hooks, and captions from one brief</li>
           <li>Campaign builder with structured planning</li>
           <li>PDF exports for client-ready delivery</li>
