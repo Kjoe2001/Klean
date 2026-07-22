@@ -16,7 +16,7 @@ function hasUnlimited(profile: any, email?: string | null) {
 export type Profile = { id: string; email: string; name: string; plan: PlanKey; role: string;
   company?: string; industry?: string; country?: string; avatar_url?: string; trial_started_at?: string;
   plan_started_at?: string; credits?: number;
-  onboarded?: boolean; activation?: Record<string, boolean>; role_type?: string; goal?: string; use_case?: string; is_admin?: boolean;
+  onboarded?: boolean; activation?: Record<string, any>; role_type?: string; goal?: string; use_case?: string; is_admin?: boolean;
   unlimited_credits?: boolean };
 
 export function useProfile(requireAuth = true) {

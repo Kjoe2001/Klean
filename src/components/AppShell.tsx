@@ -2,10 +2,11 @@
 import Sidebar from './Sidebar';
 import { useProfile } from './useProfile';
 import Link from 'next/link';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
+import TourOverlay from '@/components/TourOverlay';
 
 async function getAccessToken() {
   let { data: { session } } = await supabase.auth.getSession();
@@ -23,9 +24,32 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [showTour, setShowTour] = useState(false);
+  const autoTourShown = useRef(false);
 
   useEffect(() => { if (profile && profile.onboarded === false) router.replace('/welcome'); }, [profile]);
   useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    if (!profile || autoTourShown.current) return;
+    if (profile.activation?.tour_seen === true) return;
+    if (typeof window === 'undefined' || window.innerWidth < 768) return;
+    autoTourShown.current = true;
+    const t = setTimeout(() => setShowTour(true), 600);
+    return () => clearTimeout(t);
+    // Depend only on the stable id + seen-flag, not the whole profile object —
+    // useProfile() returns a new profile object on every credits refresh, which
+    // was cancelling this timeout before it ever fired.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id, profile?.activation?.tour_seen]);
+
+  const closeTour = async (markSeen: boolean) => {
+    setShowTour(false);
+    if (markSeen && profile) {
+      await supabase.from('profiles')
+        .update({ activation: { ...(profile.activation || {}), tour_seen: true } })
+        .eq('id', profile.id);
+    }
+  };
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -111,6 +135,15 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-caribbean-green text-rich-black text-xs font-medium hover:brightness-110 transition-colors">
               Top up
             </Link>
+            {/* Take a tour */}
+            <button
+              onClick={() => setShowTour(true)}
+              className="hidden md:grid w-9 h-9 rounded-[10px] border border-bangladesh-green/20 bg-white place-items-center hover:border-caribbean-green/45 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green"
+              aria-label="Take a tour"
+              title="Take a tour"
+            >
+              <Icon name="help" className="text-bangladesh-green" />
+            </button>
             {/* Notifications */}
             <Link href="/notifications"
               className="relative w-11 h-11 md:w-9 md:h-9 rounded-[10px] border border-bangladesh-green/20 bg-white grid place-items-center hover:border-caribbean-green/45 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green"
@@ -154,6 +187,8 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           />
         </>
       )}
+
+      <TourOverlay open={showTour} onClose={closeTour} />
     </div>
   );
 }

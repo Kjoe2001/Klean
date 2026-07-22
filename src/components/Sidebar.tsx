@@ -6,8 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
 import { Icon } from '@/components/Icon';
 
-const GROUPS: { title: string; items: { href: string; icon: string; label: string }[] }[] = [
-  { title: 'Create', items: [
+const GROUPS: { title: string; tour: string; items: { href: string; icon: string; label: string }[] }[] = [
+  { title: 'Create', tour: 'group-create', items: [
     { href: '/dashboard',        icon: 'space_dashboard', label: 'Dashboard' },
     { href: '/content-studio',   icon: 'auto_awesome',    label: 'Content Studio' },
     { href: '/image-studio',     icon: 'image',           label: 'Image Studio' },
@@ -15,31 +15,31 @@ const GROUPS: { title: string; items: { href: string; icon: string; label: strin
     { href: '/templates',        icon: 'dashboard_customize', label: 'Templates' },
     { href: '/prompts',          icon: 'bookmark',        label: 'Saved Prompts' },
   ]},
-  { title: 'Organise', items: [
+  { title: 'Organise', tour: 'group-organise', items: [
     { href: '/brand-kit',  icon: 'palette',        label: 'Brand Kit' },
     { href: '/assets',     icon: 'perm_media',     label: 'Asset Manager' },
     { href: '/calendar',   icon: 'calendar_month', label: 'Calendar' },
     { href: '/library',    icon: 'folder_open',    label: 'Library' },
     { href: '/approvals',  icon: 'task_alt',       label: 'Approvals' },
   ]},
-  { title: 'Grow', items: [
+  { title: 'Grow', tour: 'group-grow', items: [
     { href: '/trends',     icon: 'trending_up', label: 'Trends' },
     { href: '/competitors',icon: 'radar',       label: 'Competitors' },
     { href: '/analytics',  icon: 'monitoring',  label: 'Analytics' },
   ]},
-  { title: 'Collaborate', items: [
+  { title: 'Collaborate', tour: 'group-collaborate', items: [
     { href: '/workspaces',  icon: 'groups',      label: 'Workspaces' },
     { href: '/clients',     icon: 'handshake',   label: 'Clients' },
     { href: '/integrations',icon: 'cable',       label: 'Integrations' },
     { href: '/white-label', icon: 'sell',        label: 'White-Label' },
   ]},
-  { title: 'Learn & earn', items: [
+  { title: 'Learn & earn', tour: 'group-learn', items: [
     { href: '/academy',   icon: 'school',      label: 'Academy' },
     { href: '/community', icon: 'forum',       label: 'Community' },
     { href: '/affiliate', icon: 'redeem',      label: 'Affiliate' },
     { href: '/partners',  icon: 'diversity_3', label: 'Partners' },
   ]},
-  { title: 'Account', items: [
+  { title: 'Account', tour: 'group-account', items: [
     { href: '/billing',   icon: 'credit_card',  label: 'Billing' },
     { href: '/security',  icon: 'shield_lock',  label: 'Security & 2FA' },
     { href: '/support',   icon: 'support_agent',label: 'Support' },
@@ -72,7 +72,7 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
       {/* Nav */}
       <nav className="flex-1 space-y-4 overflow-y-auto">
         {GROUPS.map(g => (
-          <div key={g.title}>
+          <div key={g.title} data-tour={g.tour}>
             <div className="text-[9.5px] font-bold tracking-[0.2em] text-stone px-3 mb-1">{g.title.toUpperCase()}</div>
             <div className="space-y-0.5">
               {g.items.map(n => {
