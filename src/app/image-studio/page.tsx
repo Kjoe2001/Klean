@@ -93,7 +93,7 @@ export default function ImageStudio() {
   };
 
   return (
-    <AppShell title="Image Studio" subtitle="Generate campaign-ready visuals with Flux 1.1 Pro Ultra — our highest-quality image model.">
+    <AppShell title="Image Studio" subtitle="Generate campaign-ready visuals with Gemini 3 Pro Image — our highest-quality image model.">
       <div className="grid xl:grid-cols-[1fr_1.05fr] gap-5">
         <div>
           <GlassCard className="mb-5">

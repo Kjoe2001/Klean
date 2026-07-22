@@ -5,10 +5,10 @@ import { CREDIT_COST, planCredits, type PlanKey } from '@/lib/plans';
 export const maxDuration = 60;
 
 const UNLIMITED_BALANCE = 999999;
-const MODEL = 'black-forest-labs/flux-1.1-pro-ultra';
+const MODEL = 'gemini-3-pro-image'; // "Nano Banana Pro" — Google's flagship image model
 
 // Maps the app's IMAGE_SIZES presets (src/lib/image-presets.ts) to the model's
-// supported aspect_ratio enum.
+// supported aspect ratios.
 const ASPECT_RATIO: Record<string, string> = {
   square: '1:1',
   portrait: '4:5',
@@ -16,13 +16,24 @@ const ASPECT_RATIO: Record<string, string> = {
   story: '9:16',
   reel: '9:16',
   youtube: '16:9',
-  linkedin: '16:9', // closest enum match to 1.91:1 — model has no exact option
+  linkedin: '16:9', // closest match to 1.91:1 — no exact option
 };
 
 function admin() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
     auth: { persistSession: false },
   });
+}
+
+async function ensureImagesBucket(db: ReturnType<typeof admin>) {
+  const bucketName = 'generated-images';
+  const { data: existing, error: getError } = await db.storage.getBucket(bucketName);
+  if (!getError && existing) return;
+
+  const { error: createError } = await db.storage.createBucket(bucketName, { public: true });
+  if (createError && !/already exists/i.test(createError.message || '')) {
+    throw new Error(`Could not create generated-images bucket: ${createError.message}`);
+  }
 }
 
 async function userFrom(req: NextRequest, db: ReturnType<typeof admin>) {
@@ -80,45 +91,56 @@ async function refundImageCredits(db: ReturnType<typeof admin>, userId: string, 
   await db.from('credit_log').insert({ user_id: userId, delta: cost, balance_after: next, reason });
 }
 
-async function runPrediction(prompt: string, aspectRatio: string) {
-  const token = process.env.REPLICATE_API_TOKEN;
-  if (!token) throw new Error('Image generation is not configured.');
+async function generateImageBytes(prompt: string, aspectRatio: string) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error('Image generation is not configured.');
 
-  const res = await fetch(`https://api.replicate.com/v1/models/${MODEL}/predictions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Prefer: 'wait',
-    },
-    body: JSON.stringify({
-      input: {
-        prompt,
-        aspect_ratio: aspectRatio,
-        output_format: 'jpg',
-        safety_tolerance: 2,
-      },
-    }),
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseModalities: ['IMAGE'],
+          imageConfig: { aspectRatio },
+        },
+      }),
+    }
+  );
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data?.error?.message || 'Image generation failed to start.');
+  }
+
+  const parts: any[] = data?.candidates?.[0]?.content?.parts || [];
+  const imagePart = parts.find((p) => p.inlineData?.data);
+  if (!imagePart) {
+    const blockReason = data?.promptFeedback?.blockReason;
+    throw new Error(blockReason ? `Blocked: ${blockReason}` : 'Image generation returned no output.');
+  }
+
+  return {
+    buffer: Buffer.from(imagePart.inlineData.data, 'base64'),
+    mimeType: imagePart.inlineData.mimeType || 'image/png',
+  };
+}
+
+async function uploadGeneratedImage(db: ReturnType<typeof admin>, userId: string, buffer: Buffer, mimeType: string) {
+  await ensureImagesBucket(db);
+  const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
+  const path = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await db.storage.from('generated-images').upload(path, buffer, {
+    contentType: mimeType,
+    upsert: false,
   });
+  if (uploadError) throw new Error(`Could not save generated image: ${uploadError.message}`);
 
-  let prediction = await res.json();
-  if (!res.ok) throw new Error(prediction?.detail || 'Image generation failed to start.');
-
-  const deadline = Date.now() + 50_000;
-  while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && prediction.status !== 'canceled') {
-    if (Date.now() > deadline) throw new Error('Image generation timed out. Please try again.');
-    await new Promise((r) => setTimeout(r, 1500));
-    const poll = await fetch(prediction.urls.get, { headers: { Authorization: `Bearer ${token}` } });
-    prediction = await poll.json();
-  }
-
-  if (prediction.status !== 'succeeded') {
-    throw new Error(prediction?.error || 'Image generation failed.');
-  }
-
-  const url = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
-  if (!url) throw new Error('Image generation returned no output.');
-  return url as string;
+  const { data: pub } = db.storage.from('generated-images').getPublicUrl(path);
+  return pub.publicUrl;
 }
 
 export async function POST(req: NextRequest) {
@@ -140,7 +162,8 @@ export async function POST(req: NextRequest) {
     const aspectRatio = ASPECT_RATIO[size] || '1:1';
 
     try {
-      const url = await runPrediction(prompt, aspectRatio);
+      const { buffer, mimeType } = await generateImageBytes(prompt, aspectRatio);
+      const url = await uploadGeneratedImage(db, user.id, buffer, mimeType);
 
       const { error: insertError } = await db.from('images').insert({
         user_id: user.id,
