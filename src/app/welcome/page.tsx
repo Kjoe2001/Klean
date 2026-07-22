@@ -37,6 +37,15 @@ export default function Welcome() {
     </div>
   );
 
+  // Every step must be completed before continuing — this profile data (role,
+  // brand, industry, goal, use case) is required for KYC and can't be skipped.
+  const stepComplete = [
+    !!data.role,
+    !!data.company.trim() && !!data.industry,
+    !!data.goal && !!data.usecase,
+    true,
+  ][i];
+
   return (
     <div className="min-h-screen grid place-items-center p-5" style={{ background: 'linear-gradient(160deg,#fff,#F5F3FF 45%,#F8FAFC)' }}>
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -67,9 +76,12 @@ export default function Welcome() {
             <div className="rounded-xl bg-slate-50 dark:bg-white/5 p-4 mt-4 text-[13px] space-y-1.5">
               <div>👤 {data.role || '—'}</div><div>🏢 {data.company || '—'} · {data.industry || '—'}</div><div>🎯 {data.goal || '—'}</div><div>🧩 {data.usecase || '—'}</div>
             </div></>}
+          {!stepComplete && i < 3 && (
+            <p className="text-[11px] text-rose-500 font-semibold mt-4">Select an option to continue.</p>
+          )}
           <div className="flex gap-2 mt-6">
             {i > 0 && <button onClick={() => setI(i - 1)} className="pill !py-3 flex-1">← Back</button>}
-            {i < 3 ? <button onClick={() => setI(i + 1)} className="cta !py-3 flex-[2]">Continue →</button>
+            {i < 3 ? <button onClick={() => setI(i + 1)} disabled={!stepComplete} className="cta !py-3 flex-[2] disabled:opacity-40 disabled:pointer-events-none">Continue →</button>
                    : <button onClick={finish} disabled={saving} className="cta !py-3 flex-[2]">{saving ? 'Setting up…' : 'Enter Zelvoo →'}</button>}
           </div>
         </Card>

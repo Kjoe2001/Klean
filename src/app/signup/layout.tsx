@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Start Your Free Trial — 30 Credits, No Card Required | Zelvoo',
+  title: 'Start Your Free Trial — 50 Credits, No Card Required | Zelvoo',
   description:
-    'Create your Zelvoo account in seconds with Google or Microsoft. 7 days free, 30 credits, no credit card required.',
+    'Create your Zelvoo account in seconds with Google. 7 days free, 50 credits, no credit card required.',
   alternates: { canonical: 'https://www.zelvoo.app/signup' },
   robots: { index: false },
 };

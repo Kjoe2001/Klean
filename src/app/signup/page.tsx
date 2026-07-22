@@ -6,44 +6,41 @@ import { supabase } from '@/lib/supabase';
 import Logo from '@/components/Logo';
 import { getAuthCallbackUrl } from '@/lib/auth-redirect';
 
-const ENABLE_GOOGLE_OAUTH = false;
-const ENABLE_AZURE_OAUTH = false;
+const ENABLE_GOOGLE_OAUTH = true;
 
 function Form({ mode }: { mode: 'signup' | 'login' }) {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
-  const [oauthModalProvider, setOauthModalProvider] = useState<'google' | 'azure' | null>(null);
+  const [oauthModalOpen, setOauthModalOpen] = useState(false);
   const [oauthBusy, setOauthBusy] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
   const plan = params.get('plan');
   const callbackUrl = getAuthCallbackUrl(plan);
 
-  const oauth = async (provider: 'google' | 'azure') => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: callbackUrl } });
+  const oauth = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callbackUrl } });
     if (!error) return;
 
     if (error.message?.toLowerCase().includes('provider is not enabled')) {
-      const label = provider === 'google' ? 'Google' : 'Microsoft';
-      setErr(`${label} sign-in is not enabled yet. Use email/password for now.`);
+      setErr('Google sign-in is not enabled yet. Use email/password for now.');
       return;
     }
     setErr(error.message || 'Could not start social sign-in. Please try again.');
   };
 
-  const openOauthModal = (provider: 'google' | 'azure') => {
+  const openOauthModal = () => {
     setErr('');
-    setOauthModalProvider(provider);
+    setOauthModalOpen(true);
   };
 
   const confirmOauth = async () => {
-    if (!oauthModalProvider) return;
     setOauthBusy(true);
-    await oauth(oauthModalProvider);
+    await oauth();
     setOauthBusy(false);
-    setOauthModalProvider(null);
+    setOauthModalOpen(false);
   };
 
   const submit = async () => {
@@ -102,14 +99,9 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
 
           <div className="flex flex-col gap-2.5 mb-6">
             {ENABLE_GOOGLE_OAUTH && (
-              <button onClick={() => openOauthModal('google')} className="btn-outline w-full flex items-center justify-center gap-2">
+              <button onClick={openOauthModal} className="btn-outline w-full flex items-center justify-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/></svg>
                 Continue with Google
-              </button>
-            )}
-            {ENABLE_AZURE_OAUTH && (
-              <button onClick={() => openOauthModal('azure')} className="btn-outline w-full flex items-center justify-center gap-2">
-                <span className="font-bold text-sky-600">⊞</span> Continue with Microsoft
               </button>
             )}
           </div>
@@ -146,12 +138,12 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
         </div>
       </div>
 
-      {oauthModalProvider && (
+      {oauthModalOpen && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-rich-black/65 p-4">
           <div className="glass-elevated glass-highlight w-full max-w-md p-6">
             <h2 className="font-heading font-semibold text-anti-flash-white text-xl">Continue with Zelvoo Secure Auth</h2>
             <p className="text-sm text-pistachio mt-3">
-              You are about to continue with {oauthModalProvider === 'google' ? 'Google' : 'Microsoft'} sign-in.
+              You are about to continue with Google sign-in.
               A trusted authentication page may briefly show our auth provider domain before returning to zelvoo.app.
             </p>
             <div className="mt-3 rounded-xl border border-caribbean-green/20 bg-rich-black/30 p-3">
@@ -161,7 +153,7 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
             </div>
             <div className="mt-5 flex gap-3">
               <button
-                onClick={() => setOauthModalProvider(null)}
+                onClick={() => setOauthModalOpen(false)}
                 disabled={oauthBusy}
                 className="btn-outline flex-1"
               >
@@ -174,7 +166,7 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
               >
                 {oauthBusy
                   ? <span className="w-4 h-4 rounded-full border-2 border-rich-black border-t-transparent animate-spin" />
-                  : `Continue with ${oauthModalProvider === 'google' ? 'Google' : 'Microsoft'}`}
+                  : 'Continue with Google'}
               </button>
             </div>
           </div>
