@@ -1,3 +1,8 @@
+// Single source of truth for turning Image Studio on/off. Off for now —
+// Google AI Studio billing isn't funded yet, so real generations would just
+// fail. Flip to true once billing is set up on the GEMINI_API_KEY project.
+export const IMAGE_GENERATION_ENABLED = false;
+
 export const IMAGE_SIZES = [
   { id:'square', label:'Square 1:1', w:1024, h:1024 },
   { id:'portrait', label:'Portrait 4:5', w:1024, h:1280 },

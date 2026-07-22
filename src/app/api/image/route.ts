@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { CREDIT_COST, planCredits, type PlanKey } from '@/lib/plans';
+import { IMAGE_GENERATION_ENABLED } from '@/lib/image-presets';
 
 export const maxDuration = 60;
 
@@ -144,6 +145,13 @@ async function uploadGeneratedImage(db: ReturnType<typeof admin>, userId: string
 }
 
 export async function POST(req: NextRequest) {
+  if (!IMAGE_GENERATION_ENABLED) {
+    return NextResponse.json({
+      error: 'Image generation is temporarily unavailable.',
+      code: 'image_generation_disabled',
+    }, { status: 410 });
+  }
+
   try {
     const db = admin();
     const user = await userFrom(req, db);

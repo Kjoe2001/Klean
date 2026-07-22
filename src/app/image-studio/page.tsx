@@ -5,9 +5,10 @@ import GlassCard from '@/components/GlassCard';
 import Button from '@/components/ui/Button';
 import { Textarea, Select } from '@/components/ui/Input';
 import { Icon } from '@/components/Icon';
+import Link from 'next/link';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
-import { IMAGE_SIZES, IMAGE_MODES } from '@/lib/image-presets';
+import { IMAGE_SIZES, IMAGE_MODES, IMAGE_GENERATION_ENABLED } from '@/lib/image-presets';
 import { CREDIT_COST } from '@/lib/plans';
 import { readApiResponse } from '@/lib/http';
 
@@ -67,6 +68,30 @@ export default function ImageStudio() {
   }, []);
 
   if (!profile) return null;
+
+  if (!IMAGE_GENERATION_ENABLED) {
+    return (
+      <AppShell title="Image Studio" subtitle="Image generation is temporarily unavailable.">
+        <div className="glass-card-light glass-highlight p-6 mb-5">
+          <div className="flex items-start gap-3">
+            <span className="w-10 h-10 rounded-xl bg-bangladesh-green/10 text-bangladesh-green grid place-items-center">
+              <Icon name="info" className="text-xl" />
+            </span>
+            <div>
+              <h2 className="font-heading font-semibold text-rich-black">Image generation is paused</h2>
+              <p className="text-sm text-stone mt-1">
+                We&apos;re between AI providers right now, so image generation is temporarily switched off. It&apos;ll be back soon — use Content Studio and Campaign Builder in the meantime.
+              </p>
+              <Link href="/content-studio" className="inline-flex mt-4 rounded-full bg-caribbean-green text-rich-black font-heading font-medium px-5 py-2.5 text-sm hover:brightness-110 transition">
+                Open Content Studio
+              </Link>
+            </div>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
   const unlimited = profile.unlimited_credits === true || profile.is_admin === true || profile.role === 'admin';
   const canAfford = unlimited || (profile.credits ?? 0) >= cost;
 
