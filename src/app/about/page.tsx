@@ -54,7 +54,7 @@ export default function Page() {
 
           <div className="grid gap-4">
             <div className="section-dark rounded-[24px] border border-mountain-meadow/15 p-6 md:p-7">
-              <p className="eyebrow mb-3">At a Glance</p>
+              <p className="eyebrow mb-3 !text-caribbean-green">At a Glance</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
                 {[
                   ['16', 'Content formats from one brief'],
@@ -62,7 +62,7 @@ export default function Page() {
                   ['7 days', 'Free trial to test real workflows'],
                 ].map(([value, label]) => (
                   <div key={label} className="glass-card p-5">
-                    <p className="text-stat font-heading text-caribbean-green">{value}</p>
+                    <p className="text-stat font-heading !text-caribbean-green">{value}</p>
                     <p className="mt-2 text-sm text-anti-flash-white/82">{label}</p>
                   </div>
                 ))}
@@ -80,17 +80,17 @@ export default function Page() {
         </section>
 
         <section className="glass-card-light glass-highlight p-7 md:p-9 space-y-5 text-[15px] leading-relaxed mb-10 text-rich-black">
-          <p className="text-lg font-medium text-rich-black">Zelvoo was founded by a marketer, not a software company.</p>
-          <p>After 15+ years leading marketing for major retail, automotive and FMCG brands, one pattern kept repeating: teams needed elite output, but budgets could not sustain elite-sized departments.</p>
-          <p>Strategy, copy, design, campaigns, reporting and optimization each demanded separate specialists. Most growth-stage companies could not afford that structure, so execution slowed and opportunities were lost.</p>
-          <p>AI changed that equation. Zelvoo packages proven campaign playbooks into one operating system: lock your brand brief once, then generate aligned hooks, posts, ads, strategy and client exports at scale.</p>
-          <p>We designed payments for African business realities too. Zelvoo supports MTN MoMo, Telecel Cash, AirtelTigo Money, bank transfer and cards, with local-currency display and practical entry pricing.</p>
+          <p className="text-lg font-medium text-rich-black">I didn&apos;t build Zelvoo as a software founder guessing at a market. I built it as the marketer who lived inside the problem for 15 years.</p>
+          <p>Across major retail, automotive and FMCG brands, I kept running into the same wall: the work called for an elite team, but the budget could only ever fund a fraction of one. So the strategy sat in a doc, the calendar went quiet, and campaigns that should have shipped in days took weeks — if they shipped at all.</p>
+          <p>Every one of those delays was a chance a competitor got to first. I got tired of watching good ideas die in the gap between what a brand deserved and what its team could actually produce.</p>
+          <p>Zelvoo is how I closed that gap. Lock your brand brief once, and it turns into aligned hooks, posts, ads, strategy and client-ready reports — the output of a full department, running at the speed of one person&apos;s ambition.</p>
+          <p>And I built it for where I&apos;m from. Zelvoo supports MTN MoMo, Telecel Cash, AirtelTigo Money, bank transfer and cards, priced in local currency, because world-class marketing shouldn&apos;t require a foreign budget.</p>
         </section>
 
         <section className="section-dark rounded-[24px] border border-caribbean-green/30 p-6 md:p-8 mb-12 bg-gradient-to-br from-caribbean-green/5 to-transparent">
           <div className="grid md:grid-cols-2 gap-5">
           <div className="glass-card p-6 border-caribbean-green/40">
-            <p className="eyebrow mb-3 text-caribbean-green">What We Build</p>
+            <p className="eyebrow mb-3 !text-caribbean-green">What We Build</p>
             <ul className="space-y-2 text-sm text-anti-flash-white">
               <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> AI content generation across 16 formats</li>
               <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Trend and competitor intelligence</li>
@@ -98,7 +98,7 @@ export default function Page() {
             </ul>
           </div>
           <div className="glass-card p-6 border-caribbean-green/40">
-            <p className="eyebrow mb-3 text-caribbean-green">What We Aim For</p>
+            <p className="eyebrow mb-3 !text-caribbean-green">What We Aim For</p>
             <ul className="space-y-2 text-sm text-anti-flash-white">
               <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Give small teams enterprise-grade marketing power</li>
               <li className="flex items-start gap-2"><span className="text-caribbean-green mt-1">•</span> Reduce execution time from weeks to minutes</li>
