@@ -8,10 +8,10 @@ interface ModalProps {
   title?: string;
   children: ReactNode;
   footer?: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-const sizes = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' };
+const sizes = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-5xl' };
 
 export default function Modal({ open, onClose, title, children, footer, size = 'md' }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -30,7 +30,7 @@ export default function Modal({ open, onClose, title, children, footer, size = '
           <span className="material-symbols-rounded msym text-[#6B7280]">close</span>
         </Button>
       </div>
-      <div className="px-6 py-5">{children}</div>
+      <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">{children}</div>
       {footer && <div className="px-6 pb-6 flex justify-end gap-3">{footer}</div>}
     </dialog>
   );

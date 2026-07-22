@@ -1,166 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-server';
+import { requireAdmin } from '@/lib/admin-auth';
 
-const LEGACY_ADMIN_EMAILS = new Set(['oannoreric@gmail.com']);
+/**
+ * NOTE: only `profiles`, `credit_log` and `brands` actually exist in the
+ * production database right now. `content`/`images`/`campaigns`/`payments`/
+ * `subscriptions` are declared in supabase/schema.sql but were never
+ * migrated, so this route deliberately doesn't query them — it derives real
+ * numbers only from what's actually there. Generated content itself lives in
+ * profiles.activation.generated_items (see saveGeneratedItem in
+ * /api/generate/route.ts), not in a `content` table.
+ */
 
-function allowedAdminEmails() {
-  const envEmails = (process.env.ADMIN_EMAILS || '')
-    .split(',')
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-  return new Set([...envEmails, ...Array.from(LEGACY_ADMIN_EMAILS)]);
-}
-
-async function getAuthedUser(req: NextRequest) {
-  const token = req.headers.get('authorization')?.replace('Bearer ', '').trim();
-  if (!token) return null;
-  const db = supabaseAdmin();
-  const { data, error } = await db.auth.getUser(token);
-  if (error) return null;
-  return data.user ?? null;
-}
-
-async function canAccessAdmin(userId: string, email?: string | null) {
-  const adminEmails = allowedAdminEmails();
-  if (email && adminEmails.has(email.toLowerCase())) return true;
-  const db = supabaseAdmin();
-  const { data: profile } = await db
-    .from('profiles')
-    .select('role,is_admin,unlimited_credits')
-    .eq('id', userId)
-    .single();
-  return profile?.role === 'admin' || profile?.is_admin === true || profile?.unlimited_credits === true;
-}
-
-async function countByUser(table: string, userId: string) {
-  const db = supabaseAdmin();
-  const { count, error } = await db
-    .from(table)
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId);
-  if (error) return 0;
-  return count ?? 0;
-}
-
-async function getCustomerBaseRows() {
-  const db = supabaseAdmin();
-  
-  try {
-    const { data: profiles, error } = await db
-      .from('profiles')
-      .select('id,email,name,plan,role,created_at,credits,is_admin,unlimited_credits')
-      .order('created_at', { ascending: false })
-      .limit(100);
-
-    if (error) return [];
-
-    return (profiles || []).map((p: any) => ({
-      id: p.id,
-      email: p.email || '',
-      name: p.name || 'Unknown',
-      plan: p.plan || 'trial',
-      role: p.role || 'user',
-      credits: typeof p.credits === 'number' ? p.credits : null,
-      created_at: p.created_at || null,
-      is_admin: p.is_admin === true,
-      unlimited_credits: p.unlimited_credits === true,
-    }));
-  } catch (e) {
-    console.error('Error fetching customers:', e);
-    return [];
-  }
+function generatedCount(activation: any) {
+  const items = activation && Array.isArray(activation.generated_items) ? activation.generated_items : [];
+  return items.length;
 }
 
 async function statsHandler(req: NextRequest) {
+  const { error } = await requireAdmin(req);
+  if (error) return error;
+
   try {
-    const user = await getAuthedUser(req);
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const allowed = await canAccessAdmin(user.id, user.email);
-    if (!allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-
     const db = supabaseAdmin();
-    
-    let statsData: any = {
-      total_users: 0,
-      trial_users: 0,
-      paid_users: 0,
-      active_subs: 0,
-      mrr: 0,
-      revenue_total: 0,
-      signups_30d: 0,
-      by_plan: {},
-      recent_payments: [],
-    };
 
-    try {
-      const { data, error } = await db.rpc('admin_stats');
-      if (error) {
-        console.warn('admin_stats RPC error:', error.message);
-      } else if (data) {
-        statsData = { ...statsData, ...data };
-      }
-    } catch (rpcErr) {
-      console.warn('admin_stats RPC exception:', rpcErr);
+    const { data: profiles, error: pErr } = await db
+      .from('profiles')
+      .select('id,email,name,company,industry,country,plan,role,created_at,credits,unlimited_credits,plan_started_at,trial_started_at,activation')
+      .order('created_at', { ascending: false })
+      .limit(500);
+
+    if (pErr) {
+      return NextResponse.json({ error: 'Failed to load users: ' + pErr.message }, { status: 500 });
     }
 
-    let users: any[] = [];
-    try {
-      users = await getCustomerBaseRows();
-    } catch (usersErr) {
-      console.error('Error fetching customers:', usersErr);
-      users = [];
-    }
+    const rows = profiles || [];
+    const thirtyDaysAgo = Date.now() - 30 * 86400000;
 
-    const customersWithUsage = await Promise.all(
-      users.slice(0, 100).map(async (u: any) => {
-        try {
-          const [contentCount, campaignCount, paymentCount] = await Promise.all([
-            countByUser('content', u.id),
-            countByUser('campaigns', u.id),
-            countByUser('payments', u.id),
-          ]);
+    const byPlan: Record<string, number> = {};
+    let totalContent = 0;
+    let totalCreditsHeld = 0;
+    let signups30d = 0;
 
-          return {
-            id: u.id,
-            email: u.email,
-            name: u.name,
-            plan: u.plan,
-            role: u.role,
-            credits: u.credits,
-            created_at: u.created_at,
-            usage: {
-              content: contentCount,
-              campaigns: campaignCount,
-              payments: paymentCount,
-              requests_total: contentCount + campaignCount,
-            },
-          };
-        } catch (err) {
-          console.warn('Error processing customer:', u.id, err);
-          return {
-            id: u.id,
-            email: u.email,
-            name: u.name,
-            plan: u.plan,
-            role: u.role,
-            credits: u.credits,
-            created_at: u.created_at,
-            usage: {
-              content: 0,
-              campaigns: 0,
-              payments: 0,
-              requests_total: 0,
-            },
-          };
-        }
-      })
-    );
+    const customers = rows.map((p: any) => {
+      const plan = p.plan || 'trial';
+      byPlan[plan] = (byPlan[plan] || 0) + 1;
+      const contentCount = generatedCount(p.activation);
+      totalContent += contentCount;
+      if (typeof p.credits === 'number' && !p.unlimited_credits) totalCreditsHeld += p.credits;
+      if (p.created_at && new Date(p.created_at).getTime() > thirtyDaysAgo) signups30d += 1;
+
+      return {
+        id: p.id,
+        email: p.email || '',
+        name: p.name || 'Unknown',
+        company: p.company || null,
+        industry: p.industry || null,
+        country: p.country || null,
+        plan,
+        role: p.role || 'user',
+        credits: typeof p.credits === 'number' ? p.credits : null,
+        unlimited_credits: p.unlimited_credits === true,
+        created_at: p.created_at || null,
+        trial_started_at: p.trial_started_at || null,
+        plan_started_at: p.plan_started_at || null,
+        usage: { content: contentCount },
+      };
+    });
 
     return NextResponse.json({
       data: {
-        ...statsData,
-        customers: customersWithUsage,
+        total_users: rows.length,
+        trial_users: byPlan['trial'] || 0,
+        paid_users: rows.length - (byPlan['trial'] || 0),
+        signups_30d: signups30d,
+        by_plan: byPlan,
+        total_content: totalContent,
+        total_credits_held: totalCreditsHeld,
+        customers,
       },
     });
   } catch (e: any) {

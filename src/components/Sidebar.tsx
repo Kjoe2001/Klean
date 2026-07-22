@@ -48,8 +48,7 @@ const GROUPS: { title: string; items: { href: string; icon: string; label: strin
 
 export default function Sidebar({ profile, trialDaysLeft, className = '', onNavigate }: any) {
   const path = usePathname();
-  const isLegacyAdminEmail = (profile?.email || '').toLowerCase() === 'oannoreric@gmail.com';
-  const showAdmin = profile?.role === 'admin' || profile?.is_admin || isLegacyAdminEmail;
+  const showAdmin = (profile?.email || '').toLowerCase() === 'oannoreric@gmail.com';
   return (
     <aside className={`flex flex-col w-60 shrink-0 section-green border border-mountain-meadow/20 rounded-[20px] p-4 overflow-y-auto ${className}`}>
       {/* Logo */}
