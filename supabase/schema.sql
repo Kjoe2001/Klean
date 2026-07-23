@@ -88,6 +88,17 @@ create table if not exists images (
   created_at timestamptz default now()
 );
 
+-- DESIGNS (Creative Studio)
+create table if not exists designs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  brand_id uuid references brands(id) on delete set null,
+  name text not null default 'Untitled design',
+  width int not null, height int not null,
+  data jsonb not null, thumbnail text,
+  created_at timestamptz default now(), updated_at timestamptz default now()
+);
+
 -- CALENDAR
 create table if not exists calendar_events (
   id uuid primary key default gen_random_uuid(),
@@ -155,7 +166,7 @@ create table if not exists notifications (
 do $$ declare t text;
 begin
   foreach t in array array['profiles','workspaces','workspace_members','brands','clients','campaigns',
-    'content','images','calendar_events','subscriptions','payments','invoices','competitors','trends',
+    'content','images','designs','calendar_events','subscriptions','payments','invoices','competitors','trends',
     'analytics','exports','notifications','transactions']
   loop execute format('alter table %I enable row level security', t); end loop;
 end $$;
@@ -165,7 +176,7 @@ create policy "own profile update" on profiles for update using (auth.uid() = id
 
 do $$ declare t text;
 begin
-  foreach t in array array['brands','clients','campaigns','content','images','calendar_events',
+  foreach t in array array['brands','clients','campaigns','content','images','designs','calendar_events',
     'subscriptions','payments','invoices','competitors','trends','analytics','exports','notifications']
   loop
     execute format('create policy "own rows all" on %I for all using (auth.uid() = user_id) with check (auth.uid() = user_id)', t);

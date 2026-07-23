@@ -77,7 +77,7 @@ function BillingInner() {
           <div className="font-sora font-bold text-sm mb-3 flex items-center gap-2">
             <Icon name="receipt_long" className="text-bangladesh-green" />What your credits were used for
           </div>
-          {!history.length && <p className="text-stone text-sm">No usage yet — generate something in Content or Image Studio and it'll show up here.</p>}
+          {!history.length && <p className="text-stone text-sm">No usage yet — generate something in Content Studio and it'll show up here.</p>}
           <div className="space-y-1.5 max-h-80 overflow-y-auto">
             {history.map(h => (
               <div key={h.id} className="flex items-center justify-between text-[13px] py-2 border-b border-bangladesh-green/8 last:border-0">

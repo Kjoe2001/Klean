@@ -137,7 +137,7 @@ export default function Pricing() {
         <div className="mt-10 grid md:grid-cols-2 gap-4">
           <div className="glass-card-light p-5">
             <p className="eyebrow mb-2">How Credits Work</p>
-            <p className="text-[12px] text-rich-black">1 credit = 1 content generation. AI image generation uses 2 credits. Credits refresh each billing period.</p>
+            <p className="text-[12px] text-rich-black">1 credit = 1 content generation. Credits refresh each billing period.</p>
           </div>
           <div className="glass-card-light p-5">
             <p className="eyebrow mb-2">Need A Team Setup?</p>

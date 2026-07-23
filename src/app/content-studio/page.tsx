@@ -6,7 +6,6 @@ import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { CONTENT_TYPES } from '@/lib/content-types';
 import { canType, can } from '@/lib/plans';
-import { pollUrl } from '@/lib/image-presets';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
 import { exportContentPDF } from '@/lib/export-pdf';
