@@ -6,9 +6,9 @@ import AppImage from '@/components/AppImage';
 import { MARKETING_IMAGES } from '@/lib/marketing-images';
 
 export const metadata: Metadata = {
-  title: 'Features — 16 AI Content Types & Campaign Builder | Zelvoo',
+  title: 'Features — 16 AI Content Types, Creative Studio & Campaign Builder | Zelvoo',
   description:
-    'Everything Zelvoo generates from one brief: hooks, social posts, carousels, reel & video scripts, blogs, emails, ad copy, press releases, podcasts, newsletters, SEO content and more.',
+    'Everything Zelvoo generates from one brief: hooks, social posts, carousels, reel & video scripts, blogs, emails, ad copy, press releases, podcasts, newsletters, SEO content and more — plus a Creative Studio with 88 brand-linked design templates.',
   alternates: { canonical: 'https://www.zelvoo.app/features' },
 };
 
@@ -32,6 +32,11 @@ const CONTENT_TYPES = [
 ];
 
 const ENGINES = [
+  {
+    msym: 'palette',
+    title: 'Creative Studio',
+    desc: '88 ready-made templates across Instagram, TikTok, LinkedIn, Pinterest, YouTube and more — every color and font linked to your Brand Kit, exportable as PNG, SVG or PDF.',
+  },
   {
     msym: 'campaign',
     title: 'Campaign Builder',
@@ -89,10 +94,11 @@ export default function FeaturesPage() {
           />
         </section>
 
-        <section className="mb-16 grid sm:grid-cols-3 gap-3">
+        <section className="mb-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             ['16', 'Content types'],
             ['3', 'Core AI engines'],
+            ['88', 'Design templates'],
             ['2', 'Export formats (PDF + PPT)'],
           ].map(([value, label]) => (
             <div key={label} className="glass-card-light glass-highlight p-5 text-center">
@@ -147,7 +153,7 @@ export default function FeaturesPage() {
         </section>
 
         <section className="mb-20 section-dark rounded-[24px] border border-mountain-meadow/15 p-7 md:p-9">
-          <h2 className="mb-8 text-h2 font-heading text-anti-flash-white">Beyond content: three growth engines</h2>
+          <h2 className="mb-8 text-h2 font-heading text-anti-flash-white">Beyond content: four growth engines</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {ENGINES.map((e) => (
               <div key={e.title} className="glass-card p-6">
