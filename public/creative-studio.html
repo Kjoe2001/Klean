@@ -570,7 +570,754 @@ const TPL={
    tx({x:w*.06,y:h*.27,w:w*.48,h:h*.34,text:'How Ghana buys in 2026',font:'Fraunces',size:w*.058,weight:900,color:D,lh:1.05}),
    sq({x:w*.06,y:h*.66,w:w*.06,h:h*.008,fill:F.s(G)}),
    tx({x:w*.06,y:h*.72,w:w*.42,h:h*.12,text:'A 40-page study of retail behaviour across Accra, Kumasi and Takoradi.',size:w*.017,weight:500,color:'#5A655F',lh:1.6}),
-   tx({x:w*.06,y:h*.88,w:w*.4,h:h*.05,text:'Download → zelvoo.app/insights',size:w*.016,weight:800,color:D})]}]
+   tx({x:w*.06,y:h*.88,w:w*.4,h:h*.05,text:'Download → zelvoo.app/insights',size:w*.016,weight:800,color:D})]}],
+'Instagram Story':[
+  {n:'Swipe Up To Shop',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:h*.44,w:w,h:h*.34,fill:F.s(CR),radius:w*.06}),
+    sq({x:w*.06,y:h*.08,w:w*.18,h:h*.018,fill:F.s('#FF6B35')}),
+    tx({x:w*.08,y:h*.1,w:w*.7,h:h*.04,text:'NEW ARRIVAL',font:'Hanken Grotesk',size:w*.026,weight:800,color:'#FF6B35',ls:4}),
+    tx({x:w*.08,y:h*.15,w:w*.86,h:h*.24,text:'The everyday bag\nyou never knew\nyou needed.',font:'Unbounded',size:w*.098,weight:800,color:W,lh:1.08}),
+    tx({x:w*.08,y:h*.48,w:w*.84,h:h*.26,text:'Structured canvas. Room for everything. Sold out twice already.',size:w*.036,weight:600,color:D,lh:1.4}),
+    sq({x:w*.44,y:h*.82,w:w*.12,h:h*.06,shape:'arrow',fill:F.s(G),rot:-90}),
+    tx({x:w*.06,y:h*.89,w:w*.88,h:h*.05,text:'SWIPE UP TO SHOP',size:w*.042,weight:800,color:G,align:'center',ls:2}),
+    tx({x:w*.06,y:h*.94,w:w*.88,h:h*.04,text:'yourbrand.com',size:w*.026,weight:600,color:'#8D9793',align:'center'})
+  ]},
+  {n:'Quick Poll Vote',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.1,w:w*.7,h:h*.04,text:'QUICK POLL',size:w*.028,weight:800,color:DK,ls:4}),
+    tx({x:w*.08,y:h*.16,w:w*.84,h:h*.2,text:'Coffee or tea\nto start the day?',font:'Unbounded',size:w*.1,weight:800,color:D,lh:1.1}),
+    sq({x:w*.08,y:h*.42,w:w*.38,h:h*.11,fill:F.s(W),stroke:D,strokeW:3,radius:h*.055}),
+    sq({x:w*.54,y:h*.42,w:w*.38,h:h*.11,fill:F.s(G),radius:h*.055}),
+    tx({x:w*.08,y:h*.455,w:w*.38,h:h*.06,text:'COFFEE',size:w*.036,weight:800,color:D,align:'center'}),
+    tx({x:w*.54,y:h*.455,w:w*.38,h:h*.06,text:'TEA',size:w*.036,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.08,y:h*.58,w:w*.84,h:h*.04,text:'TAP TO VOTE',size:w*.024,weight:700,color:'#5A655F',align:'center',ls:3}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.03,weight:700,color:D,align:'center'})
+  ]},
+  {n:'Countdown To Launch',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.5,y:h*.06,w:w*.6,h:w*.6,shape:'diamond',fill:F.s(G),opacity:.1,rot:15}),
+    tx({x:-w*.1,y:h*.28,w:w*1.2,h:h*.3,text:'72',font:'Archivo Black',size:w*.55,weight:400,color:G,opacity:.22,align:'center',lh:.9}),
+    tx({x:w*.08,y:h*.1,w:w*.8,h:h*.04,text:'LAUNCHING IN',size:w*.028,weight:800,color:'#E43D6B',ls:4}),
+    tx({x:w*.08,y:h*.42,w:w*.86,h:h*.14,text:'72 HOURS',font:'Anton',size:w*.13,weight:400,color:W,lh:1}),
+    tx({x:w*.08,y:h*.58,w:w*.8,h:h*.08,text:'Doors open Friday at noon, sharp.',size:w*.036,weight:600,color:'#A9B6AF',lh:1.4}),
+    sq({x:w*.08,y:h*.7,w:w*.14,h:w*.14,shape:'star',fill:F.s('#E43D6B'),rot:-10}),
+    tx({x:w*.08,y:h*.86,w:w*.84,h:h*.06,text:'SET A REMINDER →',size:w*.044,weight:800,color:G,ls:1}),
+    tx({x:w*.08,y:h*.93,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.026,weight:600,color:'#8D9793'})
+  ]},
+  {n:'Behind The Scenes',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:h*.2,w:w,h:h*.58,fill:F.s(D)}),
+    sq({x:w*.08,y:h*.06,w:w*.05,h:w*.05,shape:'ellipse',fill:F.s('#E43D6B')}),
+    tx({x:w*.16,y:h*.055,w:w*.4,h:h*.04,text:'REC',size:w*.03,weight:800,color:'#E43D6B',ls:3}),
+    tx({x:w*.08,y:h*.11,w:w*.7,h:h*.04,text:'BEHIND THE SCENES',size:w*.026,weight:800,color:DK,ls:3}),
+    sq({x:w*.62,y:h*.24,w:w*.3,h:w*.3,shape:'burst',fill:F.s('#F7B500'),rot:8,opacity:.85}),
+    tx({x:w*.65,y:h*.34,w:w*.24,h:h*.06,text:'TODAY',size:w*.03,weight:800,color:D,align:'center'}),
+    tx({x:w*.1,y:h*.62,w:w*.8,h:h*.14,text:'the mess behind\nthe magic',font:'Caveat',size:w*.11,weight:600,color:W,rot:-3,lh:1.05}),
+    tx({x:w*.08,y:h*.85,w:w*.84,h:h*.06,text:'Real moments, unfiltered — every single day.',size:w*.032,weight:600,color:D,lh:1.4}),
+    tx({x:w*.08,y:h*.93,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.026,weight:700,color:DK})
+  ]},
+  {n:'Link In Bio',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.g(G,DK,135)}),
+    sq({x:-w*.2,y:h*.62,w:w*1.4,h:h*.02,fill:F.s(W),opacity:.25}),
+    tx({x:w*.08,y:h*.12,w:w*.8,h:h*.04,text:'PSA',size:w*.028,weight:800,color:'#012a1b',ls:4}),
+    tx({x:w*.08,y:h*.18,w:w*.86,h:h*.26,text:'Everything you\nneed is one\ntap away.',font:'Unbounded',size:w*.11,weight:800,color:'#012a1b',lh:1.08}),
+    sq({x:w*.44,y:h*.48,w:w*.12,h:w*.12,shape:'arrow',fill:F.s('#012a1b'),rot:90}),
+    sq({x:w*.14,y:h*.68,w:w*.72,h:h*.08,fill:F.s(W),radius:h*.04,sh:{on:true,x:0,y:14,blur:30,c:'#00000040'}}),
+    tx({x:w*.14,y:h*.7,w:w*.72,h:h*.05,text:'VISIT LINK IN BIO',size:w*.036,weight:800,color:DK,align:'center'}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.028,weight:700,color:'#012a1b',align:'center'})
+  ]}
+],
+'TikTok & Reels':[
+  {n:'Stop Scroll Hook',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.s(G)}),
+    tx({x:w*.06,y:h*.08,w:w*.9,h:h*.3,text:'WAIT.',font:'Anton',size:w*.22,weight:400,color:W,lh:.95}),
+    tx({x:w*.06,y:h*.3,w:w*.88,h:h*.16,text:'you are doing\nthis wrong',font:'Anton',size:w*.13,weight:400,color:G,lh:1}),
+    sq({x:w*.06,y:h*.85,w:w*.4,h:h*.05,fill:F.s('#FF6B35'),radius:h*.025}),
+    tx({x:w*.09,y:h*.858,w:w*.34,h:h*.036,text:'WATCH TILL END',size:w*.024,weight:800,color:W,align:'center'})
+  ]},
+  {n:'POV Story Cover',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.06,y:h*.09,w:w*.26,h:h*.05,fill:F.s(G),radius:h*.025}),
+    tx({x:w*.06,y:h*.1,w:w*.26,h:h*.036,text:'POV',size:w*.044,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.06,y:h*.19,w:w*.88,h:h*.34,text:'you finally\nfound a recipe\nthat actually\nworks',font:'Archivo Black',size:w*.09,weight:400,color:W,lh:1.1}),
+    sq({x:w*.78,y:h*.06,w:w*.14,h:w*.14,shape:'diamond',fill:F.s('#F7B500'),opacity:.85,rot:20}),
+    tx({x:w*.06,y:h*.9,w:w*.7,h:h*.05,text:'sound on 🔊',size:w*.03,weight:600,color:'#A9B6AF'})
+  ]},
+  {n:'Tutorial Step One',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:-w*.05,y:h*.06,w:w*.6,h:h*.28,text:'01',font:'Archivo Black',size:w*.32,weight:400,color:G,opacity:.9,lh:.85}),
+    tx({x:w*.08,y:h*.36,w:w*.6,h:h*.04,text:'STEP ONE OF THREE',size:w*.026,weight:800,color:DK,ls:3}),
+    tx({x:w*.08,y:h*.42,w:w*.86,h:h*.22,text:'Prep your\nworkspace\nfirst.',font:'Unbounded',size:w*.09,weight:800,color:D,lh:1.08}),
+    sq({x:w*.08,y:h*.86,w:w*.05,h:w*.05,shape:'ellipse',fill:F.s(DK)}),
+    sq({x:w*.16,y:h*.86,w:w*.05,h:w*.05,shape:'ellipse',fill:F.s('#8FA79B'),opacity:.4}),
+    sq({x:w*.24,y:h*.86,w:w*.05,h:w*.05,shape:'ellipse',fill:F.s('#8FA79B'),opacity:.4}),
+    tx({x:w*.08,y:h*.92,w:w*.8,h:h*.04,text:'follow along →',size:w*.028,weight:600,color:'#5A655F'})
+  ]},
+  {n:'Trend Remix Cover',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.5,y:h*.28,w:w*.9,h:w*.9,shape:'burst',fill:F.s(G),opacity:.9}),
+    tx({x:w*.06,y:h*.1,w:w*.88,h:h*.05,text:'EP. 12',size:w*.03,weight:800,color:G,align:'center',ls:4}),
+    tx({x:w*.06,y:h*.34,w:w*.88,h:h*.24,text:'MY VERSION\nOF THE TREND',font:'Anton',size:w*.11,weight:400,color:'#012a1b',align:'center',lh:1.02,rot:-4}),
+    sq({x:w*.42,y:h*.85,w:w*.16,h:h*.03,shape:'chev',fill:F.s('#FF6B35')}),
+    tx({x:w*.06,y:h*.9,w:w*.88,h:h*.05,text:'duet this →',size:w*.032,weight:700,color:W,align:'center'})
+  ]}
+],
+'Pinterest Pin':[
+  {n:'Seven Ways Idea List',r:[1000,1500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(L)}),
+    sq({x:w*.06,y:h*.06,w:w*.88,h:h*.4,fill:F.s(CR),radius:w*.04}),
+    tx({x:w*.1,y:h*.1,w:w*.5,h:h*.05,text:'STYLE GUIDE',size:w*.03,weight:800,color:DK,ls:3}),
+    sq({x:w*.68,y:h*.1,w:w*.18,h:w*.18,shape:'star',fill:F.s('#F7B500'),rot:12}),
+    tx({x:w*.1,y:h*.5,w:w*.8,h:h*.2,text:'7 Ways To Style\na White Tee',font:'Unbounded',size:w*.086,weight:800,color:D,lh:1.12}),
+    tx({x:w*.1,y:h*.7,w:w*.8,h:h*.1,text:'From weekend errands to date night — one shirt, seven looks.',size:w*.032,weight:500,color:'#5A655F',lh:1.5}),
+    sq({x:w*.1,y:h*.86,w:w*.8,h:h*.002,fill:F.s('#A9B6AF')}),
+    tx({x:w*.1,y:h*.9,w:w*.8,h:h*.05,text:'yourbrand.com',size:w*.026,weight:700,color:DK})
+  ]},
+  {n:'Recipe Roundup Card',r:[1000,1500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(W)}),
+    sq({x:0,y:0,w:w,h:h*.34,fill:F.s(DK)}),
+    tx({x:w*.08,y:h*.08,w:w*.5,h:h*.05,text:'RECIPE ROUNDUP',size:w*.028,weight:800,color:G,ls:3}),
+    tx({x:w*.08,y:h*.14,w:w*.84,h:h*.16,text:'5 Weeknight\nPastas',font:'Unbounded',size:w*.09,weight:800,color:W,lh:1.1}),
+    tx({x:w*.08,y:h*.4,w:w*.08,h:h*.05,text:'01',font:'Archivo Black',size:w*.05,weight:400,color:G,align:'center'}),
+    tx({x:w*.18,y:h*.4,w:w*.74,h:h*.05,text:'Brown Butter Sage Gnocchi',size:w*.036,weight:700,color:D}),
+    tx({x:w*.08,y:h*.5,w:w*.08,h:h*.05,text:'02',font:'Archivo Black',size:w*.05,weight:400,color:G,align:'center'}),
+    tx({x:w*.18,y:h*.5,w:w*.74,h:h*.05,text:'Lemon Ricotta Spaghetti',size:w*.036,weight:700,color:D}),
+    tx({x:w*.08,y:h*.6,w:w*.08,h:h*.05,text:'03',font:'Archivo Black',size:w*.05,weight:400,color:G,align:'center'}),
+    tx({x:w*.18,y:h*.6,w:w*.74,h:h*.05,text:'Spicy Vodka Rigatoni',size:w*.036,weight:700,color:D}),
+    tx({x:w*.08,y:h*.88,w:w*.84,h:h*.05,text:'get all 5 recipes →',size:w*.03,weight:700,color:DK})
+  ]},
+  {n:'How To Tutorial Pin',r:[1000,1500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.06,w:w*.6,h:h*.04,text:'PLANT CARE 101',size:w*.028,weight:800,color:DK,ls:3}),
+    tx({x:w*.08,y:h*.11,w:w*.84,h:h*.14,text:'How To Repot\na Monstera',font:'Unbounded',size:w*.08,weight:800,color:D,lh:1.1}),
+    sq({x:w*.08,y:h*.32,w:w*.1,h:w*.1,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.08,y:h*.335,w:w*.1,h:w*.1,text:'1',size:w*.05,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.24,y:h*.33,w:w*.68,h:h*.06,text:'Loosen the roots gently by hand.',size:w*.034,weight:600,color:D,lh:1.3}),
+    sq({x:w*.08,y:h*.44,w:w*.1,h:w*.1,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.08,y:h*.445,w:w*.1,h:w*.1,text:'2',size:w*.05,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.24,y:h*.44,w:w*.68,h:h*.06,text:'Size the new pot two inches wider.',size:w*.034,weight:600,color:D,lh:1.3}),
+    tx({x:w*.24,y:h*.55,w:w*.68,h:h*.06,text:'+ 3 more steps inside',size:w*.03,weight:600,color:'#5A655F'}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'yourbrand.com',size:w*.026,weight:700,color:DK})
+  ]},
+  {n:'Inspirational Quote Pin',r:[1000,1500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.06,y:h*.08,w:w*.3,h:h*.2,text:'"',font:'Playfair Display',size:w*.3,weight:400,color:G,opacity:.5,lh:.8}),
+    tx({x:w*.1,y:h*.32,w:w*.8,h:h*.34,text:'Done is better\nthan perfect —\nship it anyway.',font:'Fraunces',size:w*.078,weight:600,color:W,lh:1.25}),
+    sq({x:w*.1,y:h*.72,w:w*.14,h:h*.004,fill:F.s(G)}),
+    tx({x:w*.1,y:h*.76,w:w*.7,h:h*.05,text:'A REMINDER FOR TODAY',size:w*.026,weight:700,color:'#A9B6AF',ls:3}),
+    tx({x:w*.1,y:h*.9,w:w*.8,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G})
+  ]}
+],
+'YouTube Thumbnail':[
+  {n:'Shocked Reaction Cover',r:[1280,720],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.66,y:0,w:w*.34,h:h,fill:F.s(G)}),
+    sq({x:w*.6,y:h*.1,w:w*.5,h:w*.5,shape:'burst',fill:F.s('#F7B500'),opacity:.9}),
+    sq({x:w*.68,y:h*.08,w:w*.28,h:h*.84,shape:'ellipse',fill:'transparent',stroke:D,strokeW:8}),
+    tx({x:w*.04,y:h*.14,w:w*.58,h:h*.4,text:'NO WAY',font:'Anton',size:w*.11,weight:400,color:W,lh:.95}),
+    tx({x:w*.04,y:h*.58,w:w*.52,h:h*.14,text:'this actually works',size:w*.045,weight:700,color:G,lh:1.2}),
+    sq({x:w*.04,y:h*.84,w:w*.18,h:h*.09,fill:F.s('#E43D6B'),radius:h*.02}),
+    tx({x:w*.04,y:h*.86,w:w*.18,h:h*.06,text:'EP 24',size:w*.028,weight:800,color:W,align:'center'})
+  ]},
+  {n:'Tutorial Walkthrough Cover',r:[1280,720],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(L)}),
+    sq({x:0,y:0,w:w*.02,h:h,fill:F.s(G)}),
+    sq({x:w*.72,y:h*.14,w:w*.22,h:w*.22,shape:'hex',fill:F.s(DK),rot:8}),
+    tx({x:w*.76,y:h*.2,w:w*.14,h:h*.12,text:'NEW',size:w*.03,weight:800,color:W,align:'center'}),
+    tx({x:w*.06,y:h*.16,w:w*.5,h:h*.075,text:'FULL TUTORIAL',size:w*.03,weight:800,color:DK,ls:3}),
+    tx({x:w*.06,y:h*.28,w:w*.6,h:h*.48,text:'Edit\nFaster',font:'Archivo Black',size:w*.13,weight:400,color:D,lh:1}),
+    tx({x:w*.06,y:h*.78,w:w*.55,h:h*.1,text:'no fancy software required',size:w*.036,weight:600,color:'#5A655F'})
+  ]},
+  {n:'Versus Split Comparison',r:[1280,720],f:(w,h)=>[
+    sq({x:0,y:0,w:w*.5,h:h,fill:F.s(D)}),
+    sq({x:w*.5,y:0,w:w*.5,h:h,fill:F.s(G)}),
+    sq({x:w*.46,y:h*.36,w:w*.08,h:w*.08,shape:'diamond',fill:F.s(W)}),
+    tx({x:w*.46,y:h*.375,w:w*.08,h:w*.08,text:'VS',size:w*.026,weight:800,color:D,align:'center'}),
+    tx({x:w*.04,y:h*.1,w:w*.42,h:h*.19,text:'OLD WAY',font:'Anton',size:w*.075,weight:400,color:W,align:'center'}),
+    tx({x:w*.54,y:h*.1,w:w*.42,h:h*.19,text:'NEW WAY',font:'Anton',size:w*.075,weight:400,color:'#012a1b',align:'center'}),
+    tx({x:w*.04,y:h*.78,w:w*.42,h:h*.15,text:'3 hours, every time',size:w*.036,weight:600,color:'#A9B6AF',align:'center'}),
+    tx({x:w*.54,y:h*.78,w:w*.42,h:h*.15,text:'12 minutes, done',size:w*.036,weight:700,color:'#012a1b',align:'center'})
+  ]},
+  {n:'Big Number Stat Cover',r:[1280,720],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.66,y:-h*.1,w:w*.5,h:w*.5,shape:'star',fill:F.s(G),opacity:.15,rot:10}),
+    tx({x:-w*.02,y:h*.06,w:w*.75,h:h*.85,text:'10X',font:'Archivo Black',size:w*.42,weight:400,color:G,lh:.85}),
+    tx({x:w*.58,y:h*.28,w:w*.38,h:h*.2,text:'FASTER GROWTH',size:w*.045,weight:800,color:W,lh:1.15}),
+    tx({x:w*.58,y:h*.52,w:w*.36,h:h*.14,text:'in 90 days, verified',size:w*.03,weight:600,color:'#A9B6AF'}),
+    sq({x:w*.58,y:h*.72,w:w*.2,h:h*.09,fill:F.s('#FF6B35'),radius:h*.02}),
+    tx({x:w*.58,y:h*.74,w:w*.2,h:h*.05,text:'WATCH NOW',size:w*.022,weight:800,color:W,align:'center'})
+  ]}
+],
+'LinkedIn':[
+  {n:'Milestone Update',r:[1200,627],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(W)}),
+    sq({x:0,y:0,w:w*.38,h:h,fill:F.s(DK)}),
+    sq({x:w*.38,y:0,w:w*.006,h:h,fill:F.s(G)}),
+    tx({x:w*.04,y:h*.18,w:w*.3,h:h*.42,text:'05',font:'Archivo Black',size:w*.16,weight:400,color:W,lh:.9,align:'left'}),
+    tx({x:w*.04,y:h*.6,w:w*.3,h:h*.08,text:'YEARS IN BUSINESS',size:w*.021,weight:700,color:G,ls:2,lh:1.3}),
+    tx({x:w*.45,y:h*.12,w:w*.5,h:h*.06,text:'COMPANY MILESTONE',size:w*.02,weight:700,color:DK,ls:3}),
+    tx({x:w*.45,y:h*.24,w:w*.48,h:h*.4,text:'Five years of building alongside our customers.',font:'Unbounded',size:w*.052,weight:700,color:D,lh:1.15}),
+    tx({x:w*.45,y:h*.64,w:w*.48,h:h*.2,text:'Thank you to every client, partner and teammate who got us here. Here is to the next chapter.',size:w*.024,weight:500,color:'#5A655F',lh:1.4}),
+    tx({x:w*.45,y:h*.88,w:w*.4,h:h*.06,text:'yourbrand.com',size:w*.022,weight:700,color:DK})
+  ]},
+  {n:'Industry Insight',r:[1200,627],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.s(DK)}),
+    tx({x:w*.06,y:h*.02,w:w*.4,h:h*.44,text:'“',font:'Fraunces',size:w*.22,weight:400,color:G,lh:1,align:'left',opacity:.55}),
+    tx({x:w*.08,y:h*.3,w:w*.68,h:h*.06,text:'THOUGHT LEADERSHIP',size:w*.02,weight:700,color:DK,ls:3}),
+    tx({x:w*.08,y:h*.4,w:w*.82,h:h*.34,text:'The best teams treat feedback as a product feature, not an afterthought.',font:'Unbounded',size:w*.05,weight:700,color:D,lh:1.2}),
+    tx({x:w*.08,y:h*.82,w:w*.55,h:h*.06,text:'— Jordan Reyes, Head of Product',size:w*.024,weight:600,color:'#5A655F'}),
+    tx({x:w*.7,y:h*.85,w:w*.22,h:h*.07,text:'@yourbrand',size:w*.022,weight:700,color:DK,align:'right'})
+  ]},
+  {n:'Company Page Banner',r:[1584,396],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.72,y:-h*.3,w:w*.35,h:h*1.6,fill:F.s(DK),rot:8}),
+    sq({x:w*.8,y:h*.15,w:h*.5,h:h*.5,shape:'hex',fill:F.s(G),opacity:.85}),
+    sq({x:w*.062,y:h*.44,w:w*.12,h:h*.008,fill:F.s(G)}),
+    tx({x:w*.06,y:h*.22,w:w*.5,h:h*.24,text:'YOUR BRAND',font:'Unbounded',size:w*.045,weight:800,color:W,ls:2}),
+    tx({x:w*.06,y:h*.5,w:w*.5,h:h*.2,text:'Building products people actually want to use.',size:w*.026,weight:500,color:'#A9B6AF',lh:1.4})
+  ]},
+  {n:"Were Hiring Banner",r:[1584,396],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w*.42,h:h,fill:F.s(G)}),
+    tx({x:w*.05,y:h*.28,w:w*.34,h:h*.4,text:"WE'RE\nHIRING",font:'Archivo Black',size:w*.05,weight:400,color:'#012a1b',lh:1.05}),
+    tx({x:w*.05,y:h*.72,w:w*.3,h:h*.1,text:'JOIN THE TEAM',size:w*.02,weight:700,color:'#023a25',ls:3}),
+    tx({x:w*.48,y:h*.22,w:w*.46,h:h*.34,text:'Open roles across engineering, design and sales.',font:'Unbounded',size:w*.022,weight:700,color:D,lh:1.3}),
+    tx({x:w*.48,y:h*.56,w:w*.4,h:h*.2,text:'We are a small team that ships fast and cares about craft.',size:w*.017,weight:500,color:'#5A655F',lh:1.4}),
+    tx({x:w*.48,y:h*.84,w:w*.4,h:h*.11,text:'yourbrand.com/careers',size:w*.019,weight:700,color:DK})
+  ]}
+],
+'Twitter / X':[
+  {n:'Big Announcement',r:[1200,675],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:h*.92,w:w,h:h*.08,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.12,w:w*.5,h:h*.06,text:'ANNOUNCEMENT',size:w*.022,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.28,w:w*.84,h:h*.4,text:"We're live.",font:'Archivo Black',size:w*.15,weight:400,color:W,lh:.95}),
+    tx({x:w*.08,y:h*.76,w:w*.7,h:h*.1,text:'Sign up today and get early access.',size:w*.03,weight:500,color:'#A9B6AF'}),
+    tx({x:w*.7,y:h*.93,w:w*.25,h:h*.05,text:'@yourbrand',size:w*.022,weight:700,color:'#012a1b',align:'right'})
+  ]},
+  {n:'Stat Card',r:[1200,675],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(L)}),
+    tx({x:-w*.05,y:h*.05,w:w*1.1,h:h*.75,text:'3X',font:'Anton',size:w*.5,weight:400,color:DK,align:'center',lh:.85,opacity:.14}),
+    sq({x:w*.08,y:h*.12,w:w*.09,h:h*.012,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.16,w:w*.6,h:h*.06,text:'THE DATA',size:w*.02,weight:800,color:DK,ls:3}),
+    tx({x:w*.08,y:h*.34,w:w*.7,h:h*.32,text:'Teams using async standups ship 3x faster.',font:'Unbounded',size:w*.06,weight:700,color:D,lh:1.15}),
+    tx({x:w*.08,y:h*.82,w:w*.6,h:h*.08,text:'Source: internal survey, 2026',size:w*.022,weight:500,color:'#5A655F'})
+  ]},
+  {n:'Everyday Header',r:[1500,500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(W)}),
+    sq({x:w*.58,y:0,w:w*.42,h:h,fill:F.dot(W,'#A9B6AF',10)}),
+    sq({x:w*.9,y:h*.14,w:h*.16,h:h*.16,shape:'ellipse',fill:F.s(G),opacity:.85}),
+    sq({x:w*.07,y:h*.46,w:w*.07,h:h*.014,fill:F.s(G)}),
+    tx({x:w*.07,y:h*.26,w:w*.46,h:h*.22,text:'yourbrand',font:'Unbounded',size:w*.05,weight:800,color:D}),
+    tx({x:w*.07,y:h*.54,w:w*.42,h:h*.18,text:'Tools for teams who move fast.',size:w*.026,weight:500,color:'#5A655F',lh:1.4})
+  ]},
+  {n:'Launch Moment Header',r:[1500,500],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.g(DK,D,120)}),
+    sq({x:w*.78,y:-h*.2,w:h*.9,h:h*.9,shape:'burst',fill:F.s(G),opacity:.9,rot:12}),
+    tx({x:w*.06,y:h*.2,w:w*.6,h:h*.08,text:'LAUNCHING SOON',size:w*.022,weight:800,color:G,ls:4}),
+    tx({x:w*.06,y:h*.34,w:w*.65,h:h*.4,text:'Something new is coming.',font:'Archivo Black',size:w*.065,weight:400,color:W,lh:1.05}),
+    sq({x:w*.065,y:h*.72,w:w*.05,h:h*.008,fill:F.s(G)}),
+    tx({x:w*.06,y:h*.78,w:w*.4,h:h*.1,text:'AUGUST 12',size:w*.026,weight:700,color:'#A9B6AF',ls:2})
+  ]}
+],
+'Facebook':[
+  {n:'Product Update Share',r:[1200,630],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(W)}),
+    sq({x:w*.58,y:0,w:w*.42,h:h,fill:F.s(DK)}),
+    sq({x:w*.58,y:0,w:w*.42,h:h,fill:F.dot(DK,G,12),opacity:.5}),
+    tx({x:w*.06,y:h*.14,w:w*.46,h:h*.06,text:'PRODUCT UPDATE',size:w*.022,weight:800,color:DK,ls:3}),
+    tx({x:w*.06,y:h*.26,w:w*.46,h:h*.34,text:'Faster dashboards are here.',font:'Unbounded',size:w*.052,weight:700,color:D,lh:1.15}),
+    tx({x:w*.06,y:h*.64,w:w*.44,h:h*.18,text:'Load times cut in half across every workspace, starting today.',size:w*.026,weight:500,color:'#5A655F',lh:1.4}),
+    tx({x:w*.06,y:h*.88,w:w*.4,h:h*.06,text:'Learn more at yourbrand.com',size:w*.022,weight:700,color:DK})
+  ]},
+  {n:'Event Promo Post',r:[1200,630],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.06,y:h*.12,w:h*.28,h:h*.28,shape:'diamond',fill:F.s(G)}),
+    tx({x:w*.06,y:h*.22,w:h*.28,h:h*.06,text:'SEP 18',size:w*.02,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.35,y:h*.16,w:w*.58,h:h*.08,text:"YOU'RE INVITED",size:w*.022,weight:800,color:G,ls:3}),
+    tx({x:w*.35,y:h*.28,w:w*.58,h:h*.36,text:'Customer Meetup: Fall Edition',font:'Unbounded',size:w*.046,weight:700,color:W,lh:1.2}),
+    tx({x:w*.35,y:h*.66,w:w*.55,h:h*.14,text:'6:00 PM · Downtown Loft · Food and drinks provided',size:w*.024,weight:500,color:'#A9B6AF',lh:1.4}),
+    tx({x:w*.35,y:h*.86,w:w*.4,h:h*.06,text:'RSVP at yourbrand.com/events',size:w*.022,weight:700,color:G})
+  ]},
+  {n:'Brand Cover',r:[820,312],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.g(DK,D,100)}),
+    sq({x:w*.82,y:-h*.3,w:h*.9,h:h*.9,shape:'hex',fill:F.s(G),opacity:.85}),
+    tx({x:w*.32,y:h*.16,w:w*.6,h:h*.07,text:'EST. 2020',size:w*.018,weight:700,color:G,ls:3,align:'center'}),
+    tx({x:w*.32,y:h*.28,w:w*.6,h:h*.2,text:'YOUR BRAND',font:'Unbounded',size:w*.05,weight:800,color:W,align:'center'}),
+    sq({x:w*.46,y:h*.5,w:w*.08,h:h*.012,fill:F.s(G)}),
+    tx({x:w*.32,y:h*.56,w:w*.6,h:h*.16,text:'Design tools for growing teams',size:w*.024,weight:500,color:'#A9B6AF',align:'center'})
+  ]},
+  {n:'Seasonal Promo Cover',r:[820,312],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:w*.7,y:h*.1,w:h*.85,h:h*.85,shape:'burst',fill:F.s('#FF6B35'),rot:8}),
+    tx({x:w*.72,y:h*.32,w:h*.6,h:h*.28,text:'SALE',font:'Archivo Black',size:w*.042,weight:400,color:W,align:'center',lh:1}),
+    tx({x:w*.06,y:h*.14,w:w*.5,h:h*.1,text:'END OF SUMMER',size:w*.022,weight:800,color:DK,ls:3}),
+    tx({x:w*.06,y:h*.26,w:w*.6,h:h*.12,text:'Up to 30% off sitewide',font:'Unbounded',size:w*.038,weight:700,color:D,lh:1.15}),
+    tx({x:w*.4,y:h*.86,w:w*.5,h:h*.08,text:'Ends Sunday · yourbrand.com',size:w*.02,weight:600,color:'#5A655F',align:'right'})
+  ]}
+],
+'Product Launch':[
+  {n:'New Product Reveal',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:-w*.15,y:h*.6,w:w*1.3,h:h*.015,fill:F.g(G,DK,90)}),
+    tx({x:w*.08,y:h*.12,w:w*.5,h:h*.06,text:'INTRODUCING',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.22,w:w*.86,h:h*.32,text:"Say hello to\nwhat's next.",font:'Archivo Black',size:w*.1,weight:400,color:W,lh:1.02}),
+    tx({x:w*.08,y:h*.66,w:w*.8,h:h*.1,text:'The all-in-one workspace for teams who ship.',size:w*.03,weight:500,color:'#A9B6AF',lh:1.4}),
+    sq({x:w*.08,y:h*.84,w:w*.32,h:h*.08,radius:h*.04,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.862,w:w*.32,h:h*.06,text:'SHOP NOW',size:w*.024,weight:800,color:'#012a1b',align:'center',ls:1})
+  ]},
+  {n:'Feature Spotlight',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(L)}),
+    sq({x:0,y:0,w:w,h:h*.46,fill:F.s(DK)}),
+    sq({x:w*.5,y:h*.14,w:h*.22,h:h*.22,shape:'hex',fill:F.s(G),rot:-6}),
+    tx({x:w*.08,y:h*.15,w:w*.4,h:h*.06,text:'FEATURE SPOTLIGHT',size:w*.022,weight:800,color:G,ls:3}),
+    tx({x:w*.08,y:h*.25,w:w*.4,h:h*.16,text:'Real-time sync',font:'Unbounded',size:w*.046,weight:700,color:W,lh:1.15}),
+    tx({x:w*.08,y:h*.54,w:w*.8,h:h*.22,text:'Every change appears instantly across every device, for every teammate, with zero setup.',size:w*.034,weight:500,color:'#5A655F',lh:1.45}),
+    tx({x:w*.08,y:h*.86,w:w*.5,h:h*.06,text:'yourbrand.com',size:w*.024,weight:700,color:DK})
+  ]},
+  {n:'Coming Soon Teaser',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.7,y:h*.06,w:h*.18,h:h*.18,shape:'star',fill:F.s('#F7B500'),rot:10}),
+    tx({x:w*.08,y:h*.3,w:w*.7,h:h*.08,text:'COMING SOON',size:w*.03,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.4,w:w*.86,h:h*.3,text:'Something\nbig is brewing.',font:'Archivo Black',size:w*.1,weight:400,color:W,lh:1.05}),
+    tx({x:w*.08,y:h*.74,w:w*.7,h:h*.08,text:'Pre-order opens September 1st.',size:w*.03,weight:500,color:'#A9B6AF'}),
+    tx({x:w*.08,y:h*.86,w:w*.6,h:h*.06,text:'Reserve yours at yourbrand.com',size:w*.024,weight:700,color:'#F7B500'})
+  ]},
+  {n:'Unboxing Moment',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:w*.08,y:h*.06,w:w*.84,h:h*.56,radius:h*.02,fill:F.s(L),stroke:'#A9B6AF',strokeW:2}),
+    tx({x:w*.08,y:h*.3,w:w*.84,h:h*.06,text:'YOUR PRODUCT PHOTO',size:w*.022,weight:600,color:'#8D9793',align:'center',ls:2}),
+    tx({x:w*.08,y:h*.66,w:w*.84,h:h*.05,text:'THE UNBOXING',size:w*.024,weight:800,color:DK,ls:3}),
+    sq({x:w*.08,y:h*.72,w:w*.1,h:h*.008,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.76,w:w*.84,h:h*.14,text:'Every detail, considered.',font:'Unbounded',size:w*.058,weight:700,color:D,lh:1.15}),
+    tx({x:w*.08,y:h*.92,w:w*.84,h:h*.06,text:'From the box to the first tap, made to feel like a gift.',size:w*.028,weight:500,color:'#5A655F',lh:1.4})
+  ]},
+  {n:'Limited Edition Drop',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w,h:h*.4,fill:F.str(D,DK,14,45)}),
+    sq({x:w*.08,y:h*.08,w:w*.42,h:h*.05,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.088,w:w*.42,h:h*.04,text:'LIMITED RESTOCK',size:w*.02,weight:800,color:'#012a1b',align:'center',ls:1}),
+    tx({x:w*.08,y:h*.44,w:w*.86,h:h*.28,text:'Back in stock.\nNot for long.',font:'Archivo Black',size:w*.1,weight:400,color:W,lh:1.05}),
+    tx({x:w*.08,y:h*.76,w:w*.8,h:h*.1,text:'The sold-out favorite returns for one week only.',size:w*.03,weight:500,color:'#A9B6AF',lh:1.4}),
+    sq({x:w*.08,y:h*.88,w:w*.42,h:h*.06,radius:h*.03,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.895,w:w*.42,h:h*.04,text:'SHOP THE DROP',size:w*.02,weight:800,color:'#012a1b',align:'center',ls:1})
+  ]}
+],
+'Tips & How-To':[
+  {n:'Tip Of The Day',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:-w*.06,y:-h*.06,w:w*.9,h:h*.5,text:'01',font:'Archivo Black',size:w*.55,weight:400,color:DK,lh:.8,align:'left',opacity:.1}),
+    sq({x:w*.08,y:h*.115,w:w*.12,h:h*.012,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.15,w:w*.7,h:h*.04,text:'TIP #1',size:w*.028,weight:800,color:DK,ls:4}),
+    tx({x:w*.08,y:h*.22,w:w*.84,h:h*.3,text:'Batch your replies twice a day instead of checking messages all day.',font:'Unbounded',size:w*.072,weight:700,color:D,lh:1.15}),
+    tx({x:w*.08,y:h*.58,w:w*.8,h:h*.14,text:'Set two fixed windows, morning and late afternoon, and you will reclaim hours without missing a thing.',size:w*.03,weight:500,color:'#5A655F',lh:1.4}),
+    sq({x:w*.08,y:h*.865,w:w*.032,h:w*.032,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.135,y:h*.86,w:w*.6,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:D})
+  ]},
+  {n:'Three Step Fix',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.07,w:w*.8,h:h*.03,text:'HOW IT WORKS',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.11,w:w*.84,h:h*.1,text:'Three steps to a calmer inbox',font:'Unbounded',size:w*.06,weight:700,color:W,lh:1.15}),
+    sq({x:w*.08,y:h*.3,w:w*.045,h:w*.045,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.19,y:h*.293,w:w*.73,h:h*.08,text:'1 — Unsubscribe from the noise. Kill newsletters you skim, not read.',size:w*.032,weight:600,color:W,lh:1.4}),
+    sq({x:w*.08,y:h*.47,w:w*.045,h:w*.045,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.19,y:h*.463,w:w*.73,h:h*.08,text:'2 — Sort with two folders, not twelve. Needs reply, everything else.',size:w*.032,weight:600,color:W,lh:1.4}),
+    sq({x:w*.08,y:h*.64,w:w*.045,h:w*.045,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.19,y:h*.633,w:w*.73,h:h*.08,text:'3 — Set a hard stop at 5pm. Whatever is left waits until tomorrow.',size:w*.032,weight:600,color:W,lh:1.4}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G})
+  ]},
+  {n:'Do This Not That',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w*.5,h:h*.88,fill:F.s(W)}),
+    sq({x:w*.5,y:0,w:w*.5,h:h*.88,fill:F.s(D)}),
+    sq({x:w*.495,y:0,w:w*.01,h:h*.88,fill:F.s(G)}),
+    tx({x:w*.06,y:h*.06,w:w*.4,h:h*.09,text:'DO',font:'Archivo Black',size:w*.07,weight:400,color:DK}),
+    tx({x:w*.56,y:h*.06,w:w*.4,h:h*.09,text:"DON'T",font:'Archivo Black',size:w*.062,weight:400,color:'#E43D6B'}),
+    tx({x:w*.06,y:h*.22,w:w*.4,h:h*.6,text:'✓ Post consistently, even if imperfect\n\n✓ Reply to every comment in the first hour\n\n✓ Save your best hook for the first line',size:w*.03,weight:600,color:D,lh:1.6}),
+    tx({x:w*.56,y:h*.22,w:w*.4,h:h*.6,text:'✗ Delete a post because it flopped\n\n✗ Buy followers to look bigger\n\n✗ Copy a trend without your own spin',size:w*.03,weight:600,color:'#A9B6AF',lh:1.6}),
+    tx({x:0,y:h*.91,w:w,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:D,align:'center'})
+  ]},
+  {n:'Pre Launch Checklist',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:w*.68,y:-h*.04,w:w*.46,h:w*.46,shape:'blob',fill:F.g(G,DK,135),opacity:.22}),
+    tx({x:w*.08,y:h*.07,w:w*.8,h:h*.03,text:'PRE-LAUNCH CHECKLIST',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.105,w:w*.84,h:h*.13,text:'Three things to check before you hit publish',font:'Unbounded',size:w*.062,weight:700,color:W,lh:1.15}),
+    sq({x:w*.08,y:h*.42,w:w*.07,h:w*.07,radius:w*.014,fill:F.s(G)}),
+    tx({x:w*.22,y:h*.428,w:w*.7,h:h*.06,text:'✓ Preview it on mobile, that is where most people read first',size:w*.03,weight:600,color:W,lh:1.35}),
+    sq({x:w*.08,y:h*.53,w:w*.07,h:w*.07,radius:w*.014,fill:F.s(G)}),
+    tx({x:w*.22,y:h*.538,w:w*.7,h:h*.06,text:'✓ Double-check the link actually works',size:w*.03,weight:600,color:W,lh:1.35}),
+    sq({x:w*.08,y:h*.64,w:w*.07,h:w*.07,radius:w*.014,fill:F.s(G)}),
+    tx({x:w*.22,y:h*.648,w:w*.7,h:h*.06,text:'✓ Read it out loud once before scheduling',size:w*.03,weight:600,color:W,lh:1.35}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G})
+  ]},
+  {n:'Quick Win',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.1,w:w*.84,h:h*.04,text:'QUICK WIN',size:w*.028,weight:800,color:'#012a1b',ls:4,align:'center'}),
+    tx({x:w*.06,y:h*.38,w:w*.88,h:h*.28,text:'Reply first,\nsell second.',font:'Unbounded',size:w*.11,weight:800,color:D,lh:1.08,align:'center'}),
+    tx({x:w*.1,y:h*.66,w:w*.8,h:h*.06,text:'Comments before pitches, always.',size:w*.032,weight:600,color:'#023a25',align:'center'}),
+    sq({x:w*.47,y:h*.76,w:w*.06,h:w*.06,shape:'ellipse',fill:F.s('#F7B500')}),
+    tx({x:w*.1,y:h*.88,w:w*.8,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:D,align:'center'})
+  ]}
+],
+'Behind the Scenes':[
+  {n:'Meet The Team',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(L)}),
+    sq({x:w*.06,y:h*.06,w:w*.52,h:h*.88,radius:h*.02,fill:F.s(CR),stroke:'#A9B6AF',strokeW:2}),
+    tx({x:w*.64,y:h*.1,w:w*.32,h:h*.04,text:'BEHIND THE SCENES',size:w*.024,weight:800,color:DK,ls:3}),
+    tx({x:w*.64,y:h*.16,w:w*.32,h:h*.24,text:'The five of us, most Tuesdays.',font:'Unbounded',size:w*.052,weight:700,color:D,lh:1.2}),
+    sq({x:w*.64,y:h*.42,w:w*.09,h:h*.008,fill:F.s(G)}),
+    tx({x:w*.64,y:h*.46,w:w*.32,h:h*.22,text:'Coffee, spreadsheets, and way too many sticky notes.',size:w*.03,weight:500,color:'#5A655F',lh:1.5}),
+    sq({x:w*.64,y:h*.84,w:w*.026,h:w*.026,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.69,y:h*.834,w:w*.28,h:h*.05,text:'@yourbrand',size:w*.026,weight:700,color:D})
+  ]},
+  {n:'How Its Made',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(W)}),
+    sq({x:0,y:0,w:w,h:h*.55,fill:F.s(CR)}),
+    sq({x:0,y:h*.55,w:w,h:h*.008,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.6,w:w*.8,h:h*.03,text:'OUR PROCESS',size:w*.026,weight:800,color:DK,ls:4}),
+    tx({x:w*.08,y:h*.64,w:w*.84,h:h*.13,text:'Every piece starts as a rough sketch.',font:'Unbounded',size:w*.062,weight:700,color:D,lh:1.15}),
+    tx({x:w*.08,y:h*.78,w:w*.8,h:h*.13,text:'From there it moves through three pairs of hands before it ever reaches a shelf, each one checking the last.',size:w*.03,weight:500,color:'#5A655F',lh:1.5}),
+    sq({x:w*.86,y:h*.62,w:w*.06,h:w*.06,shape:'diamond',fill:F.s(G),rot:8}),
+    tx({x:w*.08,y:h*.94,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.026,weight:700,color:DK})
+  ]},
+  {n:'A Day In The Life',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.07,w:w*.8,h:h*.04,text:'DAY IN THE LIFE',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.11,w:w*.84,h:h*.13,text:'What actually happens between 9 and 5.',font:'Unbounded',size:w*.058,weight:700,color:W,lh:1.18}),
+    tx({x:w*.08,y:h*.28,w:w*.84,h:h*.14,text:'Open the shutters, brew the good coffee, and answer the messages that came in overnight.',size:w*.03,weight:500,color:'#A9B6AF',lh:1.5}),
+    sq({x:w*.06,y:h*.5,w:w*.27,h:h*.42,radius:h*.02,fill:F.s(CR)}),
+    sq({x:w*.365,y:h*.5,w:w*.27,h:h*.42,radius:h*.02,fill:F.s(CR)}),
+    sq({x:w*.67,y:h*.5,w:w*.27,h:h*.42,radius:h*.02,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.93,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G}),
+    tx({x:0,y:h*.965,w:w,h:h*.03,text:'MORNING · MIDDAY · CLOSE',size:w*.02,weight:700,color:'#5E7269',ls:3,align:'center'})
+  ]}
+],
+'Milestone & Celebration':[
+  {n:'50K Followers',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.g(DK,D,135)}),
+    sq({x:w*.28,y:h*.18,w:w*.44,h:w*.44,shape:'burst',fill:F.s(G),opacity:.14}),
+    sq({x:w*.1,y:h*.1,w:w*.09,h:w*.09,shape:'star',fill:F.s('#F7B500'),rot:12}),
+    sq({x:w*.82,y:h*.76,w:w*.08,h:w*.08,shape:'triangle',fill:F.s('#F7B500'),rot:-18}),
+    sq({x:w*.8,y:h*.1,w:w*.07,h:w*.07,shape:'diamond',fill:F.s(G),rot:10}),
+    tx({x:w*.08,y:h*.26,w:w*.84,h:h*.04,text:'MILESTONE UNLOCKED',size:w*.026,weight:800,color:G,ls:4,align:'center'}),
+    tx({x:w*.05,y:h*.34,w:w*.9,h:h*.24,text:'50,000',font:'Archivo Black',size:w*.16,weight:400,color:W,align:'center',lh:1}),
+    tx({x:w*.1,y:h*.6,w:w*.8,h:h*.08,text:'followers strong, thank you for growing with us.',size:w*.032,weight:600,color:'#A9B6AF',align:'center',lh:1.4}),
+    tx({x:w*.1,y:h*.88,w:w*.8,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G,align:'center'})
+  ]},
+  {n:'Five Year Anniversary',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.07,w:w*.84,h:h*.03,text:'CELEBRATING',size:w*.026,weight:800,color:DK,ls:4,align:'center'}),
+    tx({x:w*.08,y:h*.105,w:w*.84,h:h*.09,text:'Five years in business today.',font:'Unbounded',size:w*.05,weight:700,color:D,lh:1.2,align:'center'}),
+    sq({x:w*.25,y:h*.26,w:w*.5,h:w*.5,shape:'hex',fill:F.g(G,DK,135)}),
+    tx({x:w*.25,y:h*.4,w:w*.5,h:w*.18,text:'5',font:'Archivo Black',size:w*.16,weight:400,color:W,align:'center',lh:1}),
+    tx({x:w*.25,y:h*.55,w:w*.5,h:h*.04,text:'YEARS',size:w*.03,weight:800,color:'#012a1b',align:'center',ls:4}),
+    sq({x:w*.1,y:h*.24,w:w*.07,h:w*.07,shape:'star',fill:F.s('#E43D6B'),rot:-12}),
+    sq({x:w*.83,y:h*.72,w:w*.06,h:w*.06,shape:'triangle',fill:F.s('#E43D6B'),rot:20}),
+    tx({x:w*.08,y:h*.82,w:w*.84,h:h*.09,text:"Here's to the next five, thank you for being part of the story.",size:w*.03,weight:500,color:'#5A655F',lh:1.5,align:'center'}),
+    tx({x:w*.08,y:h*.93,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.026,weight:700,color:DK,align:'center'})
+  ]},
+  {n:'Award Announcement',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.g(G,DK,90)}),
+    sq({x:w*.14,y:h*.36,w:w*.08,h:w*.08,shape:'star',fill:F.s('#F7B500'),rot:-10}),
+    sq({x:w*.78,y:h*.36,w:w*.08,h:w*.08,shape:'star',fill:F.s('#F7B500'),rot:10}),
+    tx({x:w*.08,y:h*.16,w:w*.84,h:h*.04,text:'AWARD WINNING',size:w*.026,weight:800,color:G,ls:4,align:'center'}),
+    tx({x:w*.1,y:h*.24,w:w*.8,h:h*.15,text:'We just won "Studio of the Year."',font:'Unbounded',size:w*.06,weight:700,color:W,lh:1.2,align:'center'}),
+    tx({x:w*.14,y:h*.58,w:w*.72,h:h*.1,text:'As featured in Industry Weekly, thank you for the recognition.',size:w*.03,weight:500,color:'#A9B6AF',lh:1.5,align:'center'}),
+    tx({x:w*.1,y:h*.88,w:w*.8,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:G,align:'center'})
+  ]},
+  {n:'Thank You Customers',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(G)}),
+    sq({x:w*.1,y:h*.08,w:w*.08,h:w*.08,shape:'triangle',fill:F.s('#F7B500'),rot:-16}),
+    sq({x:w*.8,y:h*.85,w:w*.09,h:w*.09,shape:'diamond',fill:F.s('#F7B500'),rot:14}),
+    tx({x:w*.1,y:h*.18,w:w*.8,h:h*.03,text:'TO OUR CUSTOMERS',size:w*.026,weight:800,color:'#012a1b',ls:4,align:'center'}),
+    tx({x:w*.06,y:h*.24,w:w*.88,h:h*.18,text:'Thank You',font:'Archivo Black',size:w*.11,weight:400,color:D,align:'center',lh:1}),
+    tx({x:w*.1,y:h*.43,w:w*.8,h:h*.07,text:'— from all of us',font:'Caveat',size:w*.05,weight:600,color:'#023a25',align:'center',italic:true}),
+    tx({x:w*.12,y:h*.55,w:w*.76,h:h*.16,text:'We hit this milestone because you showed up, shared, and told a friend. That means everything.',size:w*.032,weight:600,color:'#012a1b',lh:1.5,align:'center'}),
+    tx({x:w*.1,y:h*.9,w:w*.8,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:D,align:'center'})
+  ]}
+],
+'Countdown':[
+  {n:'Three Days Left',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.06,y:h*.06,w:w*.5,h:h*.04,text:'yourbrand.com',size:w*.024,weight:600,color:'#8D9793'}),
+    tx({x:w*.05,y:h*.18,w:w*.9,h:h*.4,text:'3',font:'Archivo Black',size:w*.42,weight:400,color:G,align:'center',lh:.9}),
+    tx({x:w*.08,y:h*.56,w:w*.84,h:h*.05,text:'DAYS LEFT',size:w*.036,weight:800,color:W,ls:6,align:'center'}),
+    tx({x:w*.1,y:h*.65,w:w*.8,h:h*.09,text:'Doors close Friday at midnight.',font:'Unbounded',size:w*.042,weight:700,color:W,align:'center',lh:1.2}),
+    sq({x:w*.24,y:h*.8,w:w*.52,h:h*.1,fill:F.s('#FF6B35'),radius:h*.05}),
+    tx({x:w*.24,y:h*.828,w:w*.52,h:h*.05,text:"Don't wait, link in bio",size:w*.03,weight:800,color:D,align:'center'})
+  ]},
+  {n:'Launching Soon',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.08,w:w*.84,h:h*.03,text:'LAUNCHING SOON',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.12,w:w*.84,h:h*.14,text:'Something new is almost here.',font:'Unbounded',size:w*.062,weight:700,color:W,lh:1.2}),
+    sq({x:w*.08,y:h*.54,w:w*.25,h:w*.25,radius:w*.03,fill:F.s(W),opacity:.08,stroke:G,strokeW:1}),
+    tx({x:w*.08,y:h*.585,w:w*.25,h:w*.14,text:'07\nDAYS',size:w*.042,weight:800,color:W,align:'center',lh:1.25}),
+    sq({x:w*.375,y:h*.54,w:w*.25,h:w*.25,radius:w*.03,fill:F.s(W),opacity:.08,stroke:G,strokeW:1}),
+    tx({x:w*.375,y:h*.585,w:w*.25,h:w*.14,text:'14\nHRS',size:w*.042,weight:800,color:W,align:'center',lh:1.25}),
+    sq({x:w*.67,y:h*.54,w:w*.25,h:w*.25,radius:w*.03,fill:F.s(W),opacity:.08,stroke:G,strokeW:1}),
+    tx({x:w*.67,y:h*.585,w:w*.25,h:w*.14,text:'32\nMIN',size:w*.042,weight:800,color:W,align:'center',lh:1.25}),
+    tx({x:w*.08,y:h*.92,w:w*.84,h:h*.04,text:'yourbrand.com',size:w*.026,weight:600,color:'#8D9793'})
+  ]},
+  {n:'Final Hours',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:-w*.15,y:h*.06,w:w*1.3,h:h*.4,text:'11:59',font:'Archivo Black',size:w*.24,weight:400,color:W,align:'center',opacity:.12,lh:.9}),
+    sq({x:-w*.1,y:h*.42,w:w*1.2,h:h*.14,fill:F.s('#E43D6B'),rot:-6}),
+    tx({x:-w*.1,y:h*.452,w:w*1.2,h:h*.08,text:'FINAL HOURS',size:w*.06,weight:900,color:W,align:'center',rot:-6,ls:2}),
+    tx({x:w*.1,y:h*.63,w:w*.8,h:h*.1,text:'This ends tonight.',font:'Unbounded',size:w*.05,weight:700,color:W,align:'center'}),
+    tx({x:w*.14,y:h*.74,w:w*.72,h:h*.08,text:"After midnight, it's gone for good.",size:w*.03,weight:500,color:'#A9B6AF',align:'center',lh:1.4}),
+    sq({x:w*.1,y:h*.86,w:w*.06,h:w*.06,shape:'triangle',fill:F.s('#E43D6B'),rot:20}),
+    tx({x:w*.1,y:h*.92,w:w*.8,h:h*.05,text:'yourbrand.com',size:w*.026,weight:600,color:'#8D9793',align:'center'})
+  ]}
+],
+'Poll & Engagement':[
+  {n:'This or That',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w*.5,h:h,fill:F.g(G,DK,135)}),
+    sq({x:w*.5,y:0,w:w*.5,h:h,fill:F.s(CR)}),
+    sq({x:w*.485,y:0,w:w*.03,h:h,fill:F.s(D)}),
+    tx({x:0,y:h*.08,w:w,h:h*.06,text:'PICK YOUR SIDE',font:'Hanken Grotesk',size:w*.028,weight:800,color:W,align:'center',ls:5}),
+    sq({x:w*.41,y:h*.42,w:w*.18,h:w*.18,shape:'ellipse',fill:F.s(D),stroke:W,strokeW:4}),
+    tx({x:w*.41,y:h*.465,w:w*.18,h:w*.1,text:'VS',font:'Archivo Black',size:w*.045,weight:400,color:W,align:'center'}),
+    tx({x:w*.04,y:h*.62,w:w*.42,h:h*.15,text:'COFFEE',font:'Archivo Black',size:w*.1,weight:400,color:'#012a1b',align:'center',lh:1}),
+    tx({x:w*.54,y:h*.62,w:w*.42,h:h*.15,text:'TEA',font:'Archivo Black',size:w*.1,weight:400,color:D,align:'center',lh:1}),
+    tx({x:0,y:h*.87,w:w,h:h*.06,text:"Comment A or B — we're counting votes all week",size:w*.024,weight:600,color:W,align:'center'}),
+    tx({x:w*.5,y:h*.93,w:w*.42,h:h*.05,text:'@yourbrand',size:w*.024,weight:700,color:G,align:'right'})
+  ]},
+  {n:'Fill In The Blank',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.s('#FF6B35')}),
+    sq({x:-w*.2,y:-h*.06,w:w*.5,h:w*.5,shape:'ellipse',fill:F.s(G),opacity:.15}),
+    tx({x:w*.08,y:h*.1,w:w*.84,h:h*.04,text:'FILL IN THE BLANK',size:w*.026,weight:800,color:DK,ls:5}),
+    tx({x:w*.08,y:h*.18,w:w*.84,h:h*.3,text:'My go-to productivity\nhack is _______________.',font:'Unbounded',size:w*.08,weight:700,color:D,lh:1.25}),
+    tx({x:w*.08,y:h*.52,w:w*.8,h:h*.1,text:"Drop your answer below — we'll feature our favorites next week.",size:w*.03,weight:500,color:'#5A655F',lh:1.4}),
+    sq({x:w*.08,y:h*.68,w:w*.62,h:h*.07,radius:h*.035,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.68,w:w*.62,h:h*.07,text:'COMMENT YOUR ANSWER',size:w*.026,weight:800,color:W,align:'center',ls:2}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.028,weight:700,color:DK})
+  ]},
+  {n:'Rate This 1-5',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:0,y:h*.1,w:w,h:h*.05,text:'QUICK POLL',size:w*.026,weight:800,color:G,align:'center',ls:5}),
+    tx({x:w*.08,y:h*.18,w:w*.84,h:h*.22,text:'Rate this Monday\nmotivation',font:'Archivo Black',size:w*.085,weight:400,color:W,align:'center',lh:1.05}),
+    sq({x:w*.08,y:h*.48,w:w*.14,h:w*.14,shape:'star',fill:F.s(G)}),
+    sq({x:w*.265,y:h*.48,w:w*.14,h:w*.14,shape:'star',fill:F.s(G)}),
+    sq({x:w*.45,y:h*.48,w:w*.14,h:w*.14,shape:'star',fill:F.s(G)}),
+    sq({x:w*.635,y:h*.48,w:w*.14,h:w*.14,shape:'star',fill:F.s(G)}),
+    sq({x:w*.82,y:h*.48,w:w*.14,h:w*.14,shape:'star',fill:F.s(G)}),
+    tx({x:0,y:h*.68,w:w,h:h*.05,text:'1 = meh   ·   5 = amazing',size:w*.03,weight:600,color:'#A9B6AF',align:'center'}),
+    tx({x:0,y:h*.78,w:w,h:h*.07,text:'Comment your score below',font:'Unbounded',size:w*.038,weight:700,color:'#FF6B35',align:'center'}),
+    tx({x:w*.5,y:h*.9,w:w*.42,h:h*.05,text:'@yourbrand',size:w*.024,weight:700,color:W,align:'right'})
+  ]},
+  {n:'Caption This',r:[1080,1920],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.06,w:w*.84,h:h*.04,text:'CAPTION CONTEST',size:w*.026,weight:800,color:DK,ls:5}),
+    tx({x:w*.08,y:h*.11,w:w*.84,h:h*.1,text:'Caption This',font:'Unbounded',size:w*.1,weight:700,color:D}),
+    sq({x:w*.08,y:h*.24,w:w*.84,h:h*.42,radius:h*.02,fill:F.s(L),stroke:DK,strokeW:3}),
+    tx({x:w*.08,y:h*.43,w:w*.84,h:h*.06,text:'YOUR IMAGE GOES HERE',size:w*.028,weight:700,color:'#8D9793',align:'center',ls:3}),
+    sq({x:w*.55,y:h*.68,w:w*.37,h:h*.14,shape:'blob',fill:F.s('#FF6B35')}),
+    tx({x:w*.58,y:h*.71,w:w*.31,h:h*.08,text:'Best caption wins a shoutout!',size:w*.024,weight:700,color:W,lh:1.3}),
+    tx({x:w*.08,y:h*.86,w:w*.84,h:h*.06,text:'Drop your caption below',font:'Unbounded',size:w*.042,weight:700,color:D}),
+    tx({x:w*.08,y:h*.93,w:w*.5,h:h*.04,text:'@yourbrand',size:w*.026,weight:700,color:DK})
+  ]}
+],
+'Before & After':[
+  {n:'Split Screen Results',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w*.5,h:h,fill:F.s('#5A655F')}),
+    sq({x:w*.5,y:0,w:w*.5,h:h,fill:F.g(G,DK,135)}),
+    sq({x:w*.485,y:0,w:w*.03,h:h,fill:F.s(W)}),
+    sq({x:w*.06,y:h*.06,w:w*.28,h:h*.07,radius:h*.035,fill:F.s(D)}),
+    tx({x:w*.06,y:h*.06,w:w*.28,h:h*.07,text:'BEFORE',size:w*.026,weight:800,color:W,align:'center',ls:2}),
+    sq({x:w*.66,y:h*.06,w:w*.28,h:h*.07,radius:h*.035,fill:F.s(W)}),
+    tx({x:w*.66,y:h*.06,w:w*.28,h:h*.07,text:'AFTER',size:w*.026,weight:800,color:D,align:'center',ls:2}),
+    sq({x:w*.44,y:h*.44,w:w*.12,h:w*.12,shape:'arrow',fill:F.s(W)}),
+    sq({x:0,y:h*.82,w:w,h:h*.18,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.86,w:w*.6,h:h*.1,text:'6 weeks. Same team. A completely different result.',size:w*.03,weight:700,color:W,lh:1.3}),
+    tx({x:w*.68,y:h*.9,w:w*.26,h:h*.05,text:'@yourbrand',size:w*.022,weight:700,color:G,align:'right'})
+  ]},
+  {n:'Diagonal Transformation',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s('#5A655F')}),
+    sq({x:w*.1,y:-h*.55,w:w*1.3,h:h*1.3,rot:45,fill:F.g(G,DK,135)}),
+    sq({x:w*.66,y:h*.07,w:w*.28,h:h*.07,radius:h*.035,fill:F.s(W)}),
+    tx({x:w*.66,y:h*.07,w:w*.28,h:h*.07,text:'AFTER',size:w*.026,weight:800,color:D,align:'center',ls:2}),
+    sq({x:w*.06,y:h*.07,w:w*.3,h:h*.07,radius:h*.035,fill:F.s(D)}),
+    tx({x:w*.06,y:h*.07,w:w*.3,h:h*.07,text:'BEFORE',size:w*.026,weight:800,color:W,align:'center',ls:2}),
+    sq({x:0,y:h*.8,w:w,h:h*.2,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.83,w:w*.84,h:h*.1,text:'Same business. Six months later.',font:'Unbounded',size:w*.048,weight:700,color:W,lh:1.2}),
+    tx({x:w*.08,y:h*.93,w:w*.58,h:h*.05,text:'Swipe through the full transformation in comments',size:w*.022,weight:500,color:'#A9B6AF'}),
+    tx({x:w*.68,y:h*.93,w:w*.26,h:h*.05,text:'@yourbrand',size:w*.022,weight:700,color:G,align:'right'})
+  ]},
+  {n:'Results Card',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:w*.08,y:h*.1,w:w*.84,h:h*.8,radius:w*.04,fill:F.s(W),sh:{on:true,x:0,y:22,blur:44,c:'#0a0f0d33'}}),
+    tx({x:w*.14,y:h*.16,w:w*.72,h:h*.05,text:'THE RESULTS',size:w*.026,weight:800,color:DK,ls:5,align:'center'}),
+    tx({x:w*.14,y:h*.22,w:w*.72,h:h*.14,text:'3 months of consistent posting',font:'Unbounded',size:w*.048,weight:700,color:D,align:'center',lh:1.2}),
+    tx({x:w*.14,y:h*.42,w:w*.3,h:h*.05,text:'BEFORE',size:w*.024,weight:800,color:'#8D9793',align:'center',ls:2}),
+    tx({x:w*.14,y:h*.47,w:w*.3,h:h*.16,text:'1.2K',font:'Archivo Black',size:w*.1,weight:400,color:D,align:'center'}),
+    sq({x:w*.46,y:h*.5,w:w*.08,h:w*.08,shape:'arrow',fill:F.s('#FF6B35')}),
+    tx({x:w*.56,y:h*.42,w:w*.3,h:h*.05,text:'AFTER',size:w*.024,weight:800,color:DK,align:'center',ls:2}),
+    tx({x:w*.56,y:h*.47,w:w*.3,h:h*.16,text:'4.8K',font:'Archivo Black',size:w*.1,weight:400,color:G,align:'center'}),
+    tx({x:w*.14,y:h*.68,w:w*.72,h:h*.08,text:'Followers gained through daily, consistent content.',size:w*.026,weight:500,color:'#5A655F',align:'center',lh:1.4}),
+    tx({x:w*.14,y:h*.82,w:w*.72,h:h*.05,text:'@yourbrand',size:w*.024,weight:700,color:DK,align:'center'})
+  ]}
+],
+'Stats & Infographic':[
+  {n:'Hero Stat',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:0,y:0,w:w,h:h*.012,fill:F.g('#FF6B35',G,90)}),
+    tx({x:-w*.05,y:h*.18,w:w*1.1,h:h*.5,text:'3X',font:'Archivo Black',size:w*.55,weight:400,color:G,lh:.85,align:'center',opacity:.22}),
+    tx({x:w*.08,y:h*.1,w:w*.84,h:h*.05,text:'GROWTH SNAPSHOT',size:w*.026,weight:800,color:DK,ls:5,align:'center'}),
+    tx({x:w*.08,y:h*.4,w:w*.84,h:h*.22,text:'Average revenue growth for brands who post weekly.',font:'Unbounded',size:w*.065,weight:700,color:D,align:'center',lh:1.15}),
+    tx({x:w*.08,y:h*.68,w:w*.84,h:h*.08,text:'Compared to brands posting less than once a month.',size:w*.028,weight:500,color:'#5A655F',align:'center',lh:1.4}),
+    tx({x:w*.08,y:h*.86,w:w*.4,h:h*.05,text:'Internal study, 2026',size:w*.02,weight:500,color:'#8D9793'}),
+    tx({x:w*.52,y:h*.86,w:w*.4,h:h*.05,text:'@yourbrand',size:w*.022,weight:800,color:DK,align:'right'})
+  ]},
+  {n:'Three Number Row',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.08,w:w*.84,h:h*.05,text:'BY THE NUMBERS',size:w*.026,weight:800,color:G,ls:5}),
+    tx({x:w*.08,y:h*.14,w:w*.84,h:h*.12,text:'Why creators switch to us',font:'Unbounded',size:w*.06,weight:700,color:W,lh:1.15}),
+    tx({x:w*.08,y:h*.34,w:w*.26,h:h*.12,text:'10K+',font:'Archivo Black',size:w*.09,weight:400,color:G,align:'center'}),
+    tx({x:w*.08,y:h*.46,w:w*.26,h:h*.08,text:'Active creators',size:w*.022,weight:500,color:'#A9B6AF',align:'center',lh:1.3}),
+    tx({x:w*.37,y:h*.34,w:w*.26,h:h*.12,text:'4.9',font:'Archivo Black',size:w*.09,weight:400,color:G,align:'center'}),
+    tx({x:w*.37,y:h*.46,w:w*.26,h:h*.08,text:'Average rating',size:w*.022,weight:500,color:'#A9B6AF',align:'center',lh:1.3}),
+    tx({x:w*.66,y:h*.34,w:w*.26,h:h*.12,text:'2 min',font:'Archivo Black',size:w*.09,weight:400,color:G,align:'center'}),
+    tx({x:w*.66,y:h*.46,w:w*.26,h:h*.08,text:'Setup time',size:w*.022,weight:500,color:'#A9B6AF',align:'center',lh:1.3}),
+    tx({x:w*.08,y:h*.88,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.024,weight:700,color:G})
+  ]},
+  {n:'Three Step Process',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.06,w:w*.84,h:h*.05,text:'HOW IT WORKS',size:w*.026,weight:800,color:DK,ls:5}),
+    tx({x:w*.08,y:h*.12,w:w*.84,h:h*.1,text:'Three steps to launch',font:'Unbounded',size:w*.052,weight:700,color:D}),
+    sq({x:w*.08,y:h*.3,w:w*.14,h:w*.14,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.08,y:h*.34,w:w*.14,h:w*.08,text:'1',font:'Archivo Black',size:w*.06,weight:400,color:'#012a1b',align:'center'}),
+    tx({x:w*.28,y:h*.31,w:w*.64,h:h*.1,text:'Book your free strategy call',size:w*.034,weight:700,color:D,lh:1.3}),
+    sq({x:w*.08,y:h*.5,w:w*.14,h:w*.14,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.08,y:h*.54,w:w*.14,h:w*.08,text:'2',font:'Archivo Black',size:w*.06,weight:400,color:'#012a1b',align:'center'}),
+    tx({x:w*.28,y:h*.51,w:w*.64,h:h*.1,text:'Get your custom growth plan',size:w*.034,weight:700,color:D,lh:1.3}),
+    sq({x:w*.08,y:h*.7,w:w*.14,h:w*.14,shape:'ellipse',fill:F.s(G)}),
+    tx({x:w*.08,y:h*.74,w:w*.14,h:w*.08,text:'3',font:'Archivo Black',size:w*.06,weight:400,color:'#012a1b',align:'center'}),
+    tx({x:w*.28,y:h*.71,w:w*.64,h:h*.1,text:'Launch and start seeing results',size:w*.034,weight:700,color:D,lh:1.3}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.024,weight:700,color:DK})
+  ]},
+  {n:'Comparison Bars',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.06,w:w*.84,h:h*.05,text:'PLATFORM COMPARISON',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.12,w:w*.84,h:h*.1,text:'Where creators get the best reach',font:'Unbounded',size:w*.048,weight:700,color:W,lh:1.2}),
+    tx({x:w*.08,y:h*.29,w:w*.84,h:h*.05,text:'Yourbrand · 92%',size:w*.028,weight:700,color:W}),
+    sq({x:w*.08,y:h*.36,w:w*.78,h:h*.07,radius:h*.035,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.45,w:w*.84,h:h*.05,text:'Platform B · 61%',size:w*.028,weight:700,color:'#A9B6AF'}),
+    sq({x:w*.08,y:h*.52,w:w*.5,h:h*.07,radius:h*.035,fill:F.s('#8FA79B')}),
+    tx({x:w*.08,y:h*.61,w:w*.84,h:h*.05,text:'Platform C · 40%',size:w*.028,weight:700,color:'#A9B6AF'}),
+    sq({x:w*.08,y:h*.68,w:w*.34,h:h*.07,radius:h*.035,fill:F.s('#5E7269')}),
+    tx({x:w*.08,y:h*.86,w:w*.84,h:h*.04,text:'Based on average engagement rate, Q2 2026',size:w*.02,weight:500,color:'#5A655F'}),
+    tx({x:w*.08,y:h*.91,w:w*.84,h:h*.05,text:'@yourbrand',size:w*.026,weight:700,color:G})
+  ]}
+],
+'Webinar & Podcast':[
+  {n:'Webinar Invite',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.07,w:w*.84,h:h*.04,text:'FREE LIVE WEBINAR',size:w*.026,weight:800,color:G,ls:5}),
+    tx({x:w*.08,y:h*.13,w:w*.84,h:h*.22,text:'Scaling Your Content Without Burning Out',font:'Unbounded',size:w*.072,weight:700,color:W,lh:1.15}),
+    sq({x:w*.08,y:h*.4,w:w*.38,h:h*.16,radius:w*.03,fill:F.s(CR)}),
+    tx({x:w*.08,y:h*.42,w:w*.38,h:h*.05,text:'AUGUST',size:w*.026,weight:800,color:DK,align:'center',ls:3}),
+    tx({x:w*.08,y:h*.47,w:w*.38,h:h*.09,text:'14',font:'Archivo Black',size:w*.09,weight:400,color:D,align:'center'}),
+    tx({x:w*.5,y:h*.4,w:w*.42,h:h*.05,text:'TIME',size:w*.024,weight:800,color:'#8FA79B',ls:3}),
+    tx({x:w*.5,y:h*.45,w:w*.42,h:h*.1,text:'11:00 AM EST',font:'Space Grotesk',size:w*.042,weight:700,color:W}),
+    sq({x:w*.08,y:h*.68,w:w*.5,h:h*.07,radius:h*.035,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.68,w:w*.5,h:h*.07,text:'SAVE MY SEAT',size:w*.026,weight:800,color:'#012a1b',align:'center',ls:1}),
+    tx({x:w*.08,y:h*.92,w:w*.84,h:h*.04,text:'yourbrand.com/webinar',size:w*.022,weight:600,color:'#A9B6AF'})
+  ]},
+  {n:'Episode Cover',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    tx({x:-w*.05,y:h*.06,w:w*.6,h:h*.55,text:'042',font:'Archivo Black',size:w*.38,weight:400,color:D,opacity:.08,lh:.85}),
+    sq({x:w*.08,y:h*.08,w:w*.34,h:h*.06,radius:h*.03,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.08,w:w*.34,h:h*.06,text:'NEW EPISODE',size:w*.022,weight:800,color:W,align:'center',ls:2}),
+    tx({x:w*.08,y:h*.2,w:w*.5,h:h*.05,text:'EPISODE 042',size:w*.026,weight:800,color:DK,ls:4}),
+    tx({x:w*.08,y:h*.27,w:w*.84,h:h*.24,text:'Why Most Marketing Advice Is Wrong',font:'Unbounded',size:w*.072,weight:700,color:D,lh:1.15}),
+    tx({x:w*.08,y:h*.56,w:w*.7,h:h*.06,text:'with Jordan Reyes, Growth Strategist',size:w*.03,weight:600,color:'#5A655F'}),
+    sq({x:w*.08,y:h*.68,w:w*.16,h:w*.16,shape:'ellipse',fill:F.s(G)}),
+    sq({x:w*.14,y:h*.716,w:w*.06,h:w*.06,shape:'triangle',fill:F.s('#012a1b'),rot:90}),
+    tx({x:w*.28,y:h*.71,w:w*.5,h:h*.08,text:'Listen now — link in bio',size:w*.028,weight:700,color:D}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.05,text:'@yourbrand · The Weekly Pulse',size:w*.022,weight:600,color:DK})
+  ]},
+  {n:'Guest Spotlight',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w,h:h*.5,fill:F.g(DK,D,180)}),
+    tx({x:w*.08,y:h*.06,w:w*.84,h:h*.04,text:'GUEST SPOTLIGHT',size:w*.026,weight:800,color:G,ls:5}),
+    sq({x:w*.32,y:h*.12,w:w*.36,h:w*.36,shape:'ellipse',fill:F.s(CR),stroke:G,strokeW:5}),
+    tx({x:w*.32,y:h*.26,w:w*.36,h:h*.08,text:'PHOTO',size:w*.024,weight:700,color:'#8D9793',align:'center',ls:3}),
+    tx({x:w*.08,y:h*.5,w:w*.84,h:h*.08,text:'Priya Nathan',font:'Unbounded',size:w*.058,weight:700,color:W,align:'center'}),
+    tx({x:w*.08,y:h*.57,w:w*.84,h:h*.04,text:'Founder, Studio Nine',size:w*.026,weight:500,color:'#A9B6AF',align:'center'}),
+    tx({x:w*.1,y:h*.66,w:w*.8,h:h*.16,text:'"The best content strategy is the one you can actually stick to."',font:'Instrument Serif',size:w*.042,weight:400,color:W,align:'center',lh:1.4,italic:true}),
+    sq({x:w*.08,y:h*.86,w:w*.4,h:h*.06,radius:h*.03,fill:F.s(G)}),
+    tx({x:w*.08,y:h*.86,w:w*.4,h:h*.06,text:'FULL EPISODE →',size:w*.022,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.55,y:h*.87,w:w*.37,h:h*.05,text:'@yourbrand',size:w*.022,weight:700,color:G,align:'right'})
+  ]},
+  {n:'Replay Now Live',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(DK)}),
+    sq({x:0,y:0,w:w,h:h,fill:F.dot(DK,G,10)}),
+    sq({x:w*.39,y:h*.32,w:w*.22,h:w*.22,shape:'ellipse',fill:F.s(W)}),
+    sq({x:w*.465,y:h*.39,w:w*.09,h:w*.09,shape:'triangle',fill:F.s(DK),rot:90}),
+    tx({x:w*.08,y:h*.1,w:w*.84,h:h*.05,text:'REPLAY AVAILABLE',size:w*.028,weight:800,color:W,align:'center',ls:4}),
+    tx({x:w*.08,y:h*.6,w:w*.84,h:h*.14,text:'Missed the live session?',font:'Unbounded',size:w*.058,weight:700,color:W,align:'center',lh:1.2}),
+    tx({x:w*.08,y:h*.72,w:w*.84,h:h*.06,text:'Watch the full recording free for the next 7 days.',size:w*.028,weight:500,color:L,align:'center'}),
+    sq({x:w*.28,y:h*.84,w:w*.44,h:h*.07,radius:h*.035,fill:F.s(G)}),
+    tx({x:w*.28,y:h*.84,w:w*.44,h:h*.07,text:'WATCH NOW',size:w*.026,weight:800,color:'#012a1b',align:'center',ls:1}),
+    tx({x:w*.08,y:h*.93,w:w*.84,h:h*.04,text:'yourbrand.com/replay',size:w*.02,weight:600,color:'#8FA79B',align:'center'})
+  ]}
+],
+'Holiday & Seasonal':[
+  {n:'New Year Reset',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:-w*.1,y:-h*.1,w:w*.4,h:w*.4,shape:'burst',fill:F.s(G),opacity:.25}),
+    sq({x:w*.75,y:h*.7,w:w*.35,h:w*.35,shape:'burst',fill:F.s('#F7B500'),opacity:.2}),
+    tx({x:w*.08,y:h*.1,w:w*.84,h:h*.05,text:'NEW YEAR, NEW MOMENTUM',size:w*.026,weight:800,color:G,ls:4,align:'center'}),
+    tx({x:-w*.03,y:h*.24,w:w*1.06,h:h*.4,text:'2027',font:'Archivo Black',size:w*.32,weight:400,color:W,align:'center',lh:.9}),
+    tx({x:w*.1,y:h*.62,w:w*.8,h:h*.1,text:"Here's to bigger goals and better habits.",font:'Unbounded',size:w*.042,weight:700,color:W,align:'center',lh:1.3}),
+    sq({x:w*.32,y:h*.78,w:w*.36,h:h*.07,radius:h*.035,fill:F.s(G)}),
+    tx({x:w*.32,y:h*.78,w:w*.36,h:h*.07,text:'SHOP THE RESET',size:w*.024,weight:800,color:'#012a1b',align:'center'}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.022,weight:600,color:'#A9B6AF',align:'center'})
+  ]},
+  {n:'Big Sale Weekend',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    sq({x:0,y:0,w:w,h:h*.42,fill:F.g('#E43D6B',D,180)}),
+    tx({x:w*.08,y:h*.06,w:w*.84,h:h*.05,text:'BLACK FRIDAY · CYBER MONDAY',size:w*.022,weight:800,color:W,ls:2,align:'center'}),
+    tx({x:-w*.02,y:h*.12,w:w*1.04,h:h*.28,text:'50% OFF',font:'Archivo Black',size:w*.15,weight:400,color:W,align:'center',lh:.95}),
+    tx({x:w*.08,y:h*.44,w:w*.84,h:h*.06,text:'Everything, sitewide',size:w*.036,weight:700,color:D,align:'center'}),
+    tx({x:w*.08,y:h*.52,w:w*.84,h:h*.05,text:'FRI NOV 27 — MON NOV 30 ONLY',size:w*.024,weight:700,color:'#5A655F',align:'center',ls:1}),
+    sq({x:w*.28,y:h*.62,w:w*.44,h:h*.075,radius:h*.038,fill:F.s(D)}),
+    tx({x:w*.28,y:h*.62,w:w*.44,h:h*.075,text:'SHOP THE SALE',size:w*.026,weight:800,color:W,align:'center',ls:1}),
+    tx({x:w*.08,y:h*.75,w:w*.84,h:h*.05,text:'No code needed — discount applied at checkout',size:w*.022,weight:500,color:'#5A655F',align:'center'}),
+    tx({x:w*.08,y:h*.92,w:w*.84,h:h*.04,text:'yourbrand.com',size:w*.022,weight:600,color:'#8D9793',align:'center'})
+  ]},
+  {n:'Season Greetings',r:[1080,1080],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(CR)}),
+    sq({x:w*.7,y:h*.05,w:w*.22,h:w*.22,shape:'star',fill:F.s('#F7B500'),opacity:.5,rot:12}),
+    sq({x:w*.05,y:h*.72,w:w*.16,h:w*.16,shape:'star',fill:F.s(DK),opacity:.3,rot:-8}),
+    tx({x:w*.08,y:h*.12,w:w*.84,h:h*.05,text:'WARM WISHES',size:w*.028,weight:800,color:DK,ls:5,align:'center'}),
+    tx({x:w*.08,y:h*.32,w:w*.84,h:h*.22,text:'Happy Holidays\nfrom our team to yours',font:'Unbounded',size:w*.062,weight:700,color:D,align:'center',lh:1.25}),
+    tx({x:w*.14,y:h*.6,w:w*.72,h:h*.1,text:"Thank you for a wonderful year — we're so grateful for you.",size:w*.028,weight:500,color:'#5A655F',align:'center',lh:1.5}),
+    sq({x:w*.36,y:h*.76,w:w*.28,h:h*.06,radius:h*.03,fill:F.s(DK)}),
+    tx({x:w*.36,y:h*.76,w:w*.28,h:h*.06,text:'SEE HOLIDAY HOURS',size:w*.018,weight:800,color:W,align:'center'}),
+    tx({x:w*.08,y:h*.9,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.022,weight:600,color:'#8FA79B',align:'center'})
+  ]},
+  {n:'Year In Review',r:[1080,1350],f:(w,h)=>[
+    sq({x:0,y:0,w:w,h:h,fill:F.s(D)}),
+    tx({x:w*.08,y:h*.07,w:w*.84,h:h*.04,text:'2026 YEAR IN REVIEW',size:w*.026,weight:800,color:G,ls:4}),
+    tx({x:w*.08,y:h*.13,w:w*.84,h:h*.14,text:"What a year it's been",font:'Unbounded',size:w*.066,weight:700,color:W,lh:1.15}),
+    sq({x:w*.08,y:h*.34,w:w*.06,h:w*.06,shape:'diamond',fill:F.s(G)}),
+    tx({x:w*.2,y:h*.32,w:w*.72,h:h*.08,text:'128 projects shipped with our community',size:w*.028,weight:600,color:W,lh:1.3}),
+    sq({x:w*.08,y:h*.46,w:w*.06,h:w*.06,shape:'diamond',fill:F.s(G)}),
+    tx({x:w*.2,y:h*.44,w:w*.72,h:h*.08,text:'40K new followers who joined the journey',size:w*.028,weight:600,color:W,lh:1.3}),
+    sq({x:w*.08,y:h*.58,w:w*.06,h:w*.06,shape:'diamond',fill:F.s(G)}),
+    tx({x:w*.2,y:h*.56,w:w*.72,h:h*.08,text:"3 milestones we're still celebrating",size:w*.028,weight:600,color:W,lh:1.3}),
+    tx({x:w*.08,y:h*.76,w:w*.84,h:h*.08,text:"Thank you for being part of it. Here's to an even bigger next chapter.",size:w*.026,weight:500,color:'#A9B6AF',lh:1.5}),
+    tx({x:w*.08,y:h*.92,w:w*.84,h:h*.04,text:'@yourbrand',size:w*.022,weight:700,color:G})
+  ]}
+]
 };
 const CATS=Object.keys(TPL);
 
