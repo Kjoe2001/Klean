@@ -3,7 +3,6 @@ import Script from 'next/script';
 import { Unbounded, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import SiteFooter from '@/components/SiteFooter';
-import ChatWidget from '@/components/ChatWidget';
 
 const unbounded = Unbounded({
   subsets: ['latin'], variable: '--font-unbounded',
@@ -91,7 +90,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="flex-1">{children}</div>
           <SiteFooter />
         </div>
-        <ChatWidget />
       </body>
     </html>
   );
