@@ -8,5 +8,10 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.pexels.com' },
     ],
   },
+  async redirects() {
+    return [
+      { source: '/image-studio', destination: '/creative-studio', permanent: true },
+    ];
+  },
 };
 export default nextConfig;
