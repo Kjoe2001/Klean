@@ -1457,7 +1457,9 @@ $('saveDoc').onclick=()=>{
   const ix=DOCS.findIndex(d=>d.name===name);
   const rec={id:ix>=0?DOCS[ix].id:undefined,name,brandId:K().id||null,AB:clone(AB),els:clone(els)};
   if(ix>=0)DOCS[ix]=rec;else DOCS.unshift(rec);
-  toast('Saved to your designs');
+  renderRecents();
+  toast('Saving — 4 credits…');
+  const b=$('saveDoc');b.disabled=true;
   const reqId='d'+Math.random().toString(36).slice(2);
   rec._req=reqId;
   post({type:'saveDesign',reqId,design:{id:rec.id,name:rec.name,width:AB.w,height:AB.h,brandId:rec.brandId,data:{AB:rec.AB,els:rec.els}}});
@@ -2091,7 +2093,18 @@ window.addEventListener('message',ev=>{
   if(ev.origin!==window.location.origin)return;
   const d=ev.data;if(!d||d.ns!=='zelvoo')return;
   if(d.type==='init')applyInit(d);
-  else if(d.type==='designSaved'){const rec=DOCS.find(x=>x._req===d.reqId);if(rec){rec.id=d.id;delete rec._req;}}
+  else if(d.type==='designSaved'){
+    const rec=DOCS.find(x=>x._req===d.reqId);
+    if(rec){rec.id=d.id;delete rec._req;renderRecents();}
+    $('saveDoc').disabled=false;
+    toast('Saved — 4 credits used'+(typeof d.balance==='number'?' · '+d.balance+' left':''));
+  }
+  else if(d.type==='designSaveFailed'){
+    const ix=DOCS.findIndex(x=>x._req===d.reqId);
+    if(ix>=0){const rec=DOCS[ix];delete rec._req;if(!rec.id)DOCS.splice(ix,1);renderRecents();}
+    $('saveDoc').disabled=false;
+    toast(d.reason==='insufficient_credits'?'Out of credits — upgrade your plan to keep saving designs':'Could not save — try again');
+  }
   else if(d.type==='brandSaved'){const kit=KITS.find(x=>x._req===d.reqId);if(kit){kit.id=d.id;delete kit._req;}}
 });
 

@@ -11,7 +11,7 @@ import { CREDIT_COST, planCredits, PlanKey } from '@/lib/plans';
 
 const LABEL: Record<string, string> = {
   text: 'Content generation', image: 'AI image', campaign: 'Campaign build',
-  score: 'AI scoring', intel: 'Trend / competitor intel',
+  score: 'AI scoring', intel: 'Trend / competitor intel', design: 'Creative Studio design saved',
 };
 
 const LEGACY_UNLIMITED_EMAILS = new Set(['oannoreric@gmail.com']);

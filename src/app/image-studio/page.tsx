@@ -38,6 +38,25 @@ export default function CreativeStudio() {
 
       if (d.type === 'saveDesign') {
         const { design, reqId } = d;
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (cancelled) return;
+        if (!token) { post({ type: 'designSaveFailed', reqId, reason: 'unauthorized' }); return; }
+
+        const spend = await fetch('/api/credits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ action: 'design', label: 'Creative Studio design saved' }),
+        });
+        if (cancelled) return;
+        if (!spend.ok) {
+          const err = await spend.json().catch(() => ({}));
+          post({ type: 'designSaveFailed', reqId, reason: err.error || 'spend_failed', balance: err.balance });
+          return;
+        }
+        const spendResult = await spend.json();
+        window.dispatchEvent(new Event('credits:changed'));
+
         const row = {
           user_id: profile.id,
           brand_id: design.brandId || null,
@@ -50,7 +69,9 @@ export default function CreativeStudio() {
         const result = design.id
           ? await supabase.from('designs').update(row).eq('id', design.id).select('id').single()
           : await supabase.from('designs').insert(row).select('id').single();
-        if (!cancelled && result.data) post({ type: 'designSaved', reqId, id: result.data.id });
+        if (cancelled) return;
+        if (result.data) post({ type: 'designSaved', reqId, id: result.data.id, balance: spendResult.balance });
+        else post({ type: 'designSaveFailed', reqId, reason: 'save_failed' });
         return;
       }
 
