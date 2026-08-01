@@ -7,19 +7,19 @@ import { CONTENT_TYPES } from '@/lib/content-types';
 import { Icon } from '@/components/Icon';
 
 export const metadata: Metadata = {
-  title: 'The AI Marketing Operating System | One Brief In, A Month of Marketing Out',
+  title: 'Zelvoo | AI Marketing Workspace for Teams',
   description:
-    "Africa's AI marketing OS. Generate content, campaign strategies, trend and competitor intel from one brief. Built for brands, agencies, and creators.",
+    "Zelvoo is an AI marketing workspace for founders, marketing teams, and agencies. Plan campaigns, generate content, and export client-ready assets from one brief.",
   alternates: { canonical: 'https://www.zelvoo.app' },
   openGraph: {
-    title: 'Zelvoo — One brief in. A month of marketing out.',
-    description: 'Your AI marketing operating system for African growth teams. Generate content and campaign strategy from one brief.',
+    title: 'Zelvoo — Your AI Marketing Workspace',
+    description: 'Plan campaigns, generate content, and produce client-ready outputs from one brief.',
     url: 'https://www.zelvoo.app', siteName: 'Zelvoo', type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Zelvoo — One brief in. A month of marketing out.',
-    description: 'Your AI marketing operating system for African growth teams.',
+    title: 'Zelvoo — Your AI Marketing Workspace',
+    description: 'Plan campaigns, generate content, and deliver client-ready outputs from one brief.',
   },
 };
 
@@ -72,14 +72,18 @@ export default function Landing() {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-bangladesh-green/25 border border-mountain-meadow/25 text-xs font-medium text-caribbean-green mb-6">
               <Icon name="auto_awesome" className="text-[14px] msym-sm" />
-              AI marketing, built for Africa
+              AI marketing workspace, built for African teams
             </span>
             <h1 className="font-heading text-[3rem] md:text-[4.4rem] leading-[0.98] tracking-tight mb-6 max-w-3xl" style={{ color: '#00DF81' }}>
-              A month&apos;s worth of marketing in minutes.
+              Understand your market. Create faster. Ship consistently.
             </h1>
             <p className="text-body-lg md:text-[1.18rem] text-pistachio max-w-2xl leading-relaxed mb-8">
-              Zelvoo turns one brief into ready-to-publish campaigns across social posts, ad copy,
-              pitches, and strategies in one place, built for Africa.
+              Zelvoo is an AI marketing workspace where you plan campaigns, generate content,
+              and produce client-ready outputs from one brief.
+            </p>
+            <p className="text-sm text-stone max-w-2xl leading-relaxed mb-8">
+              Built for founders, in-house marketing teams, and agencies that need quality output every week
+              without juggling disconnected tools.
             </p>
 
             <div className="flex flex-wrap max-[480px]:grid max-[480px]:grid-cols-1 items-center gap-3 max-[480px]:w-full">
@@ -87,8 +91,8 @@ export default function Landing() {
                 Start free
                 <Icon name="arrow_forward" className="msym-sm" />
               </Link>
-              <Link href="/pricing" className="btn-outline text-base px-7 py-4 max-[480px]:w-full">
-                See pricing
+              <Link href="/features" className="btn-outline text-base px-7 py-4 max-[480px]:w-full">
+                See how it works
               </Link>
             </div>
             <p className="text-xs text-stone mt-4">Free signup · 30 credits · No card required</p>
@@ -100,10 +104,10 @@ export default function Landing() {
               <p className="text-[10px] font-semibold tracking-[0.24em] text-bangladesh-green mb-3">WHAT YOU GET</p>
               <div className="space-y-3">
                 {[
-                  'Social posts, captions, and hooks',
-                  'Ad copy and campaign strategies',
-                  'Pitches, reports, and client-ready PDFs',
-                  'Trend and competitor intelligence',
+                  'Campaign plans and execution strategy',
+                  'Social content, ad copy, and hooks',
+                  'Frame Studio and Creative Studio assets',
+                  'Client-ready reports and exports',
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-xl bg-white px-3 py-3 border border-bangladesh-green/10">
                     <span className="mt-1 w-2.5 h-2.5 rounded-full bg-caribbean-green shrink-0" />
@@ -132,10 +136,10 @@ export default function Landing() {
       <section className="section-dark border-y border-mountain-meadow/15 py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-5">
           <div className="text-center mb-14">
-            <p className="eyebrow mb-4">Output Engine</p>
-            <h2 className="font-heading text-h2 mb-4 text-anti-flash-white">16 content formats. One brief.</h2>
+            <p className="eyebrow mb-4">How Zelvoo Works</p>
+            <h2 className="font-heading text-h2 mb-4 text-anti-flash-white">Plan. Generate. Deliver.</h2>
             <p className="text-pistachio text-body-lg max-w-xl mx-auto">
-              Select any combination. Zelvoo generates them simultaneously, each scored for virality and engagement.
+              Start with one brief. Zelvoo turns it into strategy, content, creative, and exports your team can ship.
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -150,7 +154,7 @@ export default function Landing() {
             ))}
           </div>
           <p className="text-center text-xs text-stone mt-6">
-            + 8 more content types · Campaign Builder · Trend Discovery · Competitor Intel
+            + 8 more content types · Frame Studio · Campaign Builder · Trend Discovery · Competitor Intel
           </p>
         </div>
       </section>
@@ -159,9 +163,9 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-5">
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              ['trending_up', 'One brief, everything', 'Lock a brand brief once. Every hook, article and ad follows your Brand Kit automatically.'],
-              ['bolt', 'Parallel AI engine', 'Select any mix of content types. They generate simultaneously with virality and engagement scoring.'],
-              ['picture_as_pdf', 'Client-ready exports', 'Branded PDF reports and PowerPoint decks, built in seconds.'],
+              ['trending_up', 'Know what to do next', 'Get campaign direction and market context before your team starts writing or designing.'],
+              ['bolt', 'Create in one workspace', 'Generate content, shape visuals, and keep everything aligned to your Brand Kit.'],
+              ['picture_as_pdf', 'Deliver faster', 'Export reports and deliverables your client or internal team can approve immediately.'],
             ].map(([icon, title, desc]) => (
               <div key={title} className="glass-card-light glass-highlight p-8">
                 <div className="w-12 h-12 rounded-[14px] bg-caribbean-green text-rich-black grid place-items-center mb-6 shadow-[0_0_28px_rgba(0,223,129,0.2)]">
@@ -181,10 +185,10 @@ export default function Landing() {
         <div className="max-w-3xl mx-auto px-5 text-center">
           <p className="eyebrow mb-4">Start In Minutes</p>
           <h2 className="font-heading text-h2 mb-5 text-rich-black">
-            Ready to build your first campaign?
+            New here? Start with one campaign brief.
           </h2>
           <p className="text-stone text-body mb-10 max-w-xl mx-auto">
-            Start free. No credit card required. 30 credits included.
+            Give Zelvoo your objective, audience, and offer. We will generate the strategy, content, and assets from there.
           </p>
           <Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-caribbean-green text-rich-black font-medium font-heading px-8 py-4 text-base transition-all duration-150 hover:brightness-110 hover:shadow-[0_0_40px_rgba(0,223,129,0.35)] active:scale-[0.98]">
             Start your free trial
