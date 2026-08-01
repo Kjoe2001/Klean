@@ -9,10 +9,10 @@ type ProductConfig = {
 
 export const desktopRelease = {
   // Example tag: desktop-v0.1.0
-  tag: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_TAG || 'desktop-v0.1.0',
+  tag: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_TAG || 'desktop-v0.1.1',
   // Example repo: Kjoe2001/zelvo
   repo: process.env.NEXT_PUBLIC_DESKTOP_GITHUB_REPO || 'Kjoe2001/zelvo',
-  version: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_VERSION || '0.1.0',
+  version: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_VERSION || '0.1.1',
 };
 
 const products: ProductConfig[] = [
