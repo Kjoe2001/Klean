@@ -22,9 +22,12 @@
       radial-gradient(100% 80% at 0% 110%,rgba(0,223,129,.06),transparent 50%),
       linear-gradient(160deg,var(--bg0),var(--bg1));}
   .app{display:grid;grid-template-columns:1fr 384px;height:100vh;min-height:0}
-  @media (max-width:920px){.app{grid-template-columns:1fr;height:auto}}
+  @media (max-width:920px){
+    .app{grid-template-columns:1fr;grid-template-rows:minmax(220px,46dvh) 1fr;height:100dvh;overflow:hidden}
+  }
 
   .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;min-height:0;overflow:hidden;gap:14px}
+  @media (max-width:920px){.stage{padding:12px 12px 10px;position:sticky;top:0;z-index:3;background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.88));}}
   .stage-wrap{display:flex;align-items:center;justify-content:center;flex:1;min-height:0;width:100%}
   canvas#view{max-width:100%;max-height:62vh;border-radius:10px;background:#000;display:block;touch-action:none;
     box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05)}
@@ -47,7 +50,7 @@
   .time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:84px;text-align:right;flex:0 0 auto}
 
   .rail{background:var(--glass);border-left:1px solid var(--line);backdrop-filter:blur(18px);display:flex;flex-direction:column;min-height:0}
-  @media (max-width:920px){.rail{border-left:none;border-top:1px solid var(--line)}}
+  @media (max-width:920px){.rail{border-left:none;border-top:1px solid var(--line);min-height:0;height:100%;overflow:hidden}}
   .brand{padding:16px 20px 13px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
   .brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--green),#00b368);display:grid;place-items:center;color:#032414;font-weight:800;font-family:var(--disp);font-size:15px;box-shadow:0 0 18px var(--green-glow)}
   .brand .name{font-family:var(--disp);font-weight:700;font-size:15px}
@@ -119,6 +122,9 @@
   .status{font-size:12px;color:var(--muted);text-align:center;min-height:15px}
   .status.rec{color:var(--green)}
   .hint{font-size:11px;color:var(--faint);line-height:1.5}
+  .cut-metrics{display:flex;gap:8px;flex-wrap:wrap}
+  .kpi{font-size:11px;color:var(--muted);padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--glass-2)}
+  .quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .hidden{display:none!important}
 
   /* review modal */
@@ -152,6 +158,7 @@
     .btn{padding:12px}
     .sheet{width:min(760px,97vw);padding:16px;border-radius:16px}
     .rbtns{flex-direction:column}
+    .quick-grid{grid-template-columns:1fr}
   }
 
   @media (max-width:520px){
@@ -197,6 +204,7 @@
     <div class="tabs" id="tabs">
       <div class="tab on" data-tab="format">Format</div>
       <div class="tab" data-tab="adjust">Adjust</div>
+      <div class="tab" data-tab="edit">Edit</div>
       <div class="tab" data-tab="frame">Frame</div>
       <div class="tab" data-tab="text">Text</div>
       <div class="tab" data-tab="captions">Captions</div>
@@ -293,6 +301,38 @@
           <div class="sld"><div class="top"><label>Pan X</label><span class="val" id="panxVal">0</span></div><input id="panx" type="range" min="-100" max="100" value="0"></div>
           <div class="sld"><div class="top"><label>Pan Y</label><span class="val" id="panyVal">0</span></div><input id="pany" type="range" min="-100" max="100" value="0"></div>
           <button class="mini" id="resetAdjust">Reset adjustments</button>
+        </div>
+      </div>
+
+      <!-- EDIT -->
+      <div class="panel" data-panel="edit">
+        <div class="grp">
+          <p class="glabel">Cut video timeline</p>
+          <div class="sld"><div class="top"><label>Start cut</label><span class="val" id="cutStartVal">0:00</span></div><input id="cutStart" type="range" min="0" max="1000" value="0"></div>
+          <div class="sld"><div class="top"><label>End cut</label><span class="val" id="cutEndVal">0:00</span></div><input id="cutEnd" type="range" min="0" max="1000" value="1000"></div>
+          <div class="cut-metrics">
+            <span class="kpi" id="cutLen">Clip length: 0:00</span>
+            <span class="kpi" id="cutPct">Using 100%</span>
+          </div>
+          <p class="hint" style="margin-top:8px">Preview loops inside your cut range so you always see the exact section being edited.</p>
+        </div>
+        <div class="grp">
+          <p class="glabel">Quick cut actions</p>
+          <div class="quick-grid">
+            <button class="mini" id="setStartNow" type="button">Set start at playhead</button>
+            <button class="mini" id="setEndNow" type="button">Set end at playhead</button>
+            <button class="mini" id="cutLead1" type="button">Trim first 1s</button>
+            <button class="mini" id="cutTail1" type="button">Trim last 1s</button>
+            <button class="mini" id="cutLead2" type="button">Trim first 2s</button>
+            <button class="mini" id="cutTail2" type="button">Trim last 2s</button>
+          </div>
+          <div class="btnrow" style="margin-top:9px">
+            <button class="mini" id="nudgeStartBack" type="button">Start -0.1s</button>
+            <button class="mini" id="nudgeStartFwd" type="button">Start +0.1s</button>
+            <button class="mini" id="nudgeEndBack" type="button">End -0.1s</button>
+            <button class="mini" id="nudgeEndFwd" type="button">End +0.1s</button>
+          </div>
+          <button class="mini wide" id="resetCut" type="button" style="margin-top:10px">Reset full clip</button>
         </div>
       </div>
 
@@ -409,9 +449,12 @@
 
       <!-- EXPORT -->
       <div class="panel" data-panel="export">
-        <div class="grp"><p class="glabel">Trim</p>
-          <div class="sld"><div class="top"><label>Start</label><span class="val" id="trimSVal">0:00</span></div><input id="trimS" type="range" min="0" max="1000" value="0"></div>
-          <div class="sld"><div class="top"><label>End</label><span class="val" id="trimEVal">0:00</span></div><input id="trimE" type="range" min="0" max="1000" value="1000"></div>
+        <div class="grp"><p class="glabel">Edit status</p>
+          <div class="cut-metrics">
+            <span class="kpi" id="exportCutLen">Clip length: 0:00</span>
+            <span class="kpi" id="exportCutPct">Using 100%</span>
+          </div>
+          <p class="hint" style="margin-top:8px">Need to cut timing? Open the <b>Edit</b> tab, then come back to export.</p>
         </div>
         <div class="grp"><p class="glabel">File format</p>
           <div class="chips" id="fmtChips">
@@ -482,7 +525,7 @@
       <div class="flow-arrow">↓</div>
       <div class="flow-step"><b>Preview audio</b>: In Audio tab choose Keep, Mix, or Replace, then press Play.</div>
       <div class="flow-arrow">↓</div>
-      <div class="flow-step"><b>Trim and quality</b>: Set start/end points and export resolution.</div>
+      <div class="flow-step"><b>Edit and cut</b>: Use the Edit tab to trim start/end, nudge timings, and cut intro/outro quickly.</div>
       <div class="flow-arrow">↓</div>
       <div class="flow-step"><b>Render and save</b>: Click Render &amp; preview, then Save video (5 credits).</div>
     </div>
@@ -557,7 +600,7 @@
     video.onloadedmetadata=()=>{S.loaded=true;S.trimS=0;S.trimE=video.duration;
       dz.classList.add('hidden');canvas.classList.remove('hidden');$('#transport').classList.remove('hidden');
       $('#exportBtn').disabled=false;$('#pngBtn').disabled=false;
-      $('#trimEVal').textContent=fmt(video.duration);updateTrimFill();
+      syncTrimUI();
       sizeCanvas();video.play();$('#playBtn').textContent='❚❚';status(video.videoWidth+'×'+video.videoHeight+' loaded');};}
 
   function sizeCanvas(){const va=video.videoWidth/video.videoHeight;
@@ -786,6 +829,36 @@
   function updateTrimFill(){if(!video.duration)return;const a=(S.trimS/video.duration)*100,b=(S.trimE/video.duration)*100;
     const f=$('#trimfill');f.style.left=a+'%';f.style.width=Math.max(0,b-a)+'%';}
 
+  function syncTrimUI(){
+    if(!video.duration)return;
+    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+    S.trimS=clamp(S.trimS,0,Math.max(0,video.duration-0.2));
+    S.trimE=clamp(S.trimE,S.trimS+0.2,video.duration);
+    const startPct=Math.round((S.trimS/video.duration)*1000);
+    const endPct=Math.round((S.trimE/video.duration)*1000);
+    $('#cutStart').value=startPct;
+    $('#cutEnd').value=endPct;
+    $('#cutStartVal').textContent=fmt(S.trimS);
+    $('#cutEndVal').textContent=fmt(S.trimE);
+    const len=Math.max(0,S.trimE-S.trimS);
+    const used=Math.round((len/video.duration)*100);
+    const lenText='Clip length: '+fmt(len);
+    const usedText='Using '+used+'%';
+    $('#cutLen').textContent=lenText;
+    $('#cutPct').textContent=usedText;
+    $('#exportCutLen').textContent=lenText;
+    $('#exportCutPct').textContent=usedText;
+    updateTrimFill();
+  }
+
+  function setTrimWindow(start,end,seekToStart){
+    if(!video.duration)return;
+    S.trimS=Math.max(0,Math.min(start,video.duration-0.2));
+    S.trimE=Math.max(S.trimS+0.2,Math.min(end,video.duration));
+    syncTrimUI();
+    if(seekToStart)video.currentTime=S.trimS;
+  }
+
   function canPreviewMusic(){return (S.audioMode==='mix'||S.audioMode==='replace')&&!!musicEl.src;}
   function syncMusicClock(){
     if(!canPreviewMusic())return;
@@ -935,10 +1008,27 @@
     $$('#speedChips .chip').forEach(c=>c.classList.toggle('on',c.dataset.speed==='1'));
     $$('#filterChips .chip').forEach(c=>c.classList.toggle('on',c.dataset.flt==='none'));});
 
-  $('#trimS').addEventListener('input',e=>{if(!video.duration)return;let v=(e.target.value/1000)*video.duration;
-    S.trimS=Math.min(v,S.trimE-0.2);$('#trimSVal').textContent=fmt(S.trimS);updateTrimFill();video.currentTime=S.trimS;});
-  $('#trimE').addEventListener('input',e=>{if(!video.duration)return;let v=(e.target.value/1000)*video.duration;
-    S.trimE=Math.max(v,S.trimS+0.2);$('#trimEVal').textContent=fmt(S.trimE);updateTrimFill();});
+  $('#cutStart').addEventListener('input',e=>{
+    if(!video.duration)return;
+    const v=(e.target.value/1000)*video.duration;
+    setTrimWindow(v,S.trimE,true);
+  });
+  $('#cutEnd').addEventListener('input',e=>{
+    if(!video.duration)return;
+    const v=(e.target.value/1000)*video.duration;
+    setTrimWindow(S.trimS,v,false);
+  });
+  $('#setStartNow').addEventListener('click',()=>setTrimWindow(video.currentTime,S.trimE,true));
+  $('#setEndNow').addEventListener('click',()=>setTrimWindow(S.trimS,video.currentTime,false));
+  $('#cutLead1').addEventListener('click',()=>setTrimWindow(S.trimS+1,S.trimE,true));
+  $('#cutTail1').addEventListener('click',()=>setTrimWindow(S.trimS,S.trimE-1,false));
+  $('#cutLead2').addEventListener('click',()=>setTrimWindow(S.trimS+2,S.trimE,true));
+  $('#cutTail2').addEventListener('click',()=>setTrimWindow(S.trimS,S.trimE-2,false));
+  $('#nudgeStartBack').addEventListener('click',()=>setTrimWindow(S.trimS-0.1,S.trimE,true));
+  $('#nudgeStartFwd').addEventListener('click',()=>setTrimWindow(S.trimS+0.1,S.trimE,true));
+  $('#nudgeEndBack').addEventListener('click',()=>setTrimWindow(S.trimS,S.trimE-0.1,false));
+  $('#nudgeEndFwd').addEventListener('click',()=>setTrimWindow(S.trimS,S.trimE+0.1,false));
+  $('#resetCut').addEventListener('click',()=>setTrimWindow(0,video.duration,true));
 
   $('#addCap').addEventListener('click',()=>{const st=Math.round((video.currentTime||0)*10)/10;
     S.captions.push({text:'',start:st,end:Math.min((video.duration||st+2),st+2)});renderCaps();});
