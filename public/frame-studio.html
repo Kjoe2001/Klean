@@ -27,7 +27,7 @@
   }
 
   .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;min-height:0;overflow:hidden;gap:14px}
-  @media (max-width:920px){.stage{padding:12px 12px 10px;position:sticky;top:0;z-index:3;background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.88));}}
+  @media (max-width:920px){.stage{padding:12px 12px 10px;position:relative;z-index:3;background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.88));}}
   .stage-wrap{display:flex;align-items:center;justify-content:center;flex:1;min-height:0;width:100%}
   canvas#view{max-width:100%;max-height:62vh;border-radius:10px;background:#000;display:block;touch-action:none;
     box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05)}
@@ -50,7 +50,7 @@
   .time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:84px;text-align:right;flex:0 0 auto}
 
   .rail{background:var(--glass);border-left:1px solid var(--line);backdrop-filter:blur(18px);display:flex;flex-direction:column;min-height:0}
-  @media (max-width:920px){.rail{border-left:none;border-top:1px solid var(--line);min-height:0;height:100%;overflow:hidden}}
+  @media (max-width:920px){.rail{border-left:none;border-top:1px solid var(--line);min-height:0;height:100%;overflow-y:auto;overflow-x:hidden}}
   .brand{padding:16px 20px 13px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
   .brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--green),#00b368);display:grid;place-items:center;color:#032414;font-weight:800;font-family:var(--disp);font-size:15px;box-shadow:0 0 18px var(--green-glow)}
   .brand .name{font-family:var(--disp);font-weight:700;font-size:15px}
@@ -67,6 +67,7 @@
   .tab:hover{color:var(--ink)}
   .tab.on{color:var(--green);border-bottom-color:var(--green)}
   .panels{overflow-y:auto;flex:1;min-height:0;padding:6px 20px 18px}
+  @media (max-width:920px){.panels{overflow:visible;flex:none;min-height:auto}}
   .panel{display:none}.panel.on{display:block;animation:fade .2s ease}
   @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
@@ -113,6 +114,8 @@
   .cap-row .del{margin-left:auto;color:#e0736a;cursor:pointer;font-size:12px;border:none;background:none;font-family:var(--body)}
   .file-lbl{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
   .actions{padding:15px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+  .actions.hidden{display:none}
+  .render-gate{display:flex;flex-direction:column;gap:10px}
   .btn{border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--body);transition:.15s}
   .btn:active{transform:translateY(1px)}
   .btn.primary{background:var(--green);color:#032414;box-shadow:0 6px 22px var(--green-glow)}
@@ -470,10 +473,18 @@
           <div class="chips" id="qChips"><span class="chip" data-q="720">720p</span><span class="chip on" data-q="1080">1080p</span><span class="chip" data-q="1440">1440p</span></div>
           <label class="toggle" id="safeExpTog" style="margin-top:14px"><span class="tk"></span><span>Burn safe-zone guides into export</span></label>
         </div>
+        <div class="grp">
+          <p class="glabel">Render controls</p>
+          <div class="render-gate">
+            <button id="openRenderPanel" class="btn primary" type="button">I am ready to render</button>
+            <p class="hint">Render, save current frame, and walkthrough actions stay hidden until you open them.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="actions">
+    <div class="actions hidden" id="renderPanel">
+      <button id="hideRenderPanel" class="btn ghost" type="button">Back to editing</button>
       <button id="exportBtn" class="btn primary" disabled>Render &amp; preview</button>
       <button id="pngBtn" class="btn ghost" disabled>Save current frame (PNG)</button>
       <button id="guideBtn" class="btn ghost" type="button">How to use Video Frame Studio</button>
@@ -879,6 +890,15 @@
     syncMusicClock();
     if(shouldPlay&&!video.paused){musicEl.play().catch(()=>{});}else{musicEl.pause();}
   }
+
+  function setRenderPanel(open){
+    const panel=$('#renderPanel');
+    if(!panel)return;
+    panel.classList.toggle('hidden',!open);
+    if(open){
+      panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }
+  }
   video.addEventListener('play',()=>syncPreviewAudio(true));
   video.addEventListener('pause',()=>syncPreviewAudio(false));
   video.addEventListener('seeking',()=>syncMusicClock());
@@ -887,6 +907,9 @@
   $('#tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;
     $$('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
     $$('.panel').forEach(p=>p.classList.toggle('on',p.dataset.panel===t.dataset.tab));});
+
+  $('#openRenderPanel').addEventListener('click',()=>setRenderPanel(true));
+  $('#hideRenderPanel').addEventListener('click',()=>setRenderPanel(false));
 
   function chipGroup(sel,attr,key,after){$(sel).addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
     $(sel).querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
