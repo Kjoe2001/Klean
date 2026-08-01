@@ -1,4 +1,4 @@
-type ProductKey = 'frame' | 'campaign' | 'content' | 'creative';
+type ProductKey = 'frame' | 'news' | 'campaign' | 'content' | 'creative';
 
 type ProductConfig = {
   key: ProductKey;
@@ -6,6 +6,16 @@ type ProductConfig = {
   shortDescription: string;
   baseFileName: string;
 };
+
+function getSupabaseDownloadBaseUrl() {
+  const configured = process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_BASE_URL?.trim();
+  if (configured) return configured;
+
+  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!projectUrl) return '';
+
+  return `${projectUrl.replace(/\/+$/, '')}/storage/v1/object/public/desktop-downloads`;
+}
 
 export const desktopRelease = {
   // Example tag: desktop-v0.1.1
@@ -17,7 +27,7 @@ export const desktopRelease = {
   // https://<project-ref>.supabase.co/storage/v1/object/public/desktop-downloads
   // Final URLs become:
   // <base>/<tag>/<asset-file>
-  supabaseBaseUrl: (process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_BASE_URL || '').trim(),
+  supabaseBaseUrl: getSupabaseDownloadBaseUrl(),
 };
 
 const products: ProductConfig[] = [
@@ -26,6 +36,12 @@ const products: ProductConfig[] = [
     name: 'Video Frame Studio',
     shortDescription: 'Storyboard and render video-first campaign assets.',
     baseFileName: 'Zelvo-Frame-Studio',
+  },
+  {
+    key: 'news',
+    name: 'News Frame Studio',
+    shortDescription: 'Design branded news cards with templates, QR badges, and export tools.',
+    baseFileName: 'Zelvo-News-Frame-Studio',
   },
   {
     key: 'campaign',
