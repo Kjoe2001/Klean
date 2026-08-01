@@ -184,18 +184,21 @@
       position:sticky;
       top:0;
       z-index:4;
-      display:grid;
-      grid-template-columns:repeat(9,minmax(0,1fr));
-      gap:0;
+      display:flex;
+      justify-content:flex-start;
+      align-items:flex-end;
+      gap:2px;
       padding:8px 8px 0;
-      overflow:visible;
+      overflow-x:visible;
+      overflow-y:visible;
       background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.9));
     }
     .tab{
-      min-width:0;
+      flex:0 0 auto;
+      min-width:auto;
       text-align:left;
-      padding:8px 4px;
-      font-size:10px;
+      padding:8px 5px;
+      font-size:9.5px;
       letter-spacing:.01em;
     }
     .tab .full{display:none}
