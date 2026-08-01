@@ -8,11 +8,16 @@ type ProductConfig = {
 };
 
 export const desktopRelease = {
-  // Example tag: desktop-v0.1.0
+  // Example tag: desktop-v0.1.1
   tag: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_TAG || 'desktop-v0.1.1',
   // Example repo: Kjoe2001/zelvo
   repo: process.env.NEXT_PUBLIC_DESKTOP_GITHUB_REPO || 'Kjoe2001/zelvo',
   version: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_VERSION || '0.1.1',
+  // Example:
+  // https://<project-ref>.supabase.co/storage/v1/object/public/desktop-downloads
+  // Final URLs become:
+  // <base>/<tag>/<asset-file>
+  supabaseBaseUrl: (process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_BASE_URL || '').trim(),
 };
 
 const products: ProductConfig[] = [
@@ -42,10 +47,24 @@ const products: ProductConfig[] = [
   },
 ];
 
-function releaseAssetUrl(assetFileName: string) {
+function githubReleaseAssetUrl(assetFileName: string) {
   const encoded = encodeURIComponent(assetFileName);
   return `https://github.com/${desktopRelease.repo}/releases/download/${desktopRelease.tag}/${encoded}`;
 }
+
+function supabaseAssetUrl(assetFileName: string) {
+  const base = desktopRelease.supabaseBaseUrl.replace(/\/+$/, '');
+  if (!base) return '';
+  const encoded = encodeURIComponent(assetFileName);
+  return `${base}/${desktopRelease.tag}/${encoded}`;
+}
+
+function releaseAssetUrl(assetFileName: string) {
+  const supabaseUrl = supabaseAssetUrl(assetFileName);
+  return supabaseUrl || githubReleaseAssetUrl(assetFileName);
+}
+
+export const desktopDownloadSource = desktopRelease.supabaseBaseUrl ? 'supabase' : 'github';
 
 export const desktopDownloadProducts = products.map((product) => {
   const v = desktopRelease.version;

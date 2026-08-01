@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import MarketingNav from '@/components/MarketingNav';
 import { Icon } from '@/components/Icon';
-import { desktopDownloadProducts, desktopRelease } from '@/lib/desktopDownloads';
+import { desktopDownloadProducts, desktopDownloadSource, desktopRelease } from '@/lib/desktopDownloads';
 
 export const metadata: Metadata = {
   title: 'Desktop Downloads | Zelvoo',
@@ -23,11 +23,11 @@ export default function DownloadsPage() {
             Download Standalone Zelvoo Apps
           </h1>
           <p className="text-stone text-body max-w-3xl leading-relaxed">
-            Choose your product and operating system. These links point to GitHub Release assets for tag
+            Choose your product and operating system. These links point to {desktopDownloadSource === 'supabase' ? 'Supabase Storage assets' : 'GitHub Release assets'} for tag
             <span className="font-medium text-rich-black"> {desktopRelease.tag}</span>.
           </p>
           <p className="text-xs text-stone mt-3">
-            Repo source: {desktopRelease.repo} · Version: {desktopRelease.version}
+            Source: {desktopDownloadSource === 'supabase' ? 'Supabase public bucket' : `GitHub repo ${desktopRelease.repo}`} · Version: {desktopRelease.version}
           </p>
         </div>
       </section>
