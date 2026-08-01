@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zelvoo Creative Studio — News Frame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Hanken+Grotesk:wght@400;600;700;800&family=Anton&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700;900&family=Bebas+Neue&family=Archivo+Black&family=Teko:wght@500;600;700&family=Barlow+Condensed:wght@600;700&family=Staatliches&family=DM+Serif+Display&family=Merriweather:wght@700;900&family=Montserrat:wght@700;800;900&family=Georgia&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style id="appStyle">
+  :root{--fg:#062C24;--accent:#00DF81;--surface:#F2F3F4;--card:#fff;--line:#e2e6e4;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:#e8ecea;font-family:'Hanken Grotesk',sans-serif;color:var(--fg);padding:24px;}
+  .nfs-root{background:var(--surface);padding:20px;border-radius:16px;max-width:1120px;margin:0 auto;}
+  .nfs-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .nfs-brandmark{width:40px;height:40px;border-radius:11px;background:linear-gradient(90deg,#00DF81,#4DF0A8);flex:none;box-shadow:0 6px 18px rgba(0,223,129,.35);}
+  .nfs-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5b7a6f;font-weight:700;}
+  .nfs-title{margin:0;font-family:'Unbounded',sans-serif;font-weight:700;font-size:22px;line-height:1;}
+  .nfs-grid{display:grid;grid-template-columns:minmax(280px,1fr) 360px;gap:22px;align-items:start;}
+  .nfs-stage{position:sticky;top:16px;}
+  .nfs-frame-shell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 30px rgba(6,44,36,.08);display:flex;justify-content:center;}
+  .nfs-frame-scaler{width:100%;display:flex;justify-content:center;transform-origin:top center;}
+  .nfs-frame{width:100%;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.18);}
+  .nfs-tip{display:flex;align-items:center;gap:6px;justify-content:center;margin:12px 0 0;font-size:12px;color:#6b8479;}
+
+  .nfs-panel{display:flex;flex-direction:column;gap:16px;}
+  .nfs-section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .nfs-section-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#6b8479;font-weight:700;margin-bottom:10px;}
+
+  .nfs-versions{display:grid;gap:8px;}
+  .nfs-ver{text-align:left;border:1px solid var(--line);background:#fbfcfb;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px;transition:.15s;font-family:inherit;}
+  .nfs-ver:hover{border-color:#bfe9d7;}
+  .nfs-ver.is-active{border-color:var(--accent);background:rgba(0,223,129,.08);box-shadow:0 0 0 1px var(--accent) inset;}
+  .nfs-ver-name{font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;}
+  .nfs-ver-hint{font-size:11px;color:#7a8f86;}
+
+  .nfs-templates{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  .nfs-formats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .nfs-fmt{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid var(--line);background:#fbfcfb;border-radius:10px;padding:11px 4px;cursor:pointer;transition:.15s;font-family:inherit;text-align:center;}
+  .nfs-fmt.is-active{border-color:var(--accent);background:rgba(0,223,129,.08);box-shadow:0 0 0 1px var(--accent) inset;}
+  .nfs-fmt-name{font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;}
+  .nfs-fmt-ratio{font-size:11px;color:#7a8f86;font-weight:600;}
+
+  .nfs-kits{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .nfs-kit{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:#fbfcfb;border-radius:10px;padding:9px 11px;cursor:pointer;transition:.15s;font-family:inherit;}
+  .nfs-kit.is-active{border-color:var(--accent);background:rgba(0,223,129,.08);box-shadow:0 0 0 1px var(--accent) inset;}
+  .nfs-kit-dots{display:inline-flex;flex:none;}
+  .nfs-kit-dots span{width:15px;height:15px;border-radius:50%;border:2px solid #fff;}
+  .nfs-kit-dots span:last-child{margin-left:-7px;}
+  .nfs-kit-name{font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;}
+  .nfs-kit-note{margin:9px 0 0;font-size:11px;color:#7a8f86;}
+
+  .nfs-uploads{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .nfs-upload{display:flex;align-items:center;justify-content:center;gap:6px;border:1px dashed #b9d8ca;border-radius:9px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;color:#3f6155;background:#fbfffd;font-family:inherit;}
+  .nfs-upload:hover{background:rgba(0,223,129,.06);border-color:var(--accent);}
+
+  .nfs-field{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+  .nfs-field.first{margin-top:0;}
+  .nfs-lbl{font-size:12px;font-weight:600;color:#4a6459;}
+  .nfs-input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--fg);background:#fff;outline:none;resize:vertical;width:100%;}
+  .nfs-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,223,129,.15);}
+  .nfs-range{width:100%;accent-color:var(--accent);}
+  .nfs-hint{font-size:11px;color:#93a49c;margin:6px 0 0;}
+
+  .sponsor-grid{display:grid;gap:6px;}
+  .grid-5{grid-template-columns:repeat(5,1fr);}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  .sponsor-tile{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:#fbfcfb;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;}
+  .sponsor-tile.empty{border-style:dashed;color:#9fb0a8;font-size:18px;}
+  .sponsor-tile img{max-width:82%;max-height:82%;object-fit:contain;}
+  .sp-x{position:absolute;top:2px;right:2px;width:16px;height:16px;border:0;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+
+  .nfs-segment{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  .nfs-segment button{flex:1;border:0;background:#fbfcfb;padding:9px;font-size:12px;font-weight:600;font-family:inherit;color:#7a8f86;cursor:pointer;}
+  .nfs-segment button+button{border-left:1px solid var(--line);}
+  .nfs-segment button.is-on{background:rgba(0,223,129,.1);color:var(--fg);}
+
+  .nfs-toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .nfs-toggle{display:flex;flex-direction:column;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;padding:10px 4px;cursor:pointer;font-size:11px;text-transform:capitalize;color:#8a9a93;background:#fbfcfb;transition:.15s;font-family:inherit;}
+  .nfs-toggle.is-on{color:var(--fg);border-color:var(--accent);background:rgba(0,223,129,.08);}
+  .nfs-toggle svg{width:16px;height:16px;}
+
+  .nfs-color-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .nfs-color{width:38px;height:34px;border:1px solid var(--line);border-radius:8px;padding:2px;background:#fff;cursor:pointer;}
+  .nfs-hex{width:92px;text-transform:uppercase;}
+  .nfs-swatches{display:flex;gap:5px;flex-wrap:wrap;}
+  .nfs-swatch{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.1);cursor:pointer;padding:0;}
+
+  .nfs-fonts{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:230px;overflow-y:auto;padding-right:2px;}
+  .nfs-font{border:1px solid var(--line);background:#fbfcfb;border-radius:9px;padding:10px;cursor:pointer;font-size:14px;color:var(--fg);}
+  .nfs-font.is-active{border-color:var(--accent);background:rgba(0,223,129,.08);box-shadow:0 0 0 1px var(--accent) inset;}
+
+  .nfs-actions{display:flex;gap:10px;margin-top:4px;}
+  .nfs-btn{display:flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;padding:12px 14px;font-size:14px;font-weight:700;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;border:1px solid transparent;flex:1;}
+  .nfs-btn-primary{background:var(--accent);color:#04231b;box-shadow:0 6px 16px rgba(0,223,129,.35);}
+  .nfs-btn-ghost{background:#fff;border-color:var(--line);color:var(--fg);flex:none;padding:12px 16px;}
+  .nfs-btn-ghost:hover{border-color:#c3d6cd;}
+
+  .photo{position:absolute;inset:0;background-color:#101418;background-size:cover;display:flex;align-items:center;justify-content:center;}
+  .photo-empty{text-align:center;color:#5c6b74;font-family:'Hanken Grotesk',sans-serif;}
+  .photo-empty div{font-size:12px;margin-top:8px;letter-spacing:.4px;}
+  .logo-fallback{font-family:'Unbounded',sans-serif;font-weight:700;color:#fff;letter-spacing:.5px;}
+  .social-bar{position:absolute;transform:translate(0,-50%);display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;background:rgba(6,10,12,.55);backdrop-filter:blur(6px);border-radius:999px;cursor:grab;user-select:none;border:1px solid rgba(255,255,255,.12);touch-action:none;}
+  .social-bar:active{cursor:grabbing;}
+  .social-chip{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
+  .social-chip svg{width:14px;height:14px;}
+  .social-user{color:#fff;font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:13px;white-space:nowrap;padding-left:2px;}
+
+  @media (max-width:820px){
+    body{padding:0;}
+    .nfs-root{border-radius:0;padding:0 14px 24px;}
+    .nfs-head{padding-top:16px;}
+    .nfs-grid{display:block;}
+    .nfs-stage{position:sticky;top:0;z-index:30;background:var(--surface);margin:0 -14px 14px;padding:8px 14px 10px;box-shadow:0 8px 14px -10px rgba(6,44,36,.45);}
+    .nfs-frame-shell{padding:8px;}
+    .nfs-tip{margin:6px 0 0;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+<div class="nfs-root">
+  <header class="nfs-head">
+    <div class="nfs-brandmark"></div>
+    <div><div class="nfs-eyebrow">Zelvoo Creative Studio</div><h2 class="nfs-title">News Frame</h2></div>
+  </header>
+
+  <div class="nfs-grid">
+    <div class="nfs-stage">
+      <div class="nfs-frame-shell">
+        <div id="frameScaler" class="nfs-frame-scaler"><div id="frame" class="nfs-frame"></div></div>
+      </div>
+      <p class="nfs-tip" id="tip">Drag the social bar anywhere on the frame</p>
+    </div>
+
+    <aside class="nfs-panel">
+      <section class="nfs-section">
+        <div class="nfs-section-label">Template</div>
+        <div class="nfs-templates" id="templates"></div>
+        <p class="nfs-hint">Each template keeps its own content, colours and logos.</p>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Brand Kit</div>
+        <div class="nfs-kits" id="kits"></div>
+        <p class="nfs-kit-note" id="kitNote">Custom — no kit bound</p>
+      </section>
+
+      <section class="nfs-section" id="versionSection">
+        <div class="nfs-section-label">Version</div>
+        <div class="nfs-versions" id="versions"></div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Format</div>
+        <div class="nfs-formats" id="formats"></div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Media</div>
+        <div class="nfs-uploads">
+          <label class="nfs-upload">Photo<input type="file" accept="image/*" hidden id="photoInput" /></label>
+          <label class="nfs-upload">Outlet logo<input type="file" accept="image/*" hidden id="logoInput" /></label>
+        </div>
+        <div class="nfs-field" id="photoPosField" style="display:none;">
+          <span class="nfs-lbl">Photo position</span>
+          <input type="range" min="0" max="100" value="50" id="imgY" class="nfs-range" />
+        </div>
+        <div class="nfs-field">
+          <span class="nfs-lbl">Logo position</span>
+          <div class="nfs-segment" id="logoPos"><button data-pos="left">Top left</button><button data-pos="right" class="is-on">Top right</button></div>
+        </div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Text</div>
+        <label class="nfs-field first" id="kickerField"><span class="nfs-lbl">Kicker</span><input class="nfs-input" id="kicker" /></label>
+        <label class="nfs-field"><span class="nfs-lbl">Headline / quote</span><textarea class="nfs-input" id="headline" rows="2"></textarea></label>
+        <p class="nfs-hint">Wrap words in *asterisks* to colour them with the highlight colour.</p>
+        <div class="nfs-field"><span class="nfs-lbl" id="hsLbl">Headline size · 100%</span><input type="range" min="0.7" max="1.6" step="0.05" value="1" id="headlineScale" class="nfs-range" /></div>
+        <label class="nfs-field" id="stampField"><span class="nfs-lbl">Stamp / location</span><input class="nfs-input" id="stamp" /></label>
+        <label class="nfs-field" id="usernameField"><span class="nfs-lbl">Username</span><input class="nfs-input" id="username" /></label>
+      </section>
+
+      <section class="nfs-section" id="extrasSection" style="display:none;">
+        <div class="nfs-section-label">Details</div>
+        <label class="nfs-field first"><span class="nfs-lbl">Date line</span><input class="nfs-input" id="date" /></label>
+        <label class="nfs-field"><span class="nfs-lbl">Website (encoded in QR)</span><input class="nfs-input" id="website" /></label>
+        <div class="nfs-field"><span class="nfs-lbl">Scan-to-read QR badge</span>
+          <div class="nfs-segment" id="qrToggle"><button data-q="on" class="is-on">Show</button><button data-q="off">Hide</button></div>
+        </div>
+        <div class="nfs-field"><span class="nfs-lbl" id="qrSizeLbl">QR size · 52px</span><input type="range" min="36" max="120" step="2" value="52" id="qrSize" class="nfs-range" /></div>
+        <div class="nfs-uploads" style="margin-top:10px;">
+          <label class="nfs-upload">Replace QR<input type="file" accept="image/*" hidden id="qrInput" /></label>
+          <button class="nfs-upload" id="qrClear" type="button">Use auto QR</button>
+        </div>
+        <p class="nfs-hint">Drag the QR badge on the frame to reposition it.</p>
+      </section>
+
+      <section class="nfs-section" id="frame3Section" style="display:none;">
+        <div class="nfs-section-label">News Frame 3 details</div>
+        <label class="nfs-field first"><span class="nfs-lbl">Source credit (top-right)</span><input class="nfs-input" id="source" /></label>
+      </section>
+
+      <section class="nfs-section" id="frame4Section" style="display:none;">
+        <div class="nfs-section-label">News Frame 4 details</div>
+        <div class="nfs-field first"><span class="nfs-lbl">Card colour</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="cardColor" /><input class="nfs-input nfs-hex" id="cardHex" /></div>
+        </div>
+        <label class="nfs-field"><span class="nfs-lbl">Hashtag</span><input class="nfs-input" id="hashtag" /></label>
+        <label class="nfs-field"><span class="nfs-lbl">Association line</span><input class="nfs-input" id="assocText" /></label>
+        <div class="nfs-field"><span class="nfs-lbl">Association text colour</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="assocTextColor" /><input class="nfs-input nfs-hex" id="assocTextHex" /></div>
+        </div>
+        <div class="nfs-field"><span class="nfs-lbl" id="assocSizeLbl">Association logo size · 26px</span><input type="range" min="14" max="44" step="1" value="26" id="assocLogoSize" class="nfs-range" /></div>
+        <div class="sponsor-grid grid-2" id="assocSlots" style="margin-top:8px;"></div>
+        <p class="nfs-hint">2 logos beside the association line, on white.</p>
+      </section>
+
+      <section class="nfs-section" id="frame5Section" style="display:none;">
+        <div class="nfs-section-label">News Frame 5 details</div>
+        <label class="nfs-field first"><span class="nfs-lbl">Context banner</span><input class="nfs-input" id="contextText" /></label>
+        <label class="nfs-field"><span class="nfs-lbl">Speaker name</span><input class="nfs-input" id="speaker" /></label>
+        <label class="nfs-field"><span class="nfs-lbl">Speaker title</span><input class="nfs-input" id="speakerTitle" /></label>
+        <div class="nfs-uploads" style="margin-top:10px;">
+          <label class="nfs-upload">Top-left sponsor<input type="file" accept="image/*" hidden id="f5SponsorInput" /></label>
+          <button class="nfs-upload" id="f5SponsorClear" type="button">Remove</button>
+        </div>
+      </section>
+
+      <section class="nfs-section" id="brandLogosSection" style="display:none;">
+        <div class="nfs-section-label">Brand logos — footer (up to 10)</div>
+        <div class="sponsor-grid grid-5" id="brandSlots"></div>
+        <div class="nfs-field"><span class="nfs-lbl" id="brandSizeLbl">Logo size · 22px</span><input type="range" min="12" max="40" step="1" value="22" id="brandLogoSize" class="nfs-range" /></div>
+        <p class="nfs-hint">Uniform size, white footer bar, no logo backgrounds. Use transparent PNGs.</p>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Socials</div>
+        <div class="nfs-toggles" id="socials"></div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Colours</div>
+        <div class="nfs-field first"><span class="nfs-lbl">Background</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="bgColor" /><input class="nfs-input nfs-hex" id="bgHex" /><div class="nfs-swatches" id="bgSwatches"></div></div>
+        </div>
+        <div class="nfs-field"><span class="nfs-lbl">Accent</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="acColor" /><input class="nfs-input nfs-hex" id="acHex" /><div class="nfs-swatches" id="acSwatches"></div></div>
+        </div>
+        <div class="nfs-field"><span class="nfs-lbl">Text colour</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="textColor" /><input class="nfs-input nfs-hex" id="textHex" /></div>
+        </div>
+        <div class="nfs-field"><span class="nfs-lbl">Highlight colour</span>
+          <div class="nfs-color-row"><input type="color" class="nfs-color" id="hlColor" /><input class="nfs-input nfs-hex" id="hlHex" /></div>
+        </div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Headline font</div>
+        <div class="nfs-fonts" id="fonts"></div>
+      </section>
+
+      <section class="nfs-section">
+        <div class="nfs-section-label">Export</div>
+        <div class="nfs-field first"><span class="nfs-lbl">Format (high quality)</span>
+          <div class="nfs-segment" id="exportFormat"><button data-f="png" class="is-on">PNG</button><button data-f="jpeg">JPEG</button><button data-f="svg">SVG</button></div>
+        </div>
+        <div class="nfs-actions">
+          <button class="nfs-btn nfs-btn-primary" id="downloadBtn">Download</button>
+          <button class="nfs-btn nfs-btn-ghost" id="resetBtn">Reset</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const FONTS = [
+  {key:"unbounded",label:"Unbounded",css:"'Unbounded',sans-serif",weight:900},
+  {key:"anton",label:"Anton",css:"'Anton',sans-serif",weight:400},
+  {key:"bebas",label:"Bebas Neue",css:"'Bebas Neue',sans-serif",weight:400},
+  {key:"archivo",label:"Archivo Black",css:"'Archivo Black',sans-serif",weight:400},
+  {key:"montserrat",label:"Montserrat",css:"'Montserrat',sans-serif",weight:900},
+  {key:"oswald",label:"Oswald",css:"'Oswald',sans-serif",weight:700},
+  {key:"teko",label:"Teko",css:"'Teko',sans-serif",weight:700},
+  {key:"barlow",label:"Barlow Condensed",css:"'Barlow Condensed',sans-serif",weight:700},
+  {key:"staatliches",label:"Staatliches",css:"'Staatliches',sans-serif",weight:400},
+  {key:"hanken",label:"Hanken Grotesk",css:"'Hanken Grotesk',sans-serif",weight:800},
+  {key:"georgia",label:"Georgia",css:"Georgia,'Times New Roman',serif",weight:700,serif:true},
+  {key:"playfair",label:"Playfair Display",css:"'Playfair Display',serif",weight:900,serif:true},
+  {key:"dmserif",label:"DM Serif Display",css:"'DM Serif Display',serif",weight:400,serif:true},
+  {key:"merriweather",label:"Merriweather",css:"'Merriweather',serif",weight:900,serif:true},
+];
+const VERSIONS = [
+  {key:"breaking",label:"Breaking",hint:"Bold band + kicker pill"},
+  {key:"bulletin",label:"Bulletin",hint:"Gradient overlay + ticker"},
+  {key:"minimal",label:"Minimal",hint:"Full-bleed + clean card"},
+  {key:"custom",label:"Custom",hint:"Freeform — your own layout"},
+];
+const TEMPLATES = [
+  {key:"frame1",label:"News Frame 1",hint:"4 versions"},
+  {key:"frame2",label:"News Frame 2",hint:"QR · serif"},
+  {key:"frame3",label:"News Frame 3",hint:"Wire · source"},
+  {key:"frame4",label:"News Frame 4",hint:"Light card"},
+  {key:"frame5",label:"News Frame 5",hint:"Quote card"},
+];
+const FORMATS = [
+  {key:"instagram",label:"Instagram",ratio:"4 / 5",short:"4:5",w:1080,h:1350},
+  {key:"facebook",label:"Facebook",ratio:"1569 / 2048",short:"3:4",w:1569,h:2048},
+  {key:"tiktok",label:"TikTok",ratio:"9 / 16",short:"9:16",w:1080,h:1920},
+];
+const BRAND_KITS = [
+  {id:"zelvoo",name:"Zelvoo",roles:{background:"#062C24",accent:"#00DF81",font:"unbounded"}},
+  {id:"breaking",name:"Breaking Red",roles:{background:"#0B0B0F",accent:"#E0322D",font:"anton"}},
+  {id:"broadsheet",name:"Broadsheet",roles:{background:"#111827",accent:"#C9A227",font:"playfair"}},
+  {id:"ocean",name:"Ocean",roles:{background:"#0E4C92",accent:"#4DF0A8",font:"oswald"}},
+];
+const SWATCHES = ["#062C24","#0B0B0F","#E0322D","#00DF81","#6A1B7A","#E6007E","#22C55E","#17BEBE"];
+
+const ICONS = {
+  facebook:'<svg viewBox="0 0 24 24" fill="none" stroke="%C%" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="%C%" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24" fill="%C%"><path d="M16.5 3a5.6 5.6 0 0 0 4.5 2.4v2.9a8.4 8.4 0 0 1-4.5-1.35v6.15a5.95 5.95 0 1 1-5.95-5.95c.2 0 .4.01.6.03v3.05a2.92 2.92 0 1 0 2.35 2.86V3h2.95z"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24" fill="none" stroke="%C%" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="%C%"><path d="M18.9 2H22l-7.3 8.34L23 22h-6.6l-5.17-6.76L5.3 22H2.2l7.8-8.92L1.5 2h6.77l4.67 6.18L18.9 2zm-1.16 18h1.83L7.34 3.9H5.4L17.74 20z"/></svg>',
+};
+const icon = (name,color) => (ICONS[name]||"").split("%C%").join(color);
+
+const MONTHS=["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+function ordinal(n){const v=n%100;const s=["TH","ST","ND","RD"];return n+(s[(v-20)%10]||s[v]||s[0]);}
+function formatDate(d){return `${ordinal(d.getDate())} ${MONTHS[d.getMonth()]}, ${d.getFullYear()}`;}
+
+/* ---------------- per-template state ---------------- */
+function baseState(){
+  return {
+    template:"frame1", version:"breaking", format:"instagram", image:null, logo:null,
+    kicker:"BREAKING NEWS", headline:"Type your headline here — keep it short and loud",
+    username:"@youroutlet", stamp:"LIVE • ACCRA",
+    date: formatDate(new Date()), website:"www.yoursite.com", showQR:true, source:"Reuters",
+    cardColor:"#F3EEF7", hashtag:"#YourNewsroom",
+    assocText:"THIS NEWSCARD IS BROUGHT TO YOU IN ASSOCIATION WITH", assocTextColor:"#111111",
+    assocLogos:[null,null], assocLogoSize:26,
+    contextText:"Add a context line for the quote.", speaker:"Speaker Name", speakerTitle:"Title, Organisation",
+    textColor:"#FFFFFF", highlightColor:"#17BEBE", qrImage:null, qrPos:{x:4,y:4}, qrSize:52, frame5Sponsor:null,
+    brandLogos:[null,null,null,null,null,null,null,null,null,null], brandLogoSize:22,
+    socials:{facebook:true,instagram:true,tiktok:true,youtube:true,x:true}, socialPos:{x:6,y:90},
+    bg:"#062C24", accent:"#E0322D", font:"anton", imgY:50, headlineScale:1, logoPos:"right", kitId:null,
+  };
+}
+function applyPreset(s,t){
+  if(t==="frame2"){ s.format="facebook"; s.bg="#0B0B0F"; s.accent="#17BEBE"; s.highlightColor="#17BEBE"; s.font="georgia"; s.qrPos={x:4,y:4}; s.headline="*'Good for democracy' –* hails Supreme Court ruling"; }
+  else if(t==="frame3"){ s.format="instagram"; s.bg="#0B0B0F"; s.accent="#E0322D"; s.textColor="#FFFFFF"; s.font="georgia"; s.kicker="BREAKING"; s.headline="European nations weigh boycott if plan goes ahead"; }
+  else if(t==="frame4"){ s.format="instagram"; s.bg="#20141f"; s.accent="#6A1B7A"; s.highlightColor="#E6007E"; s.cardColor="#F3EEF7"; s.assocTextColor="#111111"; s.font="archivo"; s.qrPos={x:4,y:4}; s.headline="China's *auto dominance took 30 years to build* — Zonda Tec CEO"; }
+  else if(t==="frame5"){ s.format="instagram"; s.bg="#0C0C0C"; s.accent="#22C55E"; s.highlightColor="#22C55E"; s.textColor="#FFFFFF"; s.font="montserrat"; s.qrPos={x:66,y:58}; s.qrSize=66; s.headline="Given the history, I don't have *faith* in them. Some even call it *Settings*."; }
+}
+function freshState(t){ const s=baseState(); s.template=t; applyPreset(s,t); return s; }
+
+const frameStates = { frame1: freshState("frame1") };
+let state = frameStates.frame1;
+let exportFormat = "png";
+
+/* ---------------- helpers ---------------- */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function richText(s,color){
+  return String(s).split(/(\*[^*]+\*)/g).map(p=>{
+    if(p.length>2 && p.startsWith("*") && p.endsWith("*")) return `<span style="color:${color};">${esc(p.slice(1,-1))}</span>`;
+    return esc(p);
+  }).join("");
+}
+function hexToRgba(hex,a){const h=hex.replace("#","");const b=h.length===3?h.split("").map(x=>x+x).join(""):h;const n=parseInt(b,16);return `rgba(${(n>>16)&255}, ${(n>>8)&255}, ${n&255}, ${a})`;}
+const fontOf = () => FONTS.find(f=>f.key===state.font) || FONTS[0];
+const fmtOf = () => FORMATS.find(f=>f.key===state.format) || FORMATS[0];
+const enabledSocials = () => Object.keys(state.socials).filter(k=>state.socials[k]);
+function imgTag(src,size){ return `<img src="${src}" style="height:${size}px;width:auto;object-fit:contain;display:block;" />`; }
+function logoHTML(size){ return state.logo ? `<img src="${state.logo}" alt="outlet" style="height:${size}px;width:auto;object-fit:contain;display:block;" />` : `<span class="logo-fallback" style="font-size:${size*0.4}px;">LOGO</span>`; }
+function photoHTML(){
+  const bg = state.image ? `background-image:url('${state.image}');background-position:center ${state.imgY}%;` : "";
+  const inner = state.image ? "" : `<div class="photo-empty"><div>Add a photo</div></div>`;
+  return `<div class="photo" style="${bg}">${inner}</div>`;
+}
+function socialBarHTML(){
+  const chips = enabledSocials().map(k=>`<span class="social-chip" style="background:${state.accent}">${icon(k,'#fff')}</span>`).join("");
+  return `<div id="socialBar" data-drag="social" class="social-bar" style="left:${state.socialPos.x}%;top:${state.socialPos.y}%;">${chips}<span class="social-user">${esc(state.username)}</span></div>`;
+}
+function qrBadgeHTML(){
+  if(!state.showQR) return "";
+  const plain = state.template==="frame5";
+  const size = state.qrSize;
+  const inner = state.qrImage ? `<img src="${state.qrImage}" alt="qr" style="width:${size}px;height:${size}px;object-fit:contain;display:block;" />` : `<div id="qrBox" style="width:${size}px;height:${size}px;"></div>`;
+  const label = plain ? "" : `<div style="font-family:'Hanken Grotesk',sans-serif;font-weight:800;font-size:11px;line-height:1.05;color:#111;letter-spacing:.5px;">SCAN<br/>TO<br/>READ</div>`;
+  return `<div id="qrBadge" data-drag="qr" style="position:absolute;left:${state.qrPos.x}%;top:${state.qrPos.y}%;background:#fff;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:grab;touch-action:none;z-index:8;">${inner}${label}</div>`;
+}
+/* Brand logos: white footer bar, uniform size, no logo backgrounds */
+function brandFooterHTML(){
+  const items=state.brandLogos.filter(Boolean);
+  if(!items.length) return "";
+  const h=state.brandLogoSize;
+  return `<div style="position:absolute;left:0;right:0;bottom:0;height:${h+16}px;background:#fff;padding:0 10px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow:hidden;z-index:6;">${items.map(s=>`<img src="${s}" style="height:${h}px;width:auto;object-fit:contain;flex:0 0 auto;" />`).join("")}</div>`;
+}
+function brandFooterH(){ return state.brandLogos.filter(Boolean).length ? state.brandLogoSize+16 : 0; }
+
+/* ---------------- render ---------------- */
+function renderFrame(){
+  const f=fontOf(), fmt=fmtOf();
+  const hW=f.weight, isSerif=!!f.serif, fc=f.css, hs=state.headlineScale;
+  const bg=state.bg, ac=state.accent, tc=state.textColor, hc=state.highlightColor;
+  let html;
+  if(state.template==="frame2") html=renderFrame2(fc,hW,hs,bg,ac,tc,hc,fmt);
+  else if(state.template==="frame3") html=renderFrame3(fc,hW,hs,bg,ac,tc,hc,isSerif,fmt);
+  else if(state.template==="frame4") html=renderFrame4(fc,hW,hs,bg,ac,tc,hc,fmt);
+  else if(state.template==="frame5") html=renderFrame5(fc,hW,hs,bg,ac,tc,hc,fmt);
+  else html=renderFrame1(fc,hW,hs,bg,ac,hc,isSerif,fmt);
+  $("frame").innerHTML=html;
+  bindDrag(); renderQR(); fitMobile();
+}
+
+function renderFrame1(fc,hW,hs,bg,ac,hc,isSerif,fmt){
+  const border = state.version==="minimal" ? 10 : 16;
+  const wrap=(inner)=>`<div style="position:relative;width:100%;aspect-ratio:${fmt.ratio};background:${bg};padding:${border}px;overflow:hidden;"><div style="position:relative;width:100%;height:100%;overflow:hidden;">${inner}</div></div>`;
+  let inner="";
+  if(state.version==="breaking"){
+    const dir=state.logoPos==="left"?"row-reverse":"row";
+    inner=photoHTML()
+      +`<div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;flex-direction:${dir};"><span style="background:${ac};color:#fff;font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;padding:6px 12px;text-transform:uppercase;">${esc(state.kicker)}</span><div style="background:rgba(0,0,0,.35);padding:6px 10px;border-radius:6px;">${logoHTML(30)}</div></div>`
+      +`<div style="position:absolute;left:0;right:0;bottom:0;"><div style="height:4px;background:${bg};"></div><div style="background:${ac};padding:16px 18px 46px;"><h1 style="margin:0;color:#fff;font-family:${fc};font-weight:${hW};font-size:${26*hs}px;line-height:1.08;text-transform:${isSerif?"none":"uppercase"};">${richText(state.headline,hc)}</h1><div style="margin-top:8px;color:rgba(255,255,255,.85);font-family:'Hanken Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;">${esc(state.stamp)}</div></div></div>`
+      +socialBarHTML();
+  } else if(state.version==="bulletin"){
+    const dir=state.logoPos==="left"?"row":"row-reverse";
+    inner=photoHTML()
+      +`<div style="position:absolute;top:0;left:0;right:0;background:${bg};padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-direction:${dir};">${logoHTML(26)}<span style="display:inline-flex;align-items:center;gap:6px;color:#fff;font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;"><span style="width:8px;height:8px;border-radius:50%;background:${ac};display:inline-block;"></span> ${esc(state.kicker)}</span></div>`
+      +`<div style="position:absolute;left:0;right:0;bottom:0;padding-top:90px;background:linear-gradient(to top, ${hexToRgba(bg,.96)} 20%, transparent);"><div style="padding:0 18px 44px;"><h1 style="margin:0;color:#fff;font-family:${fc};font-weight:${hW};font-size:${24*hs}px;line-height:1.12;">${richText(state.headline,hc)}</h1></div><div style="background:${ac};color:#fff;font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;padding:7px 18px;text-transform:uppercase;">${esc(state.stamp)}</div></div>`
+      +socialBarHTML();
+  } else if(state.version==="custom"){
+    const side=state.logoPos==="left"?"left:16px;":"right:16px;";
+    inner=photoHTML()
+      +`<div style="position:absolute;top:16px;${side}background:rgba(0,0,0,.3);padding:6px 10px;border-radius:6px;">${logoHTML(28)}</div>`
+      +`<div style="position:absolute;left:0;right:0;bottom:0;padding-top:100px;background:linear-gradient(to top, ${hexToRgba(bg,.94)} 24%, transparent);"><div style="padding:0 18px 46px;border-left:4px solid ${ac};margin-left:14px;">${state.kicker?`<span style="display:inline-block;color:${ac};font-family:'Oswald',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">${esc(state.kicker)}</span>`:""}<h1 style="margin:0;color:#fff;font-family:${fc};font-weight:${hW};font-size:${26*hs}px;line-height:1.1;">${richText(state.headline,hc)}</h1>${state.stamp?`<div style="margin-top:12px;color:rgba(255,255,255,.75);font-family:'Hanken Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;">${esc(state.stamp)}</div>`:""}</div></div>`
+      +socialBarHTML();
+  } else {
+    const side=state.logoPos==="left"?"left:16px;":"right:16px;";
+    inner=photoHTML()
+      +`<div style="position:absolute;top:16px;${side}background:rgba(0,0,0,.3);padding:6px 10px;border-radius:6px;">${logoHTML(26)}</div>`
+      +`<div style="position:absolute;left:14px;right:14px;bottom:14px;background:${bg};padding:16px 16px 20px;border-radius:4px;"><span style="display:inline-block;color:${ac};font-family:'Oswald',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">${esc(state.kicker)}</span><h1 style="margin:0;color:#fff;font-family:${fc};font-weight:${hW};font-size:${22*hs}px;line-height:1.15;">${richText(state.headline,hc)}</h1><div style="margin-top:10px;height:2px;width:44px;background:${ac};"></div><div style="margin-top:10px;color:rgba(255,255,255,.7);font-family:'Hanken Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:1px;">${esc(state.stamp)}</div></div>`
+      +socialBarHTML();
+  }
+  return wrap(inner);
+}
+
+function renderFrame2(fc,hW,hs,bg,ac,tc,hc,fmt){
+  const side=state.logoPos==="left"?"left:16px;":"right:16px;";
+  const domain=(state.website||"").replace(/^https?:\/\//,"").replace(/^www\./,"").toUpperCase();
+  const wm=domain?new Array(6).fill(domain).join("   ·   "):"";
+  const socialsRow=enabledSocials().map(k=>`<span style="width:18px;height:18px;display:inline-flex;">${icon(k,tc)}</span>`).join("");
+  const bf=brandFooterH();
+  return `<div style="position:relative;width:100%;aspect-ratio:${fmt.ratio};background:${bg};overflow:hidden;">
+    ${photoHTML()}
+    <div style="position:absolute;inset:0;background:linear-gradient(to top, ${hexToRgba(bg,.94)} 2%, ${hexToRgba(bg,.55)} 26%, transparent 50%);"></div>
+    <div style="position:absolute;left:2px;top:0;bottom:0;writing-mode:vertical-rl;color:${tc};opacity:.08;font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:2px;white-space:nowrap;overflow:hidden;">${esc(wm)}</div>
+    <div style="position:absolute;right:2px;top:0;bottom:0;writing-mode:vertical-rl;transform:rotate(180deg);color:${tc};opacity:.08;font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:2px;white-space:nowrap;overflow:hidden;">${esc(wm)}</div>
+    ${qrBadgeHTML()}
+    <div style="position:absolute;top:16px;${side}">${logoHTML(46)}</div>
+    <div style="position:absolute;left:0;right:0;bottom:${56+bf}px;padding:0 22px;">
+      <div style="color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:13px;letter-spacing:3px;margin-bottom:12px;">${esc(state.date)}</div>
+      <h1 style="margin:0;font-family:${fc};font-weight:${hW};font-size:${30*hs}px;line-height:1.14;color:${tc};">${richText(state.headline,hc)}</h1>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:${bf}px;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(0,0,0,.28);">
+      <span style="display:inline-flex;align-items:center;gap:9px;min-width:0;">${socialsRow}<span style="color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;white-space:nowrap;margin-left:4px;">${esc(state.username)}</span></span>
+      <span style="color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;white-space:nowrap;">${esc(state.website)}</span>
+    </div>
+    ${brandFooterHTML()}
+  </div>`;
+}
+
+function renderFrame3(fc,hW,hs,bg,ac,tc,hc,isSerif,fmt){
+  const dir=state.logoPos==="left"?"row":"row-reverse";
+  const bf=brandFooterH();
+  return `<div style="position:relative;width:100%;aspect-ratio:${fmt.ratio};background:${bg};overflow:hidden;">
+    ${photoHTML()}
+    <div style="position:absolute;inset:0;background:linear-gradient(to top, ${hexToRgba(bg,.85)} 0%, transparent 42%);"></div>
+    <div style="position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:flex-start;justify-content:space-between;flex-direction:${dir};">
+      ${logoHTML(30)}
+      <span style="color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:13px;opacity:.95;">${esc(state.source)}</span>
+    </div>
+    <div style="position:absolute;left:20px;right:20px;bottom:${26+bf}px;">
+      ${state.kicker?`<span style="display:inline-block;background:${ac};color:#fff;font-family:'Hanken Grotesk',sans-serif;font-weight:800;font-size:15px;letter-spacing:1px;padding:5px 12px;text-transform:uppercase;margin-bottom:14px;">${esc(state.kicker)}</span>`:""}
+      <h1 style="margin:0;color:${tc};font-family:${fc};font-weight:${hW};font-size:${30*hs}px;line-height:1.12;">${richText(state.headline,hc)}</h1>
+    </div>
+    ${brandFooterHTML()}
+  </div>`;
+}
+
+function renderFrame4(fc,hW,hs,bg,ac,tc,hc,fmt){
+  const card=state.cardColor, cardText="#191021";
+  const domain=(state.website||"").replace(/^https?:\/\//,"").replace(/^www\./,"").toUpperCase();
+  const wm=domain?new Array(6).fill(domain).join("   ·   "):"";
+  const socialsRow=enabledSocials().map(k=>`<span style="width:16px;height:16px;display:inline-flex;">${icon(k,cardText)}</span>`).join("");
+  const assocLogos=state.assocLogos.filter(Boolean).map(s=>`<span style="background:#fff;border-radius:5px;padding:3px 5px;display:inline-flex;">${imgTag(s,state.assocLogoSize)}</span>`).join("");
+  const bf=brandFooterH();
+  return `<div style="position:relative;width:100%;aspect-ratio:${fmt.ratio};background:${bg};overflow:hidden;">
+    ${photoHTML()}
+    <div style="position:absolute;left:2px;top:0;bottom:0;writing-mode:vertical-rl;color:#fff;opacity:.06;font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:2px;white-space:nowrap;overflow:hidden;">${esc(wm)}</div>
+    ${qrBadgeHTML()}
+    <div style="position:absolute;right:16px;top:47%;transform:translateY(-100%);background:#fff;border-radius:12px;padding:8px 12px;box-shadow:0 3px 10px rgba(0,0,0,.18);">${logoHTML(30)}</div>
+    <div style="position:absolute;left:0;right:0;bottom:${bf}px;top:47%;background:${card};display:flex;flex-direction:column;">
+      <div style="padding:18px 22px 0;flex:1;">
+        <div style="color:${cardText};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;margin-bottom:10px;">${esc(state.date)}</div>
+        <h1 style="margin:0;color:${cardText};font-family:${fc};font-weight:${hW};font-size:${25*hs}px;line-height:1.1;">${richText(state.headline,hc)}</h1>
+      </div>
+      <div style="padding:6px 22px;display:flex;align-items:center;gap:8px;color:${cardText};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;">
+        <span style="white-space:nowrap;">${esc(state.website)}</span><span style="opacity:.4;">|</span>${socialsRow}<span style="margin-left:2px;white-space:nowrap;">${esc(state.username)}</span>
+      </div>
+      <div style="margin:0 22px 12px;background:#fff;border-radius:10px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.12);">
+        <span style="color:${state.assocTextColor};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:9px;line-height:1.15;text-transform:uppercase;max-width:58%;">${esc(state.assocText)}</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;">${assocLogos}</span>
+      </div>
+    </div>
+    ${brandFooterHTML()}
+  </div>`;
+}
+
+function renderFrame5(fc,hW,hs,bg,ac,tc,hc,fmt){
+  const img=state.image;
+  const photo = img
+    ? `<div style="position:absolute;inset:0;background-image:url('${img}');background-size:cover;background-position:center;filter:blur(16px);transform:scale(1.18);"></div><div style="position:absolute;inset:5px;background-image:url('${img}');background-size:cover;background-position:center ${state.imgY}%;"></div>`
+    : `<div class="photo-empty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#101418;"><div>Add a photo</div></div>`;
+  const sp=state.frame5Sponsor?`<div style="position:absolute;top:16px;left:16px;background:#fff;border-radius:6px;padding:5px 9px;z-index:4;">${imgTag(state.frame5Sponsor,26)}</div>`:"";
+  return `<div style="position:relative;width:100%;aspect-ratio:${fmt.ratio};background:${bg};overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:52%;overflow:hidden;background:#101418;">${photo}</div>
+    <div style="position:absolute;top:0;left:0;right:0;height:52%;background:linear-gradient(to bottom, transparent 40%, ${hexToRgba(bg,.55)} 68%, ${bg} 90%);"></div>
+    ${sp}
+    <div style="position:absolute;top:16px;right:16px;background:#fff;border-radius:6px;padding:5px 9px;z-index:4;">${logoHTML(24)}</div>
+    <div style="position:absolute;left:0;right:0;top:46%;bottom:${brandFooterH()}px;padding:14px 20px 12px;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="flex:1;min-height:0;overflow:hidden;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+          <div style="font-family:${fc};font-weight:${hW};font-size:${62*hs}px;line-height:.7;color:${tc};">&ldquo;</div>
+          <span style="background:#fff;color:#16512E;font-family:'Hanken Grotesk',sans-serif;font-weight:800;font-size:15px;padding:6px 12px;white-space:nowrap;">${esc(state.date)}</span>
+        </div>
+        <div style="background:${ac};color:#0b0b0b;font-family:'Hanken Grotesk',sans-serif;font-weight:800;font-size:11px;letter-spacing:.4px;text-transform:uppercase;padding:8px 12px;margin:2px 0 12px;">${esc(state.contextText)}</div>
+        <h1 style="margin:0;color:${tc};font-family:${fc};font-weight:${hW};font-size:${23*hs}px;line-height:1.2;">${richText(state.headline,hc)}</h1>
+        <div style="margin-top:14px;">
+          <div style="color:${hc};font-family:'Hanken Grotesk',sans-serif;font-weight:800;font-size:15px;letter-spacing:.5px;">${esc(state.speaker)}</div>
+          <div style="color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.5px;opacity:.85;">${esc(state.speakerTitle)}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;flex:0 0 auto;color:${tc};font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:11px;">FOLLOW US FOR MORE UPDATES | ${esc(state.website)}</div>
+    </div>
+    ${qrBadgeHTML()}
+    ${brandFooterHTML()}
+  </div>`;
+}
+
+function renderQR(){
+  if(!["frame2","frame4","frame5"].includes(state.template) || !state.showQR || state.qrImage) return;
+  const box=$("qrBox"); if(!box || !window.QRCode) return;
+  const size = state.qrSize;
+  box.innerHTML="";
+  try{ new QRCode(box,{text:state.website||"https://",width:size,height:size,colorDark:"#111111",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
+}
+
+/* ---------------- drag ---------------- */
+let dragTarget=null;
+function bindDrag(){ document.querySelectorAll("[data-drag]").forEach(el=>{ el.addEventListener("pointerdown",(e)=>{e.preventDefault();dragTarget=el.getAttribute("data-drag");}); }); }
+document.addEventListener("pointermove",(e)=>{
+  if(!dragTarget) return;
+  const r=$("frame").getBoundingClientRect();
+  const px=((e.clientX-r.left)/r.width)*100, py=((e.clientY-r.top)/r.height)*100;
+  if(dragTarget==="social"){ state.socialPos.x=Math.max(3,Math.min(97,px)); state.socialPos.y=Math.max(4,Math.min(96,py)); const el=$("socialBar"); if(el){el.style.left=state.socialPos.x+"%";el.style.top=state.socialPos.y+"%";} }
+  else if(dragTarget==="qr"){ state.qrPos.x=Math.max(0,Math.min(88,px)); state.qrPos.y=Math.max(0,Math.min(90,py)); const el=$("qrBadge"); if(el){el.style.left=state.qrPos.x+"%";el.style.top=state.qrPos.y+"%";} }
+});
+document.addEventListener("pointerup",()=>{dragTarget=null;});
+
+/* ---------------- mobile fit ---------------- */
+function fitMobile(){
+  const scaler=$("frameScaler"), frame=$("frame");
+  if(!scaler||!frame) return;
+  scaler.style.transform=""; scaler.style.height="";
+  if(!window.matchMedia("(max-width:820px)").matches) return;
+  const naturalH=frame.offsetHeight; if(!naturalH) return;
+  const budget=Math.min(window.innerHeight*0.46,440);
+  const s=Math.min(1,budget/naturalH);
+  if(s<1){ scaler.style.transform=`scale(${s})`; scaler.style.height=Math.ceil(naturalH*s)+"px"; }
+}
+let fitPending=false;
+window.addEventListener("resize",()=>{ if(fitPending) return; fitPending=true; requestAnimationFrame(()=>{fitPending=false;fitMobile();}); });
+
+/* ---------------- controls: helpers ---------------- */
+function markActive(containerId,key){ const c=$(containerId); if(!c) return; [...c.children].forEach(b=>b.classList.toggle("is-active",b.dataset.key===key)); }
+function segOn(containerId,attr,val){ const c=$(containerId); if(!c) return; [...c.children].forEach(b=>b.classList.toggle("is-on",b.dataset[attr]===String(val))); }
+function breakKit(){ state.kitId=null; markActive("kits",null); $("kitNote").textContent="Custom — no kit bound"; }
+function applyKit(kit){ state.kitId=kit.id; state.bg=kit.roles.background; state.accent=kit.roles.accent; state.font=kit.roles.font; markActive("kits",state.kitId); markActive("fonts",state.font); $("kitNote").textContent="Colours + font bound to this kit"; syncColorInputs(); renderFrame(); }
+function syncColorInputs(){
+  $("bgColor").value=state.bg;$("bgHex").value=state.bg;$("acColor").value=state.accent;$("acHex").value=state.accent;
+  $("textColor").value=state.textColor;$("textHex").value=state.textColor;$("hlColor").value=state.highlightColor;$("hlHex").value=state.highlightColor;
+  $("cardColor").value=state.cardColor;$("cardHex").value=state.cardColor;$("assocTextColor").value=state.assocTextColor;$("assocTextHex").value=state.assocTextColor;
+}
+
+const USES = {
+  extras:["frame2","frame4","frame5"], kicker:["frame1","frame3"], stamp:["frame1"],
+  username:["frame1","frame2","frame4"], brand:["frame2","frame3","frame4","frame5"],
+};
+function show(id,on){ const el=$(id); if(el) el.style.display=on?"":"none"; }
+
+function buildLogoTiles(hostId, arr){
+  const host=$(hostId); if(!host) return; host.innerHTML="";
+  for(let i=0;i<arr.length;i++){
+    const tile=document.createElement("div"); tile.className="sponsor-tile";
+    if(arr[i]){ tile.innerHTML=`<img src="${arr[i]}" alt="logo ${i+1}"/><button class="sp-x" title="Remove">×</button>`; tile.querySelector(".sp-x").onclick=(e)=>{e.stopPropagation();arr[i]=null;buildLogoTiles(hostId,arr);renderFrame();}; }
+    else { tile.classList.add("empty"); tile.innerHTML="<span>+</span>"; }
+    tile.onclick=()=>{ const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.onchange=(e)=>{const fl=e.target.files[0]; if(!fl) return; const r=new FileReader(); r.onload=()=>{arr[i]=r.result; buildLogoTiles(hostId,arr); renderFrame();}; r.readAsDataURL(fl);}; inp.click(); };
+    host.appendChild(tile);
+  }
+}
+
+/* Refresh EVERY control from the active template's state */
+function refreshControls(){
+  const t=state.template;
+  markActive("templates",t); markActive("versions",state.version); markActive("formats",state.format); markActive("fonts",state.font); markActive("kits",state.kitId);
+  $("kitNote").textContent = state.kitId ? "Colours + font bound to this kit" : "Custom — no kit bound";
+  show("versionSection",t==="frame1"); show("extrasSection",USES.extras.includes(t));
+  show("frame3Section",t==="frame3"); show("frame4Section",t==="frame4"); show("frame5Section",t==="frame5");
+  show("brandLogosSection",USES.brand.includes(t));
+  show("kickerField",USES.kicker.includes(t)); show("stampField",USES.stamp.includes(t)); show("usernameField",USES.username.includes(t));
+  show("photoPosField", !!state.image && t!=="frame5" ? true : !!state.image);
+  const drags = t==="frame1" ? "Drag the social bar anywhere on the frame" : (["frame2","frame4","frame5"].includes(t) ? "Drag the QR badge on the frame to reposition it" : "");
+  $("tip").style.display = drags?"flex":"none"; $("tip").textContent = drags;
+  // text inputs
+  $("kicker").value=state.kicker; $("headline").value=state.headline; $("stamp").value=state.stamp; $("username").value=state.username;
+  $("date").value=state.date; $("website").value=state.website; $("source").value=state.source;
+  $("hashtag").value=state.hashtag; $("assocText").value=state.assocText;
+  $("contextText").value=state.contextText; $("speaker").value=state.speaker; $("speakerTitle").value=state.speakerTitle;
+  // sliders
+  $("headlineScale").value=state.headlineScale; $("hsLbl").textContent=`Headline size · ${Math.round(state.headlineScale*100)}%`;
+  $("imgY").value=state.imgY;
+  $("brandLogoSize").value=state.brandLogoSize; $("brandSizeLbl").textContent=`Logo size · ${state.brandLogoSize}px`;
+  $("assocLogoSize").value=state.assocLogoSize; $("assocSizeLbl").textContent=`Association logo size · ${state.assocLogoSize}px`;
+  $("qrSize").value=state.qrSize; $("qrSizeLbl").textContent=`QR size · ${state.qrSize}px`;
+  // segments / toggles
+  segOn("logoPos","pos",state.logoPos); segOn("qrToggle","q",state.showQR?"on":"off");
+  [...$("socials").children].forEach(b=>b.classList.toggle("is-on",state.socials[b.dataset.key]));
+  // colours + logos
+  syncColorInputs();
+  buildLogoTiles("brandSlots",state.brandLogos); buildLogoTiles("assocSlots",state.assocLogos);
+}
+
+function setTemplate(t){
+  if(!frameStates[t]) frameStates[t]=freshState(t);
+  frameStates[t].template=t;
+  state=frameStates[t];
+  refreshControls(); renderFrame();
+}
+
+/* ---------------- build once ---------------- */
+function buildUI(){
+  $("templates").innerHTML=TEMPLATES.map(t=>`<button class="nfs-fmt" data-key="${t.key}"><span class="nfs-fmt-name">${t.label}</span><span class="nfs-fmt-ratio">${t.hint}</span></button>`).join("");
+  [...$("templates").children].forEach((b)=>b.onclick=()=>setTemplate(b.dataset.key));
+  $("kits").innerHTML=BRAND_KITS.map(k=>`<button class="nfs-kit" data-key="${k.id}"><span class="nfs-kit-dots"><span style="background:${k.roles.background}"></span><span style="background:${k.roles.accent}"></span></span><span class="nfs-kit-name">${k.name}</span></button>`).join("");
+  [...$("kits").children].forEach((b,i)=>b.onclick=()=>applyKit(BRAND_KITS[i]));
+  $("versions").innerHTML=VERSIONS.map(v=>`<button class="nfs-ver" data-key="${v.key}"><span class="nfs-ver-name">${v.label}</span><span class="nfs-ver-hint">${v.hint}</span></button>`).join("");
+  [...$("versions").children].forEach((b)=>b.onclick=()=>{state.version=b.dataset.key;markActive("versions",state.version);renderFrame();});
+  $("formats").innerHTML=FORMATS.map(f=>`<button class="nfs-fmt" data-key="${f.key}" title="${f.w}×${f.h}"><span class="nfs-fmt-name">${f.label}</span><span class="nfs-fmt-ratio">${f.short}</span></button>`).join("");
+  [...$("formats").children].forEach((b)=>b.onclick=()=>{state.format=b.dataset.key;markActive("formats",state.format);renderFrame();});
+  $("socials").innerHTML=Object.keys(state.socials).map(k=>`<button class="nfs-toggle" data-key="${k}">${icon(k,'currentColor')}<span>${k==="x"?"X":k}</span></button>`).join("");
+  [...$("socials").children].forEach((b)=>{ b.onclick=()=>{const k=b.dataset.key;state.socials[k]=!state.socials[k];b.classList.toggle("is-on",state.socials[k]);renderFrame();}; });
+  $("fonts").innerHTML=FONTS.map(f=>`<button class="nfs-font" data-key="${f.key}" style="font-family:${f.css}">${f.label}</button>`).join("");
+  [...$("fonts").children].forEach((b)=>b.onclick=()=>{state.font=b.dataset.key;breakKit();markActive("fonts",state.font);renderFrame();});
+  const sw=(host,setter)=>{ $(host).innerHTML=SWATCHES.map(c=>`<button class="nfs-swatch" style="background:${c}" title="${c}"></button>`).join(""); [...$(host).children].forEach((b,i)=>b.onclick=()=>setter(SWATCHES[i])); };
+  sw("bgSwatches",(c)=>{state.bg=c;breakKit();syncColorInputs();renderFrame();});
+  sw("acSwatches",(c)=>{state.accent=c;breakKit();syncColorInputs();renderFrame();});
+
+  $("kicker").oninput=e=>{state.kicker=e.target.value;renderFrame();};
+  $("headline").oninput=e=>{state.headline=e.target.value;renderFrame();};
+  $("stamp").oninput=e=>{state.stamp=e.target.value;renderFrame();};
+  $("username").oninput=e=>{state.username=e.target.value;renderFrame();};
+  $("date").oninput=e=>{state.date=e.target.value;renderFrame();};
+  $("website").oninput=e=>{state.website=e.target.value;renderFrame();};
+  $("source").oninput=e=>{state.source=e.target.value;renderFrame();};
+  $("hashtag").oninput=e=>{state.hashtag=e.target.value;renderFrame();};
+  $("assocText").oninput=e=>{state.assocText=e.target.value;renderFrame();};
+  $("contextText").oninput=e=>{state.contextText=e.target.value;renderFrame();};
+  $("speaker").oninput=e=>{state.speaker=e.target.value;renderFrame();};
+  $("speakerTitle").oninput=e=>{state.speakerTitle=e.target.value;renderFrame();};
+  $("headlineScale").oninput=e=>{state.headlineScale=+e.target.value;$("hsLbl").textContent=`Headline size · ${Math.round(state.headlineScale*100)}%`;renderFrame();};
+  $("imgY").oninput=e=>{state.imgY=+e.target.value;renderFrame();};
+  $("brandLogoSize").oninput=e=>{state.brandLogoSize=+e.target.value;$("brandSizeLbl").textContent=`Logo size · ${state.brandLogoSize}px`;renderFrame();};
+  $("assocLogoSize").oninput=e=>{state.assocLogoSize=+e.target.value;$("assocSizeLbl").textContent=`Association logo size · ${state.assocLogoSize}px`;renderFrame();};
+  $("qrSize").oninput=e=>{state.qrSize=+e.target.value;$("qrSizeLbl").textContent=`QR size · ${state.qrSize}px`;renderFrame();};
+  [...$("logoPos").children].forEach(b=>b.onclick=()=>{state.logoPos=b.dataset.pos;segOn("logoPos","pos",state.logoPos);renderFrame();});
+  [...$("qrToggle").children].forEach(b=>b.onclick=()=>{state.showQR=(b.dataset.q==="on");segOn("qrToggle","q",state.showQR?"on":"off");renderFrame();});
+  [...$("exportFormat").children].forEach(b=>b.onclick=()=>{exportFormat=b.dataset.f;segOn("exportFormat","f",exportFormat);});
+
+  $("bgColor").oninput=e=>{state.bg=e.target.value;breakKit();$("bgHex").value=e.target.value;renderFrame();};
+  $("bgHex").oninput=e=>{state.bg=e.target.value;breakKit();$("bgColor").value=e.target.value;renderFrame();};
+  $("acColor").oninput=e=>{state.accent=e.target.value;breakKit();$("acHex").value=e.target.value;renderFrame();};
+  $("acHex").oninput=e=>{state.accent=e.target.value;breakKit();$("acColor").value=e.target.value;renderFrame();};
+  $("textColor").oninput=e=>{state.textColor=e.target.value;$("textHex").value=e.target.value;renderFrame();};
+  $("textHex").oninput=e=>{state.textColor=e.target.value;$("textColor").value=e.target.value;renderFrame();};
+  $("hlColor").oninput=e=>{state.highlightColor=e.target.value;$("hlHex").value=e.target.value;renderFrame();};
+  $("hlHex").oninput=e=>{state.highlightColor=e.target.value;$("hlColor").value=e.target.value;renderFrame();};
+  $("cardColor").oninput=e=>{state.cardColor=e.target.value;$("cardHex").value=e.target.value;renderFrame();};
+  $("cardHex").oninput=e=>{state.cardColor=e.target.value;$("cardColor").value=e.target.value;renderFrame();};
+  $("assocTextColor").oninput=e=>{state.assocTextColor=e.target.value;$("assocTextHex").value=e.target.value;renderFrame();};
+  $("assocTextHex").oninput=e=>{state.assocTextColor=e.target.value;$("assocTextColor").value=e.target.value;renderFrame();};
+
+  const readFile=(input,setter)=>{const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{setter(r.result);renderFrame();};r.readAsDataURL(file);};
+  $("photoInput").onchange=e=>{readFile(e.target,(v)=>{state.image=v;show("photoPosField",true);});};
+  $("logoInput").onchange=e=>{readFile(e.target,(v)=>{state.logo=v;});};
+  $("qrInput").onchange=e=>{readFile(e.target,(v)=>{state.qrImage=v;});};
+  $("qrClear").onclick=()=>{state.qrImage=null;renderFrame();};
+  $("f5SponsorInput").onchange=e=>{readFile(e.target,(v)=>{state.frame5Sponsor=v;});};
+  $("f5SponsorClear").onclick=()=>{state.frame5Sponsor=null;renderFrame();};
+
+  $("downloadBtn").onclick=exportImage;
+  $("resetBtn").onclick=()=>{ Object.keys(frameStates).forEach(k=>delete frameStates[k]); frameStates.frame1=freshState("frame1"); exportFormat="png"; segOn("exportFormat","f","png"); setTemplate("frame1"); };
+}
+
+/* ---------------- export ---------------- */
+function dl(blob, ext){ const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`zelvoo-${state.template}-${state.format}.${ext}`; a.click(); URL.revokeObjectURL(url); }
+function exportSVG(node){
+  const w=node.offsetWidth, h=node.offsetHeight;
+  const css=$("appStyle").textContent;
+  const inner=new XMLSerializer().serializeToString(node);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><foreignObject x="0" y="0" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${inner}</div></foreignObject></svg>`;
+  dl(new Blob([svg],{type:"image/svg+xml;charset=utf-8"}),"svg");
+}
+async function exportImage(){
+  const node=$("frame"), scaler=$("frameScaler");
+  const pt=scaler.style.transform, ph=scaler.style.height; scaler.style.transform=""; scaler.style.height="";
+  try{
+    if(exportFormat==="svg"){ exportSVG(node); return; }
+    if(!window.html2canvas){ alert("Export engine still loading — try again in a second."); return; }
+    const scale=fmtOf().w/node.offsetWidth;
+    const opts={scale,useCORS:true,logging:false,backgroundColor:exportFormat==="jpeg"?state.bg:null};
+    const canvas=await window.html2canvas(node,opts);
+    const type=exportFormat==="jpeg"?"image/jpeg":"image/png";
+    const q=exportFormat==="jpeg"?0.95:undefined;
+    canvas.toBlob((blob)=>dl(blob, exportFormat==="jpeg"?"jpg":"png"), type, q);
+  } finally { scaler.style.transform=pt; scaler.style.height=ph; fitMobile(); }
+}
+
+buildUI();
+setTemplate("frame1");
+</script>
+</body>
+</html>

@@ -12,6 +12,7 @@ const GROUPS: { title: string; tour: string; items: { href: string; icon: string
     { href: '/creative-studio',  icon: 'image',           label: 'Creative Studio' },
     { href: '/campaign-builder', icon: 'ads_click',       label: 'Campaign Builder' },
     { href: '/frame-studio',     icon: 'movie',           label: 'Video Frame Studio' },
+    { href: '/news-frame-studio',icon: 'article',         label: 'News Frame Studio' },
     { href: '/templates',        icon: 'dashboard_customize', label: 'Templates' },
     { href: '/prompts',          icon: 'bookmark',        label: 'Saved Prompts' },
   ]},
