@@ -10,6 +10,7 @@ export default function SiteFooter() {
             ['Privacy', '/privacy'],
             ['Terms', '/terms'],
             ['Refunds', '/refund-policy'],
+            ['Downloads', '/downloads'],
             ['Cookies', '/cookies'],
             ['Contact', '/contact'],
           ].map(([label, href]) => (

@@ -1,0 +1,35 @@
+{
+  "name": "zelvo-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.cjs",
+  "description": "Zelvo desktop shell for Frame Studio, Campaign Builder, Content Studio, and Creative Studio.",
+  "author": "Zelvo Team",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development APP_URL=http://localhost:3000 PRODUCT_FLAVOR=shared electron .",
+    "dev:frame": "cross-env NODE_ENV=development APP_URL=http://localhost:3000 PRODUCT_FLAVOR=frame electron .",
+    "dev:campaign": "cross-env NODE_ENV=development APP_URL=http://localhost:3000 PRODUCT_FLAVOR=campaign electron .",
+    "dev:content": "cross-env NODE_ENV=development APP_URL=http://localhost:3000 PRODUCT_FLAVOR=content electron .",
+    "dev:creative": "cross-env NODE_ENV=development APP_URL=http://localhost:3000 PRODUCT_FLAVOR=creative electron .",
+    "start": "cross-env NODE_ENV=production electron .",
+    "pack": "cross-env PRODUCT_FLAVOR=shared electron-builder --config electron-builder.config.cjs --dir",
+    "pack:frame": "cross-env PRODUCT_FLAVOR=frame electron-builder --config electron-builder.config.cjs --dir",
+    "pack:campaign": "cross-env PRODUCT_FLAVOR=campaign electron-builder --config electron-builder.config.cjs --dir",
+    "pack:content": "cross-env PRODUCT_FLAVOR=content electron-builder --config electron-builder.config.cjs --dir",
+    "pack:creative": "cross-env PRODUCT_FLAVOR=creative electron-builder --config electron-builder.config.cjs --dir",
+    "dist": "cross-env PRODUCT_FLAVOR=shared electron-builder --config electron-builder.config.cjs",
+    "dist:frame": "cross-env PRODUCT_FLAVOR=frame electron-builder --config electron-builder.config.cjs",
+    "dist:campaign": "cross-env PRODUCT_FLAVOR=campaign electron-builder --config electron-builder.config.cjs",
+    "dist:content": "cross-env PRODUCT_FLAVOR=content electron-builder --config electron-builder.config.cjs",
+    "dist:creative": "cross-env PRODUCT_FLAVOR=creative electron-builder --config electron-builder.config.cjs",
+    "dist:all": "node scripts/dist-all.cjs",
+    "icons:generate": "node scripts/generate-icons.cjs",
+    "verify:artifacts": "node scripts/verify-artifacts.cjs"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.2"
+  }
+}
