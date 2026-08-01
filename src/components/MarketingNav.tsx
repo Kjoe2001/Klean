@@ -18,7 +18,7 @@ export default function MarketingNav() {
       <div className="max-w-6xl mx-auto flex items-center gap-4 px-5 min-h-16 py-2.5">
         <Logo darkText />
         <div className="hidden md:flex items-center gap-6 ml-4">
-          {[['Features','/features'],['Pricing','/pricing'],['Downloads','/downloads'],['About','/about']].map(([l,h]) => (
+          {[['Features','/features'],['Pricing','/pricing'],['About','/about']].map(([l,h]) => (
             <Link key={h} href={h} className="text-sm font-medium text-stone hover:text-rich-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green rounded">{l}</Link>
           ))}
         </div>
@@ -50,7 +50,7 @@ export default function MarketingNav() {
       {mobileOpen && (
         <div className="md:hidden border-t border-bangladesh-green/12 bg-white/95 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-5 py-3 space-y-2">
-            {[['Features','/features'],['Pricing','/pricing'],['Downloads','/downloads'],['About','/about'],['Contact','/contact']].map(([l,h]) => (
+            {[['Features','/features'],['Pricing','/pricing'],['About','/about'],['Contact','/contact']].map(([l,h]) => (
               <Link key={h} href={h} className="block rounded-lg px-3 py-2 text-sm font-medium text-bangladesh-green hover:bg-bangladesh-green/10">
                 {l}
               </Link>

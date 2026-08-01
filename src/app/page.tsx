@@ -157,37 +157,6 @@ export default function Landing() {
 
       <section className="section-white py-16 md:py-20">
         <div className="max-w-6xl mx-auto px-5">
-          <div className="text-center mb-14">
-            <p className="eyebrow mb-4">New: Creative Studio</p>
-            <h2 className="font-heading text-h2 mb-4 text-rich-black">Design the post, not just the caption.</h2>
-            <p className="text-stone text-body-lg max-w-xl mx-auto">
-              88 ready-made templates for Instagram, TikTok, LinkedIn, Pinterest, YouTube and more — every layer
-              linked to your Brand Kit, so colors and fonts update everywhere the moment you switch brands.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-            {[
-              ['dashboard_customize', '88 templates'],
-              ['share', '17 platforms & formats'],
-              ['palette', 'Brand-linked colors & fonts'],
-              ['download', 'Export PNG, SVG or PDF'],
-            ].map(([icon, label]) => (
-              <div key={label} className="glass-card-light glass-highlight p-5 text-center">
-                <Icon name={icon} className="text-2xl text-bangladesh-green" />
-                <p className="text-sm text-rich-black mt-2 font-medium">{label}</p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center">
-            <Link href="/signup" className="btn-primary px-7 py-3.5 text-sm inline-flex items-center gap-2">
-              <Icon name="palette" className="msym-sm" /> Start designing free
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-white py-16 md:py-20">
-        <div className="max-w-6xl mx-auto px-5">
           <div className="grid md:grid-cols-3 gap-6">
             {[
               ['trending_up', 'One brief, everything', 'Lock a brand brief once. Every hook, article and ad follows your Brand Kit automatically.'],
