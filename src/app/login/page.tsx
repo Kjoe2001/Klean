@@ -57,8 +57,8 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
       <div className="orb-fixed-light animate-orb" />
       <div className="w-full max-w-[460px] relative z-10">
         <div className="flex justify-center mb-8"><Logo darkText /></div>
-        <div className="glass-elevated glass-highlight p-8 md:p-9">
-          <h1 className="font-heading font-semibold text-anti-flash-white text-2xl text-center mb-1">
+        <div className="glass-elevated glass-highlight p-6 sm:p-8 md:p-9">
+          <h1 className="font-heading font-semibold text-anti-flash-white text-[1.6rem] sm:text-2xl text-center mb-1 break-words">
             Welcome back
           </h1>
           <p className="text-center text-sm text-pistachio mb-7">
@@ -95,8 +95,10 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
               : 'Log in'}
           </button>
 
-          <p className="text-center text-xs text-pistachio mt-5">
-            <><Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/forgot-password?plan=${plan}` : '/forgot-password'}>Forgot password?</Link> · <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/signup?plan=${plan}` : '/signup'}>Start free trial</Link></>
+          <p className="text-center text-xs text-pistachio mt-5 flex items-center justify-center flex-wrap gap-x-1.5">
+            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/forgot-password?plan=${plan}` : '/forgot-password'}>Forgot password?</Link>
+            <span aria-hidden="true">·</span>
+            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/signup?plan=${plan}` : '/signup'}>Start free trial</Link>
           </p>
         </div>
       </div>

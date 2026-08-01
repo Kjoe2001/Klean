@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Logo from './Logo';
 import { supabase } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
 import { Icon } from '@/components/Icon';
@@ -80,11 +79,11 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
                 const active = path === n.href;
                 return (
                   <Link key={n.href} href={n.href} onClick={onNavigate}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green
+                    className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green min-w-0
                       ${active
                         ? 'bg-caribbean-green text-rich-black font-semibold'
                         : 'text-pistachio hover:text-anti-flash-white hover:bg-bangladesh-green/18'}`}>
-                    <Icon name={n.icon} className="w-4 text-center shrink-0" />{n.label}
+                    <Icon name={n.icon} className="w-4 text-center shrink-0" /><span className="min-w-0 break-words">{n.label}</span>
                   </Link>
                 );
               })}

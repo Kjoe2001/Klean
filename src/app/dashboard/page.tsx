@@ -8,10 +8,12 @@ import { Icon } from '@/components/Icon';
 import { useProfile } from '@/components/useProfile';
 import AppImage from '@/components/AppImage';
 import { MARKETING_IMAGES } from '@/lib/marketing-images';
+import FrameTourOverlay from '@/components/FrameTourOverlay';
 
 export default function Dashboard() {
   const { profile } = useProfile();
   const [stats, setStats] = useState<any>({});
+  const [showFrameTour, setShowFrameTour] = useState(false);
   useEffect(() => { (async () => {
     const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
     const [i, k, b, profileRes] = await Promise.all([
@@ -30,10 +32,29 @@ export default function Dashboard() {
     }
     setStats({ content: generatedCount, images: i.count || 0, campaigns: k.count || 0, brands: b.count || 0 });
   })(); }, []);
+  useEffect(() => {
+    if (!profile) return;
+    if (profile.activation?.tour_seen !== true) return;
+    if (profile.activation?.frame_tour_seen === true) return;
+    if (typeof window === 'undefined' || window.innerWidth < 768) return;
+    const t = setTimeout(() => setShowFrameTour(true), 900);
+    return () => clearTimeout(t);
+  }, [profile?.id, profile?.activation?.tour_seen, profile?.activation?.frame_tour_seen]);
+
+  const closeFrameTour = async (markSeen: boolean) => {
+    setShowFrameTour(false);
+    if (!markSeen || !profile) return;
+    await supabase
+      .from('profiles')
+      .update({ activation: { ...(profile.activation || {}), frame_tour_seen: true } })
+      .eq('id', profile.id);
+  };
+
   const firstName = profile?.name?.split(' ')[0] || profile?.email?.split('@')[0] || 'there';
   const quick = [
     ['/content-studio','auto_awesome','Generate content','16 types, parallel, scored'],
     ['/campaign-builder','ads_click','Build a campaign','Strategy → media plan → KPIs'],
+    ['/frame-studio','movie','Frame a video','Format, style, captions, stickers, export'],
     ['/trends','trending_up','Discover trends','Ghana · Africa · Global · live'],
   ];
   const starterSteps = [
@@ -42,16 +63,22 @@ export default function Dashboard() {
   ];
   return (
     <AppShell title="Dashboard" subtitle="Your AI marketing operating system at a glance.">
-      <div className="glass-card-light glass-highlight p-6 mb-6 rounded-3xl border border-bangladesh-green/15">
+      <div className="glass-card-light glass-highlight p-6 mb-6 rounded-3xl border border-bangladesh-green/15" data-frame-tour="frame-dashboard-header">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] font-bold tracking-[0.25em] text-bangladesh-green">WELCOME BACK</div>
-            <h2 className="font-heading font-semibold text-xl mt-1 text-rich-black">Hi {firstName} - the fastest path is to start with one brief.</h2>
+            <h2 className="font-heading font-semibold text-xl mt-1 text-rich-black break-words">Hi {firstName} - the fastest path is to start with one brief.</h2>
             <p className="text-sm text-stone mt-2">Choose a starting point below and let Zelvoo turn it into a polished marketing sprint.</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href="/brand-kit" className="rounded-full bg-caribbean-green px-4 py-2 text-sm font-heading font-medium text-rich-black hover:brightness-110 hover:-translate-y-0.5 transition">Set Brand Kit</Link>
-            <Link href="/content-studio" className="rounded-full border border-bangladesh-green/25 px-4 py-2 text-sm font-heading font-medium text-bangladesh-green hover:bg-bangladesh-green/10 transition">Generate content</Link>
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => setShowFrameTour(true)}
+              className="rounded-full border border-bangladesh-green/25 px-4 py-2 text-sm font-heading font-medium text-bangladesh-green hover:bg-bangladesh-green/10 transition w-full sm:w-auto"
+            >
+              Frame walkthrough
+            </button>
+            <Link href="/brand-kit" className="rounded-full bg-caribbean-green px-4 py-2 text-sm font-heading font-medium text-rich-black hover:brightness-110 hover:-translate-y-0.5 transition w-full sm:w-auto text-center">Set Brand Kit</Link>
+            <Link href="/content-studio" className="rounded-full border border-bangladesh-green/25 px-4 py-2 text-sm font-heading font-medium text-bangladesh-green hover:bg-bangladesh-green/10 transition w-full sm:w-auto text-center">Generate content</Link>
           </div>
         </div>
         <div className="mt-5 grid md:grid-cols-2 gap-3">
@@ -61,9 +88,9 @@ export default function Dashboard() {
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-caribbean-green text-rich-black">
                   <Icon name={step.icon as string} className="text-[18px]" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <div className="font-heading font-medium text-[14px] text-rich-black">{step.title}</div>
-                  <div className="text-sm text-stone mt-0.5">{step.desc}</div>
+                  <div className="text-sm text-stone mt-0.5 break-words">{step.desc}</div>
                 </div>
               </div>
             </Link>
@@ -71,7 +98,7 @@ export default function Dashboard() {
         </div>
       </div>
       {profile && <Activation profile={profile} />}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[['Content pieces', stats.content, true],['AI images', stats.images, false],['Campaigns', stats.campaigns, false],['Brands', stats.brands, false]].map(([l,v,featured]) => (
           <div key={l as string} className={featured ? 'feature-card p-5' : 'glass-card-light glass-highlight p-5'}>
             <div className={`font-heading font-semibold text-3xl ${featured ? 'text-anti-flash-white' : 'text-bangladesh-green'}`}>{v ?? '-'}</div>
@@ -100,13 +127,20 @@ export default function Dashboard() {
 
       <div className="grid sm:grid-cols-2 gap-4">
         {quick.map(([href,icon,t,d]) => (
-          <Link key={href as string} href={href as string} className="glass-card-light glass-highlight p-6 hover:-translate-y-1 hover:border-caribbean-green/45 transition block">
+          <Link
+            key={href as string}
+            href={href as string}
+            data-frame-tour={href === '/frame-studio' ? 'frame-quick-card' : undefined}
+            className="glass-card-light glass-highlight p-6 hover:-translate-y-1 hover:border-caribbean-green/45 transition block"
+          >
             <Icon name={icon as string} className="text-caribbean-green text-[26px]" />
             <div className="font-heading font-medium mt-2 text-rich-black">{t}</div>
             <div className="text-sm text-stone">{d}</div>
           </Link>
         ))}
       </div>
+
+      <FrameTourOverlay open={showFrameTour} onClose={closeFrameTour} />
     </AppShell>
   );
 }

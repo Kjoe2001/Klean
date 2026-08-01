@@ -104,7 +104,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
   return (
     <div className="section-light min-h-screen relative text-rich-black">
       <div className="orb-fixed-light animate-orb" />
-      <div className="flex gap-5 max-w-[1500px] mx-auto p-3 md:p-4 relative z-10">
+      <div className="flex gap-5 max-w-[1500px] mx-auto p-2.5 sm:p-3 md:p-4 relative z-10">
       <Sidebar profile={profile} trialDaysLeft={daysLeft} className="hidden md:flex sticky top-4 h-[calc(100vh-2rem)]" />
       <main className="flex-1 min-w-0 animate-rise">
 
@@ -119,11 +119,11 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
               <Icon name="menu" />
             </button>
             <div className="min-w-0">
-            <h1 className="font-heading font-semibold text-rich-black text-base leading-tight truncate">{title}</h1>
-            {subtitle && <p className="text-xs text-stone mt-0.5 hidden sm:block">{subtitle}</p>}
+            <h1 className="font-heading font-semibold text-rich-black text-sm sm:text-base leading-tight break-words">{title}</h1>
+            {subtitle && <p className="text-xs text-stone mt-0.5 hidden sm:block break-words">{subtitle}</p>}
             </div>
           </div>
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             {/* Credit balance pill */}
             <Link href="/billing"
               className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors hover:opacity-80 ${creditStyles[creditVariant]}`}>
@@ -162,7 +162,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <div className={`rounded-[14px] border px-4 py-3 mb-4 flex flex-wrap items-center gap-3 text-sm ${bannerColors[banner.tone]}`}>
             <div className="flex-1 text-[13px]">{banner.node}</div>
             <Link href={banner.href}
-              className="text-xs px-4 py-1.5 rounded-full bg-caribbean-green text-rich-black font-medium hover:brightness-110 transition-colors shrink-0">
+              className="text-xs px-4 py-1.5 rounded-full bg-caribbean-green text-rich-black font-medium hover:brightness-110 transition-colors shrink-0 w-full sm:w-auto text-center">
               {banner.cta}
             </Link>
           </div>
@@ -183,7 +183,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
             profile={profile}
             trialDaysLeft={daysLeft}
             onNavigate={() => setMobileOpen(false)}
-            className="md:hidden fixed z-50 top-3 left-3 h-[calc(100vh-1.5rem)] max-w-[84vw]"
+            className="md:hidden fixed z-50 top-2 left-2 h-[calc(100vh-1rem)] max-w-[92vw]"
           />
         </>
       )}
