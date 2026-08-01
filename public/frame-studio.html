@@ -66,6 +66,7 @@
   .tab{padding:9px 11px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:9px 9px 0 0;white-space:nowrap;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
   .tab:hover{color:var(--ink)}
   .tab.on{color:var(--green);border-bottom-color:var(--green)}
+  .tab .short{display:none}
   .panels{overflow-y:auto;flex:1;min-height:0;padding:6px 20px 18px}
   @media (max-width:920px){.panels{overflow:visible;flex:none;min-height:auto}}
   .panel{display:none}.panel.on{display:block;animation:fade .2s ease}
@@ -177,6 +178,29 @@
     .chips{gap:6px}
     .chip{font-size:12px;padding:6px 10px}
   }
+
+  @media (max-width:920px){
+    .tabs{
+      position:sticky;
+      top:0;
+      z-index:4;
+      display:grid;
+      grid-template-columns:repeat(9,minmax(0,1fr));
+      gap:0;
+      padding:8px 8px 0;
+      overflow:visible;
+      background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.9));
+    }
+    .tab{
+      min-width:0;
+      text-align:left;
+      padding:8px 4px;
+      font-size:10px;
+      letter-spacing:.01em;
+    }
+    .tab .full{display:none}
+    .tab .short{display:inline}
+  }
 </style>
 </head>
 <body>
@@ -205,15 +229,15 @@
       <div class="copy">Pick a template first, then fine-tune the frame, captions, audio, and branding.</div>
     </div>
     <div class="tabs" id="tabs">
-      <div class="tab on" data-tab="format">Format</div>
-      <div class="tab" data-tab="adjust">Adjust</div>
-      <div class="tab" data-tab="edit">Edit</div>
-      <div class="tab" data-tab="frame">Frame</div>
-      <div class="tab" data-tab="text">Text</div>
-      <div class="tab" data-tab="captions">Captions</div>
-      <div class="tab" data-tab="stickers">Stickers</div>
-      <div class="tab" data-tab="audio">Audio</div>
-      <div class="tab" data-tab="export">Export</div>
+      <div class="tab on" data-tab="format"><span class="full">Format</span><span class="short">Format</span></div>
+      <div class="tab" data-tab="adjust"><span class="full">Adjust</span><span class="short">Adjust</span></div>
+      <div class="tab" data-tab="edit"><span class="full">Edit</span><span class="short">Edit</span></div>
+      <div class="tab" data-tab="frame"><span class="full">Frame</span><span class="short">Frame</span></div>
+      <div class="tab" data-tab="text"><span class="full">Text</span><span class="short">Text</span></div>
+      <div class="tab" data-tab="captions"><span class="full">Captions</span><span class="short">Caps</span></div>
+      <div class="tab" data-tab="stickers"><span class="full">Stickers</span><span class="short">Sticks</span></div>
+      <div class="tab" data-tab="audio"><span class="full">Audio</span><span class="short">Audio</span></div>
+      <div class="tab" data-tab="export"><span class="full">Export</span><span class="short">Export</span></div>
     </div>
 
     <div class="panels">
