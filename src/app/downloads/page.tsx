@@ -6,7 +6,7 @@ import { desktopDownloadProducts, desktopDownloadSource, desktopRelease } from '
 
 export const metadata: Metadata = {
   title: 'Desktop Downloads | Zelvoo',
-  description: 'Download standalone Zelvoo desktop installers for Frame Studio, Campaign Builder, Content Studio, and Creative Studio.',
+  description: 'Download standalone Zelvoo desktop installers for Video Frame Studio, Campaign Builder, Content Studio, and Creative Studio.',
   alternates: { canonical: 'https://www.zelvoo.app/downloads' },
 };
 

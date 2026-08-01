@@ -106,7 +106,7 @@ export default function Landing() {
                 {[
                   'Campaign plans and execution strategy',
                   'Social content, ad copy, and hooks',
-                  'Frame Studio and Creative Studio assets',
+                  'Video Frame Studio and Creative Studio assets',
                   'Client-ready reports and exports',
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-xl bg-white px-3 py-3 border border-bangladesh-green/10 min-w-0">
@@ -154,7 +154,7 @@ export default function Landing() {
             ))}
           </div>
           <p className="text-center text-xs text-stone mt-6">
-            + 8 more content types · Frame Studio · Campaign Builder · Trend Discovery · Competitor Intel
+            + 8 more content types · Video Frame Studio · Campaign Builder · Trend Discovery · Competitor Intel
           </p>
         </div>
       </section>

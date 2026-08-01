@@ -23,8 +23,8 @@ export const desktopRelease = {
 const products: ProductConfig[] = [
   {
     key: 'frame',
-    name: 'Frame Studio',
-    shortDescription: 'Storyboard and render frame-first campaign assets.',
+    name: 'Video Frame Studio',
+    shortDescription: 'Storyboard and render video-first campaign assets.',
     baseFileName: 'Zelvo-Frame-Studio',
   },
   {

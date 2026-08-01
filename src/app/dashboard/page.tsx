@@ -54,7 +54,7 @@ export default function Dashboard() {
   const quick = [
     ['/content-studio','auto_awesome','Generate content','16 types, parallel, scored'],
     ['/campaign-builder','ads_click','Build a campaign','Strategy → media plan → KPIs'],
-    ['/frame-studio','movie','Frame a video','Format, style, captions, stickers, export'],
+    ['/frame-studio','movie','Video Frame Studio','Format, style, captions, stickers, export'],
     ['/trends','trending_up','Discover trends','Ghana · Africa · Global · live'],
   ];
   const starterSteps = [
@@ -75,7 +75,7 @@ export default function Dashboard() {
               onClick={() => setShowFrameTour(true)}
               className="rounded-full border border-bangladesh-green/25 px-4 py-2 text-sm font-heading font-medium text-bangladesh-green hover:bg-bangladesh-green/10 transition w-full sm:w-auto"
             >
-              Frame walkthrough
+              Video Frame walkthrough
             </button>
             <Link href="/brand-kit" className="rounded-full bg-caribbean-green px-4 py-2 text-sm font-heading font-medium text-rich-black hover:brightness-110 hover:-translate-y-0.5 transition w-full sm:w-auto text-center">Set Brand Kit</Link>
             <Link href="/content-studio" className="rounded-full border border-bangladesh-green/25 px-4 py-2 text-sm font-heading font-medium text-bangladesh-green hover:bg-bangladesh-green/10 transition w-full sm:w-auto text-center">Generate content</Link>

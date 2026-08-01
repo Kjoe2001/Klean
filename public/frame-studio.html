@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zelvoo · Frame Studio</title>
+<title>Zelvoo · Video Frame Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
@@ -135,6 +135,38 @@
   .flow-step{border:1px solid var(--line);background:var(--glass-2);border-radius:12px;padding:11px 12px;font-size:13px;line-height:1.5}
   .flow-step b{color:var(--ink)}
   .flow-arrow{display:grid;place-items:center;color:var(--green);font-size:18px;line-height:1}
+
+  @media (max-width:768px){
+    .stage{padding:14px 12px;gap:10px}
+    .dropzone{width:min(640px,96vw);padding:20px;border-radius:16px}
+    .dropzone .big{font-size:18px}
+    .dropzone .sub{font-size:12.5px;max-width:100%}
+    canvas#view{max-height:42vh}
+    .transport{width:min(760px,96vw);padding:8px 10px;gap:10px}
+    .time{min-width:auto;font-size:11px}
+    .brand{padding:13px 14px 11px}
+    .brand .name{font-size:13px;line-height:1.35}
+    .template-banner{margin:10px 14px 0;padding:12px 13px;border-radius:14px}
+    .panels{padding:6px 14px 14px}
+    .actions{padding:12px 14px}
+    .btn{padding:12px}
+    .sheet{width:min(760px,97vw);padding:16px;border-radius:16px}
+    .rbtns{flex-direction:column}
+  }
+
+  @media (max-width:520px){
+    .stage{padding:12px 10px}
+    .dropzone{width:96vw;padding:18px 14px}
+    .dropzone .mark{width:46px;height:46px;font-size:20px}
+    .transport{flex-wrap:wrap;row-gap:8px}
+    .scrub-wrap{order:3;flex-basis:100%}
+    .time{order:2;margin-left:auto}
+    .tabs{padding:8px 8px 0}
+    .tab{padding:8px 9px;font-size:11.5px}
+    .row{flex-wrap:wrap;align-items:flex-start}
+    .chips{gap:6px}
+    .chip{font-size:12px;padding:6px 10px}
+  }
 </style>
 </head>
 <body>
@@ -156,7 +188,7 @@
   </section>
 
   <aside class="rail">
-    <div class="brand"><div class="dot">Z</div><div class="name">Zelvoo <span>Frame Studio</span></div><div class="tag">Creative</div></div>
+    <div class="brand"><div class="dot">Z</div><div class="name">Zelvoo <span>Video Frame Studio</span></div><div class="tag">Creative</div></div>
     <div class="template-banner">
       <div class="eyebrow">Video templates</div>
       <div class="title">Start with a preset look.</div>
@@ -401,7 +433,7 @@
     <div class="actions">
       <button id="exportBtn" class="btn primary" disabled>Render &amp; preview</button>
       <button id="pngBtn" class="btn ghost" disabled>Save current frame (PNG)</button>
-      <button id="guideBtn" class="btn ghost" type="button">How to use Frame Studio</button>
+      <button id="guideBtn" class="btn ghost" type="button">How to use Video Frame Studio</button>
       <div id="status" class="status"></div>
     </div>
   </aside>
@@ -435,7 +467,7 @@
 <!-- GUIDE MODAL -->
 <div id="guide" class="modal hidden">
   <div class="sheet">
-    <h3>Frame Studio Walkthrough</h3>
+    <h3>Video Frame Studio Walkthrough</h3>
     <p class="sub">Follow this flow from upload to final save.</p>
     <div class="flow">
       <div class="flow-step"><b>Upload video</b>: Click the drop area and select your clip.</div>
@@ -1120,7 +1152,7 @@
     if(!charge||!charge.ok){
       if(charge&&charge.error==='insufficient_credits'){status('Need 5 credits to save this video.');}
       else if(charge&&charge.error==='unauthorized'){status('Please log in again to save this video.');}
-      else if(charge&&charge.error==='billing_bridge_missing'){status('Open Frame Studio inside Zelvoo to save videos.');}
+      else if(charge&&charge.error==='billing_bridge_missing'){status('Open Video Frame Studio inside Zelvoo to save videos.');}
       else{status('Could not verify credits. Please try again.');}
       return;
     }

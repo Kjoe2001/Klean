@@ -12,16 +12,14 @@ import { CREDIT_COST, planCredits, PlanKey } from '@/lib/plans';
 const LABEL: Record<string, string> = {
   text: 'Content generation', image: 'AI image', campaign: 'Campaign build',
   score: 'AI scoring', intel: 'Trend / competitor intel', design: 'Creative Studio design saved',
+  frame_video: 'Video Frame Studio video saved',
 };
 
-const LEGACY_UNLIMITED_EMAILS = new Set(['oannoreric@gmail.com']);
 const UNLIMITED_BALANCE = 999999;
 
-function hasUnlimitedCredits(profile: any, email?: string | null) {
-  const normalizedEmail = email?.trim().toLowerCase();
-  const isLegacyUnlimited = !!normalizedEmail && LEGACY_UNLIMITED_EMAILS.has(normalizedEmail);
+function hasUnlimitedCredits(profile: any) {
   const isAdmin = profile?.role === 'admin' || profile?.is_admin === true;
-  return profile?.unlimited_credits === true || isLegacyUnlimited || isAdmin;
+  return profile?.unlimited_credits === true || isAdmin;
 }
 
 function admin() {
@@ -67,7 +65,7 @@ export async function GET(req: NextRequest) {
 
   const p = await ensureProfile(db, user);
   const plan = (p?.plan || 'trial') as PlanKey;
-  if (hasUnlimitedCredits(p, user.email)) {
+  if (hasUnlimitedCredits(p)) {
     return NextResponse.json({ plan: 'enterprise', credits: UNLIMITED_BALANCE, unlimited: true });
   }
   return NextResponse.json({ plan, credits: p?.credits ?? planCredits(plan) });
@@ -81,7 +79,7 @@ export async function POST(req: NextRequest) {
   const cost = CREDIT_COST[action] ?? 1;
 
   const p = await ensureProfile(db, user);
-  if (hasUnlimitedCredits(p, user.email)) {
+  if (hasUnlimitedCredits(p)) {
     return NextResponse.json({ ok: true, balance: UNLIMITED_BALANCE, spent: 0, unlimited: true });
   }
   const plan = (p?.plan || 'trial') as PlanKey;
