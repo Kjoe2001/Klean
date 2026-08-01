@@ -27,12 +27,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            desktop/package-lock.json
-
-      - name: Install root deps
-        run: npm ci
+          cache-dependency-path: desktop/package-lock.json
 
       - name: Install desktop deps
         run: npm --prefix desktop ci
@@ -72,12 +67,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            desktop/package-lock.json
-
-      - name: Install root deps
-        run: npm ci
+          cache-dependency-path: desktop/package-lock.json
 
       - name: Install desktop deps
         run: npm --prefix desktop ci
