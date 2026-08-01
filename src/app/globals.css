@@ -28,7 +28,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background-color: var(--anti-flash-white);
@@ -37,6 +37,18 @@ body {
   font-family: var(--font-hanken), sans-serif;
   position: relative;
   overflow-x: hidden;
+  line-height: 1.6;
+}
+
+img, svg, video, canvas, iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2, h3, h4, p, li, span, label, input, textarea, select, button {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Layered orb background for glass refraction depth */
@@ -116,6 +128,26 @@ p, li, span, label, input, textarea, select, button, .font-body {
   font-weight: 500;
   text-transform: uppercase;
   color: var(--basil);
+}
+
+.text-hero {
+  font-size: clamp(2.15rem, 4.2vw, 3.75rem);
+  line-height: 1.02;
+}
+
+.text-h2 {
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  line-height: 1.12;
+}
+
+.text-h3 {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.25;
+}
+
+.text-stat {
+  font-size: clamp(1.9rem, 3.2vw, 2.75rem);
+  line-height: 1;
 }
 
 .page-pad { @apply max-w-6xl mx-auto px-5; }
@@ -200,6 +232,23 @@ p, li, span, label, input, textarea, select, button, .font-body {
   .glass-elevated-light { background: rgba(241,247,246,0.98); }
 }
 
+@media (max-width: 640px) {
+  .btn-primary,
+  .btn-outline {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .glass-card,
+  .glass-card-light,
+  .glass-elevated,
+  .glass-elevated-light {
+    border-radius: 16px;
+  }
+}
+
 /* Keep legacy class names mapped to glass for compatibility */
 .glass { @apply glass-card glass-highlight; }
 .glass-subtle {
@@ -210,6 +259,7 @@ p, li, span, label, input, textarea, select, button, .font-body {
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: fit-content;
   background: var(--caribbean-green);
   color: var(--rich-black);
   font-family: var(--font-unbounded), sans-serif;
@@ -229,6 +279,7 @@ p, li, span, label, input, textarea, select, button, .font-body {
 
 .btn-outline {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: fit-content;
   background: rgba(255,255,255,0.85);
   border: 1px solid rgba(44,194,149,0.2);
   color: var(--bangladesh-green);

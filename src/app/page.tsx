@@ -74,10 +74,10 @@ export default function Landing() {
               <Icon name="auto_awesome" className="text-[14px] msym-sm" />
               AI marketing workspace, built for African teams
             </span>
-            <h1 className="font-heading text-[3rem] md:text-[4.4rem] leading-[0.98] tracking-tight mb-6 max-w-3xl" style={{ color: '#00DF81' }}>
+            <h1 className="font-heading text-[2.25rem] sm:text-[3rem] md:text-[4.4rem] leading-[0.94] tracking-tight mb-6 max-w-3xl break-words" style={{ color: '#00DF81' }}>
               Understand your market. Create faster. Ship consistently.
             </h1>
-            <p className="text-body-lg md:text-[1.18rem] text-pistachio max-w-2xl leading-relaxed mb-8">
+            <p className="text-base sm:text-body-lg md:text-[1.18rem] text-pistachio max-w-2xl leading-relaxed mb-8">
               Zelvoo is an AI marketing workspace where you plan campaigns, generate content,
               and produce client-ready outputs from one brief.
             </p>
@@ -86,16 +86,16 @@ export default function Landing() {
               without juggling disconnected tools.
             </p>
 
-            <div className="flex flex-wrap max-[480px]:grid max-[480px]:grid-cols-1 items-center gap-3 max-[480px]:w-full">
-              <Link href="/signup" className="btn-primary text-base px-8 py-4 max-[480px]:w-full">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
+              <Link href="/signup" className="btn-primary text-base px-8 py-4 w-full sm:w-auto justify-center">
                 Start free
                 <Icon name="arrow_forward" className="msym-sm" />
               </Link>
-              <Link href="/features" className="btn-outline text-base px-7 py-4 max-[480px]:w-full">
+              <Link href="/features" className="btn-outline text-base px-7 py-4 w-full sm:w-auto justify-center">
                 See how it works
               </Link>
             </div>
-            <p className="text-xs text-stone mt-4">Free signup · 30 credits · No card required</p>
+            <p className="text-xs text-stone mt-4">Free signup · 50 credits included · No card required</p>
 
           </div>
 
@@ -109,7 +109,7 @@ export default function Landing() {
                   'Frame Studio and Creative Studio assets',
                   'Client-ready reports and exports',
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-3 rounded-xl bg-white px-3 py-3 border border-bangladesh-green/10">
+                  <div key={item} className="flex items-start gap-3 rounded-xl bg-white px-3 py-3 border border-bangladesh-green/10 min-w-0">
                     <span className="mt-1 w-2.5 h-2.5 rounded-full bg-caribbean-green shrink-0" />
                     <span className="text-sm text-rich-black leading-relaxed">{item}</span>
                   </div>
@@ -119,7 +119,7 @@ export default function Landing() {
 
             <div className="glass-card p-5 md:p-6 border border-caribbean-green/15">
               <p className="text-[10px] font-semibold tracking-[0.24em] text-pistachio/80 mb-3">BUILT FOR TEAM SPEED</p>
-              <div className="grid grid-cols-2 gap-3 text-sm text-anti-flash-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-anti-flash-white">
                 <div className="rounded-xl bg-bangladesh-green/20 px-3 py-3">Fast first drafts</div>
                 <div className="rounded-xl bg-bangladesh-green/20 px-3 py-3">Cleaner approvals</div>
                 <div className="rounded-xl bg-bangladesh-green/20 px-3 py-3">Client-ready output</div>
@@ -142,7 +142,7 @@ export default function Landing() {
               Start with one brief. Zelvoo turns it into strategy, content, creative, and exports your team can ship.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {CONTENT_TYPES.slice(0, 8).map(t => (
               <div key={t.id} className="glass-card glass-highlight p-5 hover:border-caribbean-green/45 transition-all duration-150 group">
                 <div className="w-10 h-10 rounded-[12px] bg-bangladesh-green/20 border border-mountain-meadow/20 grid place-items-center mb-4 group-hover:bg-bangladesh-green/35 transition-colors">

@@ -58,24 +58,24 @@ export default function FeaturesPage() {
       <main className="mx-auto max-w-6xl px-5 py-16 md:py-20 animate-rise relative z-10">
         <section className="mb-14 text-center max-w-4xl mx-auto">
           <p className="eyebrow mb-4">Platform Features</p>
-          <h1 className="font-heading text-hero text-rich-black">
+          <h1 className="font-heading text-[2.2rem] sm:text-[2.8rem] md:text-[3.6rem] leading-[1.02] text-rich-black">
             Everything your marketing team creates.
             <br className="hidden md:block" /> Generated from one brief.
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-body-lg text-stone">
+          <p className="mx-auto mt-5 max-w-2xl text-base sm:text-body-lg text-stone">
             Lock your Brand Kit once. Select any mix of content types and engines.
             Zelvoo generates in parallel, scores for engagement, and exports client-ready outputs.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/signup" className="btn-primary px-7 py-3.5 text-sm">
+          <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
+            <Link href="/signup" className="btn-primary px-7 py-3.5 text-sm w-full sm:w-auto justify-center">
               <Icon name="bolt" className="mr-1 align-middle" /> Start your 7-day free trial
             </Link>
-            <Link href="/pricing" className="btn-outline px-7 py-3.5 text-sm">
+            <Link href="/pricing" className="btn-outline px-7 py-3.5 text-sm w-full sm:w-auto justify-center">
               See pricing
             </Link>
           </div>
           <p className="mt-3 text-sm text-stone">
-            Free trial includes 30 credits · 1 credit per generation
+            Free signup includes 50 credits · 1 credit per generation
           </p>
         </section>
 

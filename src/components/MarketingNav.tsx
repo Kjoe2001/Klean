@@ -15,8 +15,10 @@ export default function MarketingNav() {
 
   return (
     <nav className="sticky top-0 z-30 glass-elevated-light border-b border-bangladesh-green/12">
-      <div className="max-w-6xl mx-auto flex items-center gap-4 px-5 min-h-16 py-2.5">
-        <Logo darkText />
+      <div className="max-w-6xl mx-auto flex items-center gap-3 px-4 sm:px-5 min-h-16 py-2.5">
+        <div className="min-w-0 flex-shrink-0">
+          <Logo darkText />
+        </div>
         <div className="hidden md:flex items-center gap-6 ml-4">
           {[['Features','/features'],['Pricing','/pricing'],['About','/about']].map(([l,h]) => (
             <Link key={h} href={h} className="text-sm font-medium text-stone hover:text-rich-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green rounded">{l}</Link>
@@ -33,7 +35,7 @@ export default function MarketingNav() {
 
         <button
           type="button"
-          className="ml-auto md:hidden w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center"
+          className="ml-auto md:hidden w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center flex-shrink-0"
           onClick={() => setMobileOpen(v => !v)}
           aria-expanded={mobileOpen}
           aria-label="Open menu"

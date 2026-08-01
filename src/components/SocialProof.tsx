@@ -32,7 +32,7 @@ export function SocialProof() {
           <p className="text-stone text-body max-w-2xl mx-auto">No clutter. No setup maze. Just three moves from signup to your first campaign output.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {steps.map((step, index) => (
             <div key={step.id} className="glass-card-light glass-highlight p-6 relative overflow-hidden">
               <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-caribbean-green/12" />
