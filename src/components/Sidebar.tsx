@@ -46,6 +46,7 @@ const GROUPS: NavGroup[] = [
     { href: '/partners',  icon: 'diversity_3', label: 'Partners' },
   ]},
   { title: 'Account', tour: 'group-account', items: [
+    { href: '/downloads', icon: 'download',     label: 'Downloads' },
     { href: '/billing',   icon: 'credit_card',  label: 'Billing' },
     { href: '/security',  icon: 'shield_lock',  label: 'Security & 2FA' },
     { href: '/support',   icon: 'support_agent',label: 'Support' },
