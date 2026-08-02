@@ -12,6 +12,13 @@ function getSupabaseDownloadBaseUrl() {
   return configured || '';
 }
 
+function getDesktopDownloadSource() {
+  const configured = process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_SOURCE?.trim().toLowerCase();
+  if (configured === 'supabase') return 'supabase' as const;
+  if (configured === 'auto') return 'auto' as const;
+  return 'github' as const;
+}
+
 export const desktopRelease = {
   // Example tag: desktop-v0.1.1
   tag: process.env.NEXT_PUBLIC_DESKTOP_RELEASE_TAG || 'desktop-v0.1.1',
@@ -70,12 +77,26 @@ function supabaseAssetUrl(assetFileName: string) {
   return `${base}/${desktopRelease.tag}/${encoded}`;
 }
 
-function releaseAssetUrl(assetFileName: string) {
-  const supabaseUrl = supabaseAssetUrl(assetFileName);
-  return supabaseUrl || githubReleaseAssetUrl(assetFileName);
-}
+const desktopDownloadMode = getDesktopDownloadSource();
+export const desktopDownloadSource =
+  desktopDownloadMode === 'supabase'
+    ? 'supabase'
+    : desktopDownloadMode === 'auto' && desktopRelease.supabaseBaseUrl
+      ? 'supabase'
+      : 'github';
 
-export const desktopDownloadSource = desktopRelease.supabaseBaseUrl ? 'supabase' : 'github';
+function releaseAssetUrl(assetFileName: string) {
+  if (desktopDownloadSource === 'github') {
+    return githubReleaseAssetUrl(assetFileName);
+  }
+
+  const supabaseUrl = supabaseAssetUrl(assetFileName);
+  if (desktopDownloadMode === 'auto') {
+    return supabaseUrl || githubReleaseAssetUrl(assetFileName);
+  }
+
+  return supabaseUrl;
+}
 
 export const desktopDownloadProducts = products.map((product) => {
   const v = desktopRelease.version;
