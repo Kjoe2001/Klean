@@ -54,14 +54,6 @@ const GROUPS: NavGroup[] = [
   ]},
 ];
 
-const STANDALONE_PRODUCT_BY_FLAVOR: Record<string, NavItem> = {
-  frame: { href: '/frame-studio', icon: 'movie', label: 'Video Frame Studio' },
-  news: { href: '/news-frame-studio', icon: 'article', label: 'News Frame Studio' },
-  campaign: { href: '/campaign-builder', icon: 'ads_click', label: 'Campaign Builder' },
-  content: { href: '/content-studio', icon: 'auto_awesome', label: 'Content Studio' },
-  creative: { href: '/creative-studio', icon: 'image', label: 'Creative Studio' },
-};
-
 export default function Sidebar({ profile, trialDaysLeft, className = '', onNavigate }: any) {
   const path = usePathname();
   const [desktopMeta, setDesktopMeta] = useState<{ standalone: boolean; flavor: string } | null>(() => {
@@ -90,15 +82,23 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
   const navGroups = useMemo(() => {
     if (!desktopMeta?.standalone) return GROUPS;
 
-    const product = STANDALONE_PRODUCT_BY_FLAVOR[desktopMeta.flavor] || STANDALONE_PRODUCT_BY_FLAVOR.frame;
+    const create = GROUPS.find((g) => g.title === 'Create');
     const organise = GROUPS.find((g) => g.title === 'Organise');
+    const grow = GROUPS.find((g) => g.title === 'Grow');
     const collaborate = GROUPS.find((g) => g.title === 'Collaborate');
+    const learn = GROUPS.find((g) => g.title === 'Learn & earn');
     const account = GROUPS.find((g) => g.title === 'Account');
 
+    const standaloneDashboardItems = (create?.items || []).filter((item) =>
+      ['/dashboard', '/templates', '/prompts'].includes(item.href)
+    );
+
     return [
-      { title: 'Product', tour: 'group-create', items: [product] },
+      { title: 'Dashboard', tour: 'group-create', items: standaloneDashboardItems },
       ...(organise ? [organise] : []),
+      ...(grow ? [grow] : []),
       ...(collaborate ? [collaborate] : []),
+      ...(learn ? [learn] : []),
       ...(account ? [account] : []),
     ];
   }, [desktopMeta]);
