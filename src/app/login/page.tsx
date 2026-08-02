@@ -4,15 +4,30 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Logo from '@/components/Logo';
-import { getAuthCallbackUrl } from '@/lib/auth-redirect';
+import { getAuthCallbackUrl, getStandaloneContext, getStandaloneDefaultPath, getStandaloneProductName, withStandaloneParams } from '@/lib/auth-redirect';
 const ENABLE_GOOGLE_OAUTH = true;
 
-function Form({ mode }: { mode: 'signup' | 'login' }) {
+function Form() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
-  const [err, setErr] = useState(''); const [msg, setMsg] = useState(''); const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState(''); const [busy, setBusy] = useState(false);
   const router = useRouter(); const params = useSearchParams();
   const plan = params.get('plan');
-  const callbackUrl = getAuthCallbackUrl(plan);
+  const next = params.get('next');
+  const standalone = getStandaloneContext();
+  const productName = getStandaloneProductName();
+  const callbackUrl = getAuthCallbackUrl(plan, next);
+
+  const authHref = (base: string) => {
+    const q = new URLSearchParams();
+    if (plan) q.set('plan', plan);
+    if (next) q.set('next', next);
+    if (standalone.standalone) {
+      q.set('standalone', '1');
+      q.set('desktopProduct', standalone.flavor);
+    }
+    const qs = q.toString();
+    return qs ? `${base}?${qs}` : base;
+  };
 
   const oauth = async () => {
     setErr('');
@@ -47,6 +62,12 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
       const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: form.password });
       if (error) throw error;
 
+      const target = next || (standalone.standalone ? withStandaloneParams(getStandaloneDefaultPath(window.location.search)) : '');
+      if (target) {
+        router.push(target);
+        return;
+      }
+
       router.push(plan ? `/checkout?plan=${plan}` : '/dashboard');
       return;
     } catch (e: any) { setErr(e.message); setBusy(false); }
@@ -59,10 +80,12 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
         <div className="flex justify-center mb-8"><Logo darkText /></div>
         <div className="glass-elevated glass-highlight p-6 sm:p-8 md:p-9">
           <h1 className="font-heading font-semibold text-anti-flash-white text-[1.6rem] sm:text-2xl text-center mb-1 break-words">
-            Welcome back
+            {standalone.standalone ? `Sign in to ${productName}` : 'Welcome back'}
           </h1>
           <p className="text-center text-sm text-pistachio mb-7">
-            Log in to your Zelvoo dashboard
+            {standalone.standalone
+              ? `Use your account to continue in ${productName}`
+              : 'Log in to your Zelvoo dashboard'}
           </p>
 
           {/* OAuth */}
@@ -87,8 +110,6 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
           </div>
 
           {err && <p className="text-xs text-danger font-medium mt-3">{err}</p>}
-          {msg && <p className="text-xs text-caribbean-green font-medium mt-3">{msg}</p>}
-
           <button onClick={submit} disabled={busy} className="btn-primary w-full mt-5">
             {busy
               ? <span className="w-4 h-4 rounded-full border-2 border-rich-black border-t-transparent animate-spin" />
@@ -96,13 +117,13 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
           </button>
 
           <p className="text-center text-xs text-pistachio mt-5 flex items-center justify-center flex-wrap gap-x-1.5">
-            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/forgot-password?plan=${plan}` : '/forgot-password'}>Forgot password?</Link>
+            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={authHref('/forgot-password')}>Forgot password?</Link>
             <span aria-hidden="true">·</span>
-            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/signup?plan=${plan}` : '/signup'}>Start free trial</Link>
+            <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={authHref('/signup')}>Start free trial</Link>
           </p>
         </div>
       </div>
     </div>
   );
 }
-export default function Page() { return <Suspense><Form mode="login" /></Suspense>; }
+export default function Page() { return <Suspense><Form /></Suspense>; }

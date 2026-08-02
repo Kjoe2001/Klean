@@ -1,11 +1,16 @@
 'use client';
 import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
 import { Icon } from '@/components/Icon';
+import { getStandaloneContext, withStandaloneParams } from '@/lib/auth-redirect';
 
-const GROUPS: { title: string; tour: string; items: { href: string; icon: string; label: string }[] }[] = [
+type NavItem = { href: string; icon: string; label: string };
+type NavGroup = { title: string; tour: string; items: NavItem[] };
+
+const GROUPS: NavGroup[] = [
   { title: 'Create', tour: 'group-create', items: [
     { href: '/dashboard',        icon: 'space_dashboard', label: 'Dashboard' },
     { href: '/content-studio',   icon: 'auto_awesome',    label: 'Content Studio' },
@@ -48,21 +53,67 @@ const GROUPS: { title: string; tour: string; items: { href: string; icon: string
   ]},
 ];
 
+const STANDALONE_PRODUCT_BY_FLAVOR: Record<string, NavItem> = {
+  frame: { href: '/frame-studio', icon: 'movie', label: 'Video Frame Studio' },
+  news: { href: '/news-frame-studio', icon: 'article', label: 'News Frame Studio' },
+  campaign: { href: '/campaign-builder', icon: 'ads_click', label: 'Campaign Builder' },
+  content: { href: '/content-studio', icon: 'auto_awesome', label: 'Content Studio' },
+  creative: { href: '/creative-studio', icon: 'image', label: 'Creative Studio' },
+};
+
 export default function Sidebar({ profile, trialDaysLeft, className = '', onNavigate }: any) {
   const path = usePathname();
+  const [desktopMeta, setDesktopMeta] = useState<{ standalone: boolean; flavor: string } | null>(() => {
+    const context = getStandaloneContext();
+    if (!context.standalone) return null;
+    return { standalone: true, flavor: String(context.flavor || 'frame') };
+  });
+  const standaloneHref = (href: string) => withStandaloneParams(href, typeof window !== 'undefined' ? window.location.search : '');
   const showAdmin = (profile?.email || '').toLowerCase() === 'oannoreric@gmail.com';
+
+  useEffect(() => {
+    let alive = true;
+    const api = typeof window !== 'undefined' ? (window as any).zelvoDesktop : null;
+    if (!api?.getMeta) return;
+    api.getMeta()
+      .then((meta: any) => {
+        if (!alive) return;
+        setDesktopMeta({ standalone: !!meta?.standalone, flavor: String(meta?.flavor || 'shared') });
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const navGroups = useMemo(() => {
+    if (!desktopMeta?.standalone) return GROUPS;
+
+    const product = STANDALONE_PRODUCT_BY_FLAVOR[desktopMeta.flavor] || STANDALONE_PRODUCT_BY_FLAVOR.frame;
+    const organise = GROUPS.find((g) => g.title === 'Organise');
+    const collaborate = GROUPS.find((g) => g.title === 'Collaborate');
+    const account = GROUPS.find((g) => g.title === 'Account');
+
+    return [
+      { title: 'Product', tour: 'group-create', items: [product] },
+      ...(organise ? [organise] : []),
+      ...(collaborate ? [collaborate] : []),
+      ...(account ? [account] : []),
+    ];
+  }, [desktopMeta]);
+
   return (
     <aside className={`flex flex-col w-60 shrink-0 section-green border border-mountain-meadow/20 rounded-[20px] p-4 overflow-y-auto ${className}`}>
       {/* Logo */}
       <div className="mb-5 px-1">
-        <Link href="/dashboard" onClick={onNavigate} className="inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green rounded-lg">
+        <Link href={standaloneHref('/dashboard')} onClick={onNavigate} className="inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green rounded-lg">
           <span className="w-8 h-8 rounded-[10px] bg-caribbean-green text-rich-black grid place-items-center text-sm font-bold font-heading shadow-[0_0_18px_rgba(0,223,129,0.25)]">Z</span>
           <span className="font-heading font-semibold text-anti-flash-white text-[0.9375rem]">Zelvoo</span>
         </Link>
       </div>
 
       {/* Plan pill */}
-      <Link href="/billing" onClick={onNavigate} className="block rounded-[12px] border border-mountain-meadow/25 bg-bangladesh-green/20 px-3 py-2.5 mb-5 hover:border-caribbean-green/40 transition-colors">
+      <Link href={standaloneHref('/billing')} onClick={onNavigate} className="block rounded-[12px] border border-mountain-meadow/25 bg-bangladesh-green/20 px-3 py-2.5 mb-5 hover:border-caribbean-green/40 transition-colors">
         <div className="text-[10px] font-bold tracking-[0.2em] text-caribbean-green flex items-center gap-1.5">
           <Icon name={profile?.plan === 'trial' ? 'hourglass_top' : 'check_circle'} className="text-[13px]" />
           {profile?.plan === 'trial' ? `TRIAL · ${trialDaysLeft}D LEFT` : `${PLANS[profile?.plan]?.name?.toUpperCase() ?? 'PLAN'}`}
@@ -72,14 +123,14 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
 
       {/* Nav */}
       <nav className="flex-1 space-y-4 overflow-y-auto">
-        {GROUPS.map(g => (
+        {navGroups.map(g => (
           <div key={g.title} data-tour={g.tour}>
             <div className="text-[9.5px] font-bold tracking-[0.2em] text-stone px-3 mb-1">{g.title.toUpperCase()}</div>
             <div className="space-y-0.5">
               {g.items.map(n => {
                 const active = path === n.href;
                 return (
-                  <Link key={n.href} href={n.href} onClick={onNavigate}
+                  <Link key={n.href} href={standaloneHref(n.href)} onClick={onNavigate}
                     className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green min-w-0
                       ${active
                         ? 'bg-caribbean-green text-rich-black font-semibold'
@@ -95,11 +146,11 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
 
       {/* Admin + sign out */}
       {showAdmin && (
-        <Link href="/admin" onClick={onNavigate} className="mt-3 flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-stone hover:text-anti-flash-white hover:bg-bangladesh-green/18 transition-colors">
+        <Link href={standaloneHref('/admin')} onClick={onNavigate} className="mt-3 flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-stone hover:text-anti-flash-white hover:bg-bangladesh-green/18 transition-colors">
           <span className="w-4 text-center text-sm">🛡</span>Admin
         </Link>
       )}
-      <button onClick={async () => { await supabase.auth.signOut(); location.href = '/login'; }}
+      <button onClick={async () => { await supabase.auth.signOut(); if (typeof window === 'undefined') return; const next = `${window.location.pathname}${window.location.search}`; const nextUrl = new URL(standaloneHref('/login'), window.location.origin); nextUrl.searchParams.set('next', next); location.href = `${nextUrl.pathname}${nextUrl.search}`; }}
         className="mt-2 text-left flex items-center gap-3 px-3 py-2 rounded-[10px] text-[13px] text-stone hover:text-anti-flash-white hover:bg-bangladesh-green/18 transition-colors w-full">
         <Icon name="logout" className="w-4 text-center" />Sign out
       </button>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PLANS, type PlanKey } from '@/lib/plans';
+import { getStandaloneContext } from '@/lib/auth-redirect';
 
 const LEGACY_UNLIMITED_EMAILS = new Set(['oannoreric@gmail.com']);
 const UNLIMITED_BALANCE = 999999;
@@ -39,7 +40,23 @@ export function useProfile(requireAuth = true) {
         user = refreshedSession?.user || null;
       }
 
-      if (!user) { if (requireAuth) router.replace('/login'); setLoading(false); return; }
+      if (!user) {
+        if (requireAuth) {
+          const nextPath = typeof window !== 'undefined'
+            ? `${window.location.pathname}${window.location.search}`
+            : '/dashboard';
+          const standalone = getStandaloneContext();
+          const loginUrl = new URL('/login', window.location.origin);
+          loginUrl.searchParams.set('next', nextPath);
+          if (standalone.standalone) {
+            loginUrl.searchParams.set('standalone', '1');
+            loginUrl.searchParams.set('desktopProduct', standalone.flavor);
+          }
+          router.replace(`${loginUrl.pathname}${loginUrl.search}`);
+        }
+        setLoading(false);
+        return;
+      }
       const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
       const fallback = { id: user.id, email: user.email, name: user.email?.split('@')[0], plan: 'trial', role: 'user' };
       const merged = (data || fallback) as Profile;

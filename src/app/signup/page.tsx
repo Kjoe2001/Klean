@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Logo from '@/components/Logo';
-import { getAuthCallbackUrl } from '@/lib/auth-redirect';
+import { getAuthCallbackUrl, getStandaloneContext, getStandaloneDefaultPath, getStandaloneProductName, withStandaloneParams } from '@/lib/auth-redirect';
 
 const ENABLE_GOOGLE_OAUTH = true;
 
-function Form({ mode }: { mode: 'signup' | 'login' }) {
+function Form() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
@@ -18,7 +18,22 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
   const router = useRouter();
   const params = useSearchParams();
   const plan = params.get('plan');
-  const callbackUrl = getAuthCallbackUrl(plan);
+  const next = params.get('next');
+  const standalone = getStandaloneContext();
+  const productName = getStandaloneProductName();
+  const callbackUrl = getAuthCallbackUrl(plan, next);
+
+  const authHref = (base: string) => {
+    const q = new URLSearchParams();
+    if (plan) q.set('plan', plan);
+    if (next) q.set('next', next);
+    if (standalone.standalone) {
+      q.set('standalone', '1');
+      q.set('desktopProduct', standalone.flavor);
+    }
+    const qs = q.toString();
+    return qs ? `${base}?${qs}` : base;
+  };
 
   const oauth = async () => {
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callbackUrl } });
@@ -48,33 +63,30 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
     setBusy(true);
     try {
       const normalizedEmail = form.email.trim().toLowerCase();
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password: form.password,
+        options: { data: { full_name: form.name }, emailRedirectTo: callbackUrl },
+      });
+      if (error) throw error;
 
-      if (mode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({
-          email: normalizedEmail,
-          password: form.password,
-          options: { data: { full_name: form.name }, emailRedirectTo: callbackUrl },
-        });
-        if (error) throw error;
+      fetch('/api/auth/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalizedEmail, name: form.name }),
+      }).catch(() => {});
 
-        fetch('/api/auth/welcome', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: normalizedEmail, name: form.name }),
-        }).catch(() => {});
-
-        if (!data.session) {
-          setMsg('Check your inbox — we sent a confirmation link.');
-          setBusy(false);
-          return;
-        }
-
-        router.push(plan ? `/checkout?plan=${plan}` : '/welcome');
+      if (!data.session) {
+        setMsg('Check your inbox — we sent a confirmation link.');
+        setBusy(false);
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: form.password });
-      if (error) throw error;
+      const target = next || (standalone.standalone ? withStandaloneParams(getStandaloneDefaultPath(window.location.search)) : '');
+      if (target) {
+        router.push(target);
+        return;
+      }
       router.push(plan ? `/checkout?plan=${plan}` : '/welcome');
     } catch (e: any) {
       setErr(e.message || 'Something went wrong.');
@@ -89,12 +101,12 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
         <div className="flex justify-center mb-8"><Logo darkText /></div>
         <div className="glass-elevated glass-highlight p-6 sm:p-8 md:p-9">
           <h1 className="font-heading font-semibold text-anti-flash-white text-[1.6rem] sm:text-2xl text-center mb-1 break-words">
-            {mode === 'signup' ? 'Start your free trial' : 'Welcome back'}
+            {standalone.standalone ? `Create your ${productName} account` : 'Start your free trial'}
           </h1>
           <p className="text-center text-sm text-pistachio mb-7">
-            {mode === 'signup'
-              ? 'Free 7-day trial · 50 credits · No card required'
-              : 'Log in to your Zelvoo dashboard'}
+            {standalone.standalone
+              ? `New here? Register to unlock ${productName} with your own account.`
+              : 'Free 7-day trial · 50 credits · No card required'}
           </p>
 
           <div className="flex flex-col gap-2.5 mb-6">
@@ -113,9 +125,7 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
           </div>
 
           <div className="flex flex-col gap-3">
-            {mode === 'signup' && (
-              <input className="field" placeholder="Full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-            )}
+            <input className="field" placeholder="Full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
             <input className="field" type="email" placeholder="Work email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
             <input className="field" type="password" placeholder="Password (min 6 characters)" value={form.password}
               onChange={e => setForm({ ...form, password: e.target.value })} onKeyDown={e => e.key === 'Enter' && submit()} />
@@ -127,13 +137,11 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
           <button onClick={submit} disabled={busy} className="btn-primary w-full mt-5">
             {busy
               ? <span className="w-4 h-4 rounded-full border-2 border-rich-black border-t-transparent animate-spin" />
-              : (mode === 'signup' ? 'Create account' : 'Log in')}
+              : 'Create account'}
           </button>
 
           <p className="text-center text-xs text-pistachio mt-5 flex items-center justify-center flex-wrap gap-x-1.5">
-            {mode === 'signup'
-              ? <>Already have an account? <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/login?plan=${plan}` : '/login'}>Log in</Link></>
-              : <><Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/forgot-password?plan=${plan}` : '/forgot-password'}>Forgot password?</Link><span aria-hidden="true">·</span><Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={plan ? `/signup?plan=${plan}` : '/signup'}>Start free trial</Link></>}
+            <>Already have an account? <Link className="inline-flex items-center min-h-11 text-caribbean-green font-medium hover:underline px-1" href={authHref('/login')}>Log in</Link></>
           </p>
         </div>
       </div>
@@ -177,5 +185,5 @@ function Form({ mode }: { mode: 'signup' | 'login' }) {
 }
 
 export default function Page() {
-  return <Suspense><Form mode="signup" /></Suspense>;
+  return <Suspense><Form /></Suspense>;
 }

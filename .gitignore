@@ -4,3 +4,12 @@ node_modules
 .env.local
 .vercel
 .env*
+
+# OS/editor artifacts
+.DS_Store
+
+# TypeScript incremental cache
+*.tsbuildinfo
+
+# Desktop build artifacts
+desktop/dist/

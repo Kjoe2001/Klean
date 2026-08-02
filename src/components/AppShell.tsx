@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
 import TourOverlay from '@/components/TourOverlay';
+import { withStandaloneParams } from '@/lib/auth-redirect';
 
 async function getAccessToken() {
   let { data: { session } } = await supabase.auth.getSession();
@@ -20,6 +21,7 @@ async function getAccessToken() {
 
 export default function AppShell({ children, title, subtitle, actions }: any) {
   const { profile, loading, daysLeft, planExpired, outOfCredits, credits, plan } = useProfile();
+  const standaloneHref = (href: string) => withStandaloneParams(href);
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -125,13 +127,13 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {/* Credit balance pill */}
-            <Link href="/billing"
+            <Link href={standaloneHref('/billing')}
               className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors hover:opacity-80 ${creditStyles[creditVariant]}`}>
               <Icon name="bolt" className="msym-sm" />
               {credits} credits
             </Link>
             {/* Top up button */}
-            <Link href="/billing"
+            <Link href={standaloneHref('/billing')}
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-caribbean-green text-rich-black text-xs font-medium hover:brightness-110 transition-colors">
               Top up
             </Link>
@@ -145,7 +147,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
               <Icon name="help" className="text-bangladesh-green" />
             </button>
             {/* Notifications */}
-            <Link href="/notifications"
+            <Link href={standaloneHref('/notifications')}
               className="relative w-11 h-11 md:w-9 md:h-9 rounded-[10px] border border-bangladesh-green/20 bg-white grid place-items-center hover:border-caribbean-green/45 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green"
               aria-label="Notifications">
               <Icon name="notifications" className="text-bangladesh-green" />
@@ -161,7 +163,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
         {banner && (
           <div className={`rounded-[14px] border px-4 py-3 mb-4 flex flex-wrap items-center gap-3 text-sm ${bannerColors[banner.tone]}`}>
             <div className="flex-1 text-[13px]">{banner.node}</div>
-            <Link href={banner.href}
+            <Link href={standaloneHref(banner.href)}
               className="text-xs px-4 py-1.5 rounded-full bg-caribbean-green text-rich-black font-medium hover:brightness-110 transition-colors shrink-0 w-full sm:w-auto text-center">
               {banner.cta}
             </Link>
