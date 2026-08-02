@@ -9,12 +9,7 @@ type ProductConfig = {
 
 function getSupabaseDownloadBaseUrl() {
   const configured = process.env.NEXT_PUBLIC_DESKTOP_DOWNLOAD_BASE_URL?.trim();
-  if (configured) return configured;
-
-  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  if (!projectUrl) return '';
-
-  return `${projectUrl.replace(/\/+$/, '')}/storage/v1/object/public/desktop-downloads`;
+  return configured || '';
 }
 
 export const desktopRelease = {
