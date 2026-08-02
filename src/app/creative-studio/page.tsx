@@ -1,15 +1,11 @@
 'use client';
-import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
-import { Icon } from '@/components/Icon';
 import AppShell from '@/components/AppShell';
-import { getStandaloneContext } from '@/lib/auth-redirect';
 
 function CreativeStudioContent() {
-  const isStandalone = getStandaloneContext().standalone;
-  const { profile, loading } = useProfile(isStandalone);
+  const { profile, loading } = useProfile();
   const frameRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -101,33 +97,21 @@ function CreativeStudioContent() {
   if (!profile) return null;
 
   const shellContent = (
-    <div className={isStandalone ? 'min-h-[calc(100vh-8rem)]' : 'fixed inset-0'}>
-      {!isStandalone && (
-        <Link
-          href="/dashboard"
-          className="fixed top-3 left-3 z-[10000] inline-flex items-center gap-1.5 rounded-full bg-rich-black text-anti-flash-white text-xs font-medium px-3.5 py-2 shadow-lg hover:brightness-110 transition"
-        >
-          <Icon name="arrow_back" className="text-sm" /> Zelvoo
-        </Link>
-      )}
+    <div className="min-h-[calc(100vh-8rem)]">
       <iframe
         ref={frameRef}
         src="/creative-studio.html"
         title="Zelvoo Creative Studio"
-        className={isStandalone ? 'w-full h-[calc(100vh-8rem)] rounded-[20px] border-0' : 'w-full h-full border-0'}
+        className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
       />
     </div>
   );
 
-  if (isStandalone) {
-    return (
-      <AppShell title="Creative Studio" subtitle="Create and export your visual assets from your account">
-        {shellContent}
-      </AppShell>
-    );
-  }
-
-  return shellContent;
+  return (
+    <AppShell title="Creative Studio" subtitle="Create and export your visual assets from your account">
+      {shellContent}
+    </AppShell>
+  );
 }
 
 export default function CreativeStudioPage() {
