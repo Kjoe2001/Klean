@@ -10,12 +10,10 @@ import { getStandaloneContext, withStandaloneParams } from '@/lib/auth-redirect'
 type NavItem = { href: string; icon: string; label: string };
 type NavGroup = { title: string; tour: string; items: NavItem[] };
 
-const STANDALONE_DASHBOARD_PRODUCT_BY_FLAVOR: Record<string, NavItem> = {
-  frame: { href: '/frame-studio', icon: 'movie', label: 'Frame Studio' },
-  creative: { href: '/creative-studio', icon: 'image', label: 'Creative Studio' },
-  campaign: { href: '/campaign-builder', icon: 'ads_click', label: 'Campaign Builder' },
-  news: { href: '/news-frame-studio', icon: 'article', label: 'News Frame Studio' },
-  content: { href: '/content-studio', icon: 'auto_awesome', label: 'Content Studio' },
+const STANDALONE_CONTENT_ITEM: NavItem = {
+  href: '/content-studio',
+  icon: 'auto_awesome',
+  label: 'Content Studio',
 };
 
 const GROUPS: NavGroup[] = [
@@ -100,10 +98,12 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
     const standaloneDashboardItems = (create?.items || []).filter((item) =>
       ['/dashboard', '/templates', '/prompts'].includes(item.href)
     );
-    const productItem = STANDALONE_DASHBOARD_PRODUCT_BY_FLAVOR[desktopMeta.flavor] || STANDALONE_DASHBOARD_PRODUCT_BY_FLAVOR.frame;
+    const dashboardItems = desktopMeta.flavor === 'content'
+      ? [...standaloneDashboardItems, STANDALONE_CONTENT_ITEM]
+      : standaloneDashboardItems;
 
     return [
-      { title: 'Dashboard', tour: 'group-create', items: [...standaloneDashboardItems, productItem] },
+      { title: 'Dashboard', tour: 'group-create', items: dashboardItems },
       ...(organise ? [organise] : []),
       ...(grow ? [grow] : []),
       ...(collaborate ? [collaborate] : []),
