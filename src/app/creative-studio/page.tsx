@@ -1,15 +1,14 @@
 'use client';
 import Link from 'next/link';
-import { Suspense, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
 import AppShell from '@/components/AppShell';
+import { getStandaloneContext } from '@/lib/auth-redirect';
 
 function CreativeStudioContent() {
-  const searchParams = useSearchParams();
-  const isStandalone = searchParams.get('standalone') === '1' || searchParams.get('desktop') === '1';
+  const isStandalone = getStandaloneContext().standalone;
   const { profile, loading } = useProfile(isStandalone);
   const frameRef = useRef<HTMLIFrameElement>(null);
 
@@ -132,9 +131,5 @@ function CreativeStudioContent() {
 }
 
 export default function CreativeStudioPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen section-light grid place-items-center"><div className="w-10 h-10 rounded-full border-[3px] border-caribbean-green border-t-transparent animate-spin" /></div>}>
-      <CreativeStudioContent />
-    </Suspense>
-  );
+  return <CreativeStudioContent />;
 }
