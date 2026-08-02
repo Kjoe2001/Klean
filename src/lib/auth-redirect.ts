@@ -46,6 +46,39 @@ export function getStandaloneProductName(search?: string | URLSearchParams | nul
   return map[context.flavor] || 'Zelvoo';
 }
 
+const STANDALONE_ALLOWED_PATHS = [
+  '/dashboard',
+  '/templates',
+  '/prompts',
+  '/brand-kit',
+  '/assets',
+  '/calendar',
+  '/library',
+  '/approvals',
+  '/trends',
+  '/competitors',
+  '/analytics',
+  '/workspaces',
+  '/clients',
+  '/integrations',
+  '/white-label',
+  '/academy',
+  '/community',
+  '/affiliate',
+  '/partners',
+  '/downloads',
+  '/billing',
+  '/security',
+  '/support',
+  '/settings',
+  '/notifications',
+];
+
+export function isStandalonePathAllowed(pathname: string): boolean {
+  const normalized = pathname === '/' ? '/dashboard' : pathname.replace(/\/+$/, '') || '/dashboard';
+  return STANDALONE_ALLOWED_PATHS.some((allowed) => normalized === allowed || normalized.startsWith(`${allowed}/`));
+}
+
 export function withStandaloneParams(href: string, search?: string | URLSearchParams | null): string {
   const context = getStandaloneContext(search);
   if (!context.standalone) return href;

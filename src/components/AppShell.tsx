@@ -7,7 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
 import TourOverlay from '@/components/TourOverlay';
-import { withStandaloneParams } from '@/lib/auth-redirect';
+import { getStandaloneContext, isStandalonePathAllowed, withStandaloneParams } from '@/lib/auth-redirect';
 
 async function getAccessToken() {
   let { data: { session } } = await supabase.auth.getSession();
@@ -31,6 +31,14 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
 
   useEffect(() => { if (profile && profile.onboarded === false) router.replace('/welcome'); }, [profile]);
   useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    const standalone = getStandaloneContext();
+    if (!standalone.standalone) return;
+    if (isStandalonePathAllowed(pathname)) return;
+
+    router.replace(withStandaloneParams('/dashboard'));
+  }, [pathname, router]);
+
   useEffect(() => {
     if (!profile || autoTourShown.current) return;
     if (profile.activation?.tour_seen === true) return;
