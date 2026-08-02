@@ -7,7 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
 import TourOverlay from '@/components/TourOverlay';
-import { getStandaloneContext, isStandalonePathAllowed, withStandaloneParams } from '@/lib/auth-redirect';
+import { getStandaloneContext, getStandaloneDefaultPath, isStandalonePathAllowed, withStandaloneParams } from '@/lib/auth-redirect';
 
 async function getAccessToken() {
   let { data: { session } } = await supabase.auth.getSession();
@@ -24,6 +24,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
   const standaloneHref = (href: string) => withStandaloneParams(href);
   const router = useRouter();
   const pathname = usePathname();
+  const standalone = getStandaloneContext();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unread, setUnread] = useState(0);
   const [showTour, setShowTour] = useState(false);
@@ -32,12 +33,11 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
   useEffect(() => { if (profile && profile.onboarded === false) router.replace('/welcome'); }, [profile]);
   useEffect(() => { setMobileOpen(false); }, [pathname]);
   useEffect(() => {
-    const standalone = getStandaloneContext();
     if (!standalone.standalone) return;
     if (isStandalonePathAllowed(pathname)) return;
 
-    router.replace(withStandaloneParams('/dashboard'));
-  }, [pathname, router]);
+    router.replace(withStandaloneParams(getStandaloneDefaultPath()));
+  }, [pathname, router, standalone.standalone]);
 
   useEffect(() => {
     if (!profile || autoTourShown.current) return;
@@ -115,7 +115,9 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
     <div className="section-light min-h-screen relative text-rich-black">
       <div className="orb-fixed-light animate-orb" />
       <div className="flex gap-5 max-w-[1500px] mx-auto p-2.5 sm:p-3 md:p-4 relative z-10">
-      <Sidebar profile={profile} trialDaysLeft={daysLeft} className="hidden md:flex sticky top-4 h-[calc(100vh-2rem)]" />
+      {!standalone.standalone && (
+        <Sidebar profile={profile} trialDaysLeft={daysLeft} className="hidden md:flex sticky top-4 h-[calc(100vh-2rem)]" />
+      )}
       <main className="flex-1 min-w-0 animate-rise">
 
         {/* ── Top bar ────────────────────────────────────────────── */}
@@ -123,7 +125,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <div className="flex items-start gap-2 md:gap-3 min-w-0">
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center text-bangladesh-green"
+              className={`${standalone.standalone ? '' : 'md:hidden'} w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center text-bangladesh-green`}
               aria-label="Open sidebar"
             >
               <Icon name="menu" />
@@ -187,13 +189,13 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <button
             aria-label="Close sidebar"
             onClick={() => setMobileOpen(false)}
-            className="md:hidden fixed inset-0 bg-rich-black/50 z-40"
+            className="fixed inset-0 bg-rich-black/50 z-40"
           />
           <Sidebar
             profile={profile}
             trialDaysLeft={daysLeft}
             onNavigate={() => setMobileOpen(false)}
-            className="md:hidden fixed z-50 top-2 left-2 h-[calc(100vh-1rem)] max-w-[92vw]"
+            className="fixed z-50 top-2 left-2 h-[calc(100vh-1rem)] max-w-[92vw]"
           />
         </>
       )}

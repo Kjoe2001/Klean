@@ -10,12 +10,6 @@ import { getStandaloneContext, withStandaloneParams } from '@/lib/auth-redirect'
 type NavItem = { href: string; icon: string; label: string };
 type NavGroup = { title: string; tour: string; items: NavItem[] };
 
-const STANDALONE_CONTENT_ITEM: NavItem = {
-  href: '/content-studio',
-  icon: 'auto_awesome',
-  label: 'Content Studio',
-};
-
 const GROUPS: NavGroup[] = [
   { title: 'Create', tour: 'group-create', items: [
     { href: '/dashboard',        icon: 'space_dashboard', label: 'Dashboard' },
@@ -60,6 +54,36 @@ const GROUPS: NavGroup[] = [
   ]},
 ];
 
+const STANDALONE_MENU_GROUPS: NavGroup[] = [
+  { title: 'Dashboard', tour: 'group-dashboard', items: [
+    { href: '/dashboard', icon: 'space_dashboard', label: 'Dashboard' },
+    { href: '/templates', icon: 'dashboard_customize', label: 'Templates' },
+    { href: '/prompts', icon: 'bookmark', label: 'Saved prompts' },
+  ]},
+  { title: 'Organise', tour: 'group-organise', items: [
+    { href: '/brand-kit', icon: 'palette', label: 'Brand Kit' },
+  ]},
+  { title: 'Grow', tour: 'group-grow', items: [
+    { href: '/analytics', icon: 'monitoring', label: 'Analytics' },
+  ]},
+  { title: 'Collaborate', tour: 'group-collaborate', items: [
+    { href: '/workspaces', icon: 'groups', label: 'Workspaces' },
+  ]},
+  { title: 'Learn & Earn', tour: 'group-learn', items: [
+    { href: '/academy', icon: 'school', label: 'Academy' },
+  ]},
+  { title: 'Account', tour: 'group-account', items: [
+    { href: '/billing', icon: 'credit_card', label: 'Account' },
+  ]},
+  { title: 'Studio', tour: 'group-studio', items: [
+    { href: '/content-studio', icon: 'auto_awesome', label: 'Content Studio' },
+    { href: '/creative-studio', icon: 'image', label: 'Creative Studio' },
+    { href: '/campaign-builder', icon: 'ads_click', label: 'Campaign Builder' },
+    { href: '/frame-studio', icon: 'movie', label: 'Video Frame Studio' },
+    { href: '/news-frame-studio', icon: 'article', label: 'News Frame Studio' },
+  ]},
+];
+
 export default function Sidebar({ profile, trialDaysLeft, className = '', onNavigate }: any) {
   const path = usePathname();
   const [desktopMeta, setDesktopMeta] = useState<{ standalone: boolean; flavor: string } | null>(() => {
@@ -87,29 +111,7 @@ export default function Sidebar({ profile, trialDaysLeft, className = '', onNavi
 
   const navGroups = useMemo(() => {
     if (!desktopMeta?.standalone) return GROUPS;
-
-    const create = GROUPS.find((g) => g.title === 'Create');
-    const organise = GROUPS.find((g) => g.title === 'Organise');
-    const grow = GROUPS.find((g) => g.title === 'Grow');
-    const collaborate = GROUPS.find((g) => g.title === 'Collaborate');
-    const learn = GROUPS.find((g) => g.title === 'Learn & earn');
-    const account = GROUPS.find((g) => g.title === 'Account');
-
-    const standaloneDashboardItems = (create?.items || []).filter((item) =>
-      ['/dashboard', '/templates', '/prompts'].includes(item.href)
-    );
-    const dashboardItems = desktopMeta.flavor === 'content'
-      ? [...standaloneDashboardItems, STANDALONE_CONTENT_ITEM]
-      : standaloneDashboardItems;
-
-    return [
-      { title: 'Dashboard', tour: 'group-create', items: dashboardItems },
-      ...(organise ? [organise] : []),
-      ...(grow ? [grow] : []),
-      ...(collaborate ? [collaborate] : []),
-      ...(learn ? [learn] : []),
-      ...(account ? [account] : []),
-    ];
+    return STANDALONE_MENU_GROUPS;
   }, [desktopMeta]);
 
   return (
