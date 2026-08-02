@@ -130,15 +130,6 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
             >
               <Icon name="menu" />
             </button>
-            {standalone.standalone && (
-              <button
-                onClick={() => setMobileOpen(true)}
-                className="fixed left-3 top-3 z-[70] w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white/95 backdrop-blur grid place-items-center text-bangladesh-green shadow-lg"
-                aria-label="Open standalone menu"
-              >
-                <Icon name="menu" />
-              </button>
-            )}
             <div className="min-w-0">
             <h1 className="font-heading font-semibold text-rich-black text-sm sm:text-base leading-tight break-words">{title}</h1>
             {subtitle && <p className="text-xs text-stone mt-0.5 hidden sm:block break-words">{subtitle}</p>}

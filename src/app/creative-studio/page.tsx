@@ -1,17 +1,17 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
-import Sidebar from '@/components/Sidebar';
-import { getStandaloneContext } from '@/lib/auth-redirect';
+import AppShell from '@/components/AppShell';
 
-export default function CreativeStudio() {
-  const { profile, daysLeft } = useProfile();
+function CreativeStudioContent() {
+  const searchParams = useSearchParams();
+  const isStandalone = searchParams.get('standalone') === '1' || searchParams.get('desktop') === '1';
+  const { profile, loading } = useProfile(isStandalone);
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const standalone = getStandaloneContext();
 
   useEffect(() => {
     if (!profile) return;
@@ -91,7 +91,7 @@ export default function CreativeStudio() {
     return () => { cancelled = true; window.removeEventListener('message', onMessage); };
   }, [profile]);
 
-  if (!profile) {
+  if (loading) {
     return (
       <div className="min-h-screen section-light grid place-items-center">
         <div className="w-10 h-10 rounded-full border-[3px] border-caribbean-green border-t-transparent animate-spin" />
@@ -99,40 +99,42 @@ export default function CreativeStudio() {
     );
   }
 
-  return (
-    <div className="fixed inset-0">
-      <Link
-        href="/dashboard"
-        className="fixed top-3 left-3 z-[10000] inline-flex items-center gap-1.5 rounded-full bg-rich-black text-anti-flash-white text-xs font-medium px-3.5 py-2 shadow-lg hover:brightness-110 transition"
-      >
-        <Icon name="arrow_back" className="text-sm" /> Zelvoo
-      </Link>
-      {standalone.standalone && (
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="fixed left-3 top-16 z-[10000] w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white/95 backdrop-blur grid place-items-center text-bangladesh-green shadow-lg"
-          aria-label="Open standalone menu"
+  if (!profile) return null;
+
+  const shellContent = (
+    <div className={isStandalone ? 'min-h-[calc(100vh-8rem)]' : 'fixed inset-0'}>
+      {!isStandalone && (
+        <Link
+          href="/dashboard"
+          className="fixed top-3 left-3 z-[10000] inline-flex items-center gap-1.5 rounded-full bg-rich-black text-anti-flash-white text-xs font-medium px-3.5 py-2 shadow-lg hover:brightness-110 transition"
         >
-          <Icon name="menu" />
-        </button>
+          <Icon name="arrow_back" className="text-sm" /> Zelvoo
+        </Link>
       )}
       <iframe
         ref={frameRef}
         src="/creative-studio.html"
         title="Zelvoo Creative Studio"
-        className="w-full h-full border-0"
+        className={isStandalone ? 'w-full h-[calc(100vh-8rem)] rounded-[20px] border-0' : 'w-full h-full border-0'}
       />
-      {mobileOpen && (
-        <>
-          <button aria-label="Close sidebar" onClick={() => setMobileOpen(false)} className="fixed inset-0 bg-rich-black/50 z-[10050]" />
-          <Sidebar
-            profile={profile}
-            trialDaysLeft={daysLeft}
-            onNavigate={() => setMobileOpen(false)}
-            className="fixed z-[10060] top-2 left-2 h-[calc(100vh-1rem)] max-w-[92vw]"
-          />
-        </>
-      )}
     </div>
+  );
+
+  if (isStandalone) {
+    return (
+      <AppShell title="Creative Studio" subtitle="Create and export your visual assets from your account">
+        {shellContent}
+      </AppShell>
+    );
+  }
+
+  return shellContent;
+}
+
+export default function CreativeStudioPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen section-light grid place-items-center"><div className="w-10 h-10 rounded-full border-[3px] border-caribbean-green border-t-transparent animate-spin" /></div>}>
+      <CreativeStudioContent />
+    </Suspense>
   );
 }
