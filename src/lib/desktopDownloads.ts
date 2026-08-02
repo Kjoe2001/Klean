@@ -1,4 +1,4 @@
-type ProductKey = 'frame' | 'news' | 'campaign' | 'content' | 'creative';
+type ProductKey = 'shared' | 'frame' | 'news' | 'campaign' | 'content' | 'creative';
 
 type ProductConfig = {
   key: ProductKey;
@@ -41,6 +41,12 @@ export const desktopRelease = {
 };
 
 const products: ProductConfig[] = [
+  {
+    key: 'shared',
+    name: 'Zelvo Desktop (All Studios)',
+    shortDescription: 'One app with quick access to Content, Creative, Campaign, Video Frame, and News Frame studios.',
+    baseFileName: 'Zelvo',
+  },
   {
     key: 'frame',
     name: 'Video Frame Studio',

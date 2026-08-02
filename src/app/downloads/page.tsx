@@ -6,11 +6,14 @@ import { desktopDownloadProducts, desktopDownloadSource, desktopRelease } from '
 
 export const metadata: Metadata = {
   title: 'Desktop Downloads | Zelvoo',
-  description: 'Download standalone Zelvoo desktop installers for Video Frame Studio, Campaign Builder, Content Studio, and Creative Studio.',
+  description: 'Download standalone Zelvoo desktop installers for Video Frame Studio, News Frame Studio, Campaign Builder, Content Studio, and Creative Studio.',
   alternates: { canonical: 'https://www.zelvoo.app/downloads' },
 };
 
 export default function DownloadsPage() {
+  const allStudios = desktopDownloadProducts.find((product) => product.key === 'shared');
+  const studioOnly = desktopDownloadProducts.filter((product) => product.key !== 'shared');
+
   return (
     <div className="section-light min-h-screen">
       <div className="orb-fixed-light animate-orb" />
@@ -26,15 +29,61 @@ export default function DownloadsPage() {
             Choose your product and operating system. These links point to {desktopDownloadSource === 'supabase' ? 'Supabase Storage assets' : 'GitHub Release assets'} for tag
             <span className="font-medium text-rich-black"> {desktopRelease.tag}</span>.
           </p>
+          <p className="text-sm text-bangladesh-green mt-3 font-medium">
+            Want one file with every studio option? Download Zelvo Desktop (All Studios) below.
+          </p>
           <p className="text-xs text-stone mt-3">
             Source: {desktopDownloadSource === 'supabase' ? 'Supabase public bucket' : `GitHub repo ${desktopRelease.repo}`} · Version: {desktopRelease.version}
           </p>
         </div>
       </section>
 
+      {allStudios && (
+        <section className="section-light pt-10 pb-4">
+          <div className="max-w-6xl mx-auto px-5">
+            <article className="glass-card-light glass-highlight p-6 border border-caribbean-green/30">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <h2 className="font-heading text-h3 text-rich-black">{allStudios.name}</h2>
+                <span className="inline-flex items-center rounded-full bg-caribbean-green text-rich-black text-[11px] font-semibold px-3 py-1">Recommended</span>
+              </div>
+              <p className="text-sm text-stone leading-relaxed mb-5">{allStudios.shortDescription}</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Link
+                  href={allStudios.downloads.macAppleSilicon}
+                  className="btn-primary justify-center w-full"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name="download" className="msym-sm" /> macOS Apple Silicon (arm64)
+                </Link>
+                <Link
+                  href={allStudios.downloads.macIntel}
+                  className="btn-outline justify-center w-full"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name="download" className="msym-sm" /> macOS Intel (x64)
+                </Link>
+                <Link
+                  href={allStudios.downloads.windows}
+                  className="btn-outline justify-center w-full"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name="download" className="msym-sm" /> Windows (x64)
+                </Link>
+              </div>
+            </article>
+          </div>
+        </section>
+      )}
+
       <section className="section-light py-12 md:py-14">
+        <div className="max-w-6xl mx-auto px-5 mb-5">
+          <p className="text-xs tracking-[0.2em] text-stone font-semibold">INDIVIDUAL STUDIO INSTALLERS</p>
+        </div>
         <div className="max-w-6xl mx-auto px-5 grid md:grid-cols-2 gap-5">
-          {desktopDownloadProducts.map((product) => (
+          {studioOnly.map((product) => (
             <article key={product.key} className="glass-card-light glass-highlight p-6 border border-bangladesh-green/10">
               <h2 className="font-heading text-h3 text-rich-black mb-2">{product.name}</h2>
               <p className="text-sm text-stone leading-relaxed mb-5">{product.shortDescription}</p>
