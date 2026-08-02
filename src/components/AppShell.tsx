@@ -125,7 +125,7 @@ export default function AppShell({ children, title, subtitle, actions }: any) {
           <div className="flex items-start gap-2 md:gap-3 min-w-0">
             <button
               onClick={() => setMobileOpen(true)}
-              className={`${standalone.standalone ? '' : 'md:hidden'} w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white grid place-items-center text-bangladesh-green`}
+              className={`${standalone.standalone ? '' : 'md:hidden'} w-11 h-11 rounded-xl grid place-items-center text-bangladesh-green hover:bg-bangladesh-green/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caribbean-green`}
               aria-label="Open sidebar"
             >
               <Icon name="menu" />
