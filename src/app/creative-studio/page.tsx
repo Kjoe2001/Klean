@@ -1,13 +1,17 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProfile } from '@/components/useProfile';
 import { supabase } from '@/lib/supabase';
 import { Icon } from '@/components/Icon';
+import Sidebar from '@/components/Sidebar';
+import { getStandaloneContext } from '@/lib/auth-redirect';
 
 export default function CreativeStudio() {
-  const { profile } = useProfile();
+  const { profile, daysLeft } = useProfile();
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const standalone = getStandaloneContext();
 
   useEffect(() => {
     if (!profile) return;
@@ -43,35 +47,20 @@ export default function CreativeStudio() {
         if (cancelled) return;
         if (!token) { post({ type: 'designSaveFailed', reqId, reason: 'unauthorized' }); return; }
 
-        const spend = await fetch('/api/credits', {
+        const save = await fetch('/api/creative-studio/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ action: 'design', label: 'Creative Studio design saved' }),
+          body: JSON.stringify({ design }),
         });
         if (cancelled) return;
-        if (!spend.ok) {
-          const err = await spend.json().catch(() => ({}));
-          post({ type: 'designSaveFailed', reqId, reason: err.error || 'spend_failed', balance: err.balance });
+        if (!save.ok) {
+          const err = await save.json().catch(() => ({}));
+          post({ type: 'designSaveFailed', reqId, reason: err.error || 'save_failed', balance: err.balance });
           return;
         }
-        const spendResult = await spend.json();
+        const saveResult = await save.json();
         window.dispatchEvent(new Event('credits:changed'));
-
-        const row = {
-          user_id: profile.id,
-          brand_id: design.brandId || null,
-          name: design.name || 'Untitled design',
-          width: design.width,
-          height: design.height,
-          data: design.data,
-          updated_at: new Date().toISOString(),
-        };
-        const result = design.id
-          ? await supabase.from('designs').update(row).eq('id', design.id).select('id').single()
-          : await supabase.from('designs').insert(row).select('id').single();
-        if (cancelled) return;
-        if (result.data) post({ type: 'designSaved', reqId, id: result.data.id, balance: spendResult.balance });
-        else post({ type: 'designSaveFailed', reqId, reason: 'save_failed' });
+        post({ type: 'designSaved', reqId, id: saveResult.id, balance: saveResult.balance });
         return;
       }
 
@@ -118,12 +107,32 @@ export default function CreativeStudio() {
       >
         <Icon name="arrow_back" className="text-sm" /> Zelvoo
       </Link>
+      {standalone.standalone && (
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="fixed left-3 top-16 z-[10000] w-11 h-11 rounded-xl border border-bangladesh-green/20 bg-white/95 backdrop-blur grid place-items-center text-bangladesh-green shadow-lg"
+          aria-label="Open standalone menu"
+        >
+          <Icon name="menu" />
+        </button>
+      )}
       <iframe
         ref={frameRef}
         src="/creative-studio.html"
         title="Zelvoo Creative Studio"
         className="w-full h-full border-0"
       />
+      {mobileOpen && (
+        <>
+          <button aria-label="Close sidebar" onClick={() => setMobileOpen(false)} className="fixed inset-0 bg-rich-black/50 z-[10050]" />
+          <Sidebar
+            profile={profile}
+            trialDaysLeft={daysLeft}
+            onNavigate={() => setMobileOpen(false)}
+            className="fixed z-[10060] top-2 left-2 h-[calc(100vh-1rem)] max-w-[92vw]"
+          />
+        </>
+      )}
     </div>
   );
 }
