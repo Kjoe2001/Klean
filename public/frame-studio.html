@@ -1304,10 +1304,10 @@
       return;
     }
     const saveFmt=normalizeFmt(S.fmt);
-    const dlUrl=URL.createObjectURL(lastBlob);
-    const a=document.createElement('a');a.download='zelvoo-framed-'+Date.now()+'.'+extForFmt(saveFmt);a.href=dlUrl;a.rel='noopener';
+    const dlURL=URL.createObjectURL(lastBlob);
+    const a=document.createElement('a');a.download='zelvoo-framed-'+Date.now()+'.'+extForFmt(saveFmt);a.href=dlURL;a.rel='noopener';
     document.body.appendChild(a);a.click();
-    setTimeout(()=>{try{URL.revokeObjectURL(dlUrl);}catch(e){}a.remove();},4000);
+    setTimeout(()=>{try{URL.revokeObjectURL(dlURL);}catch(e){}a.remove();},4000);
     closeReview();
     const bal=(charge&&typeof charge.balance==='number')?(' · Balance: '+charge.balance+' credits'):'';
     const note=(saveFmt!==lastRenderMeta.actual)?(' · Encoded as '+labelForFmt(lastRenderMeta.actual)):'';
