@@ -63,8 +63,8 @@ export default function Pricing() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {order.map(k => { const p = PLANS[k]; const ent = k === 'enterprise';
-            const weeklyAccent = k === 'weekly';
-            const unit = p.days <= 7 ? '/week' : '/mo';
+            const weeklyAccent = k === 'weekly' || k === 'starter' || k === 'pro';
+            const unit = p.days <= 7 ? '' : '/mo';
             const perDollar = p.price > 0 ? (p.credits / p.price).toFixed(1) : null;
             const isFeatured = p.popular || ent;
             const localPrice = cur && cur.code !== 'USD' ? formatLocal(p.price, cur) : null;
