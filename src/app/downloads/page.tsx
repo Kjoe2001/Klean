@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import MarketingNav from '@/components/MarketingNav';
 import { Icon } from '@/components/Icon';
-import { desktopDownloadProducts, desktopRelease } from '@/lib/desktopDownloads';
 
 export const metadata: Metadata = {
   title: 'Desktop Downloads | Zelvoo',
@@ -10,10 +9,13 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.zelvoo.app/downloads' },
 };
 
-export default function DownloadsPage() {
-  const allStudios = desktopDownloadProducts.find((product) => product.key === 'shared');
-  const studioOnly = desktopDownloadProducts.filter((product) => product.key !== 'shared');
+const ALL_STUDIOS_LINKS = {
+  macAppleSilicon: 'https://drive.google.com/file/d/1a6jJ27hCKHvO095vTHEoeZ0Vr4F8YSfM/view?usp=sharing',
+  macIntel: 'https://drive.google.com/file/d/1qbAVX0R8EJ7NEIBEZIkVzFPmecmIMSTo/view?usp=sharing',
+  windows: 'https://drive.google.com/file/d/15hiQ9aUmj7IzDR6YCHZkwJfZx0ngBCoc/view?usp=sharing',
+};
 
+export default function DownloadsPage() {
   return (
     <div className="section-light min-h-screen relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(0,223,129,0.18),transparent_46%),radial-gradient(circle_at_82%_14%,rgba(3,113,93,0.16),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,252,251,1))]" />
@@ -32,90 +34,82 @@ export default function DownloadsPage() {
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center rounded-full bg-caribbean-green/15 text-bangladesh-green text-xs font-semibold px-3 py-1">Secure download links</span>
-              <span className="inline-flex items-center rounded-full bg-rich-black/[0.04] text-rich-black/80 text-xs font-semibold px-3 py-1">Version {desktopRelease.version}</span>
+              <span className="inline-flex items-center rounded-full bg-rich-black/[0.04] text-rich-black/80 text-xs font-semibold px-3 py-1">Version 0.1.2</span>
             </div>
           </div>
         </div>
       </section>
 
-      {allStudios && (
-        <section className="section-light pt-10 pb-4">
-          <div className="max-w-6xl mx-auto px-5">
-            <article className="glass-card-light glass-highlight p-6 border border-caribbean-green/30">
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                <h2 className="font-heading text-h3 text-rich-black">{allStudios.name}</h2>
-                <span className="inline-flex items-center rounded-full bg-caribbean-green text-rich-black text-[11px] font-semibold px-3 py-1">Recommended</span>
+      <section className="relative pb-14 md:pb-20">
+        <div className="max-w-6xl mx-auto px-5">
+          <article className="rounded-3xl border border-bangladesh-green/15 bg-white p-6 md:p-8 shadow-[0_16px_60px_rgba(2,46,40,0.08)]">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+              <div>
+                <h2 className="font-heading text-[1.5rem] md:text-[2rem] text-rich-black">Zelvoo Desktop (All Studios)</h2>
+                <p className="text-sm text-stone mt-1">Universal installer pack for every studio workflow.</p>
               </div>
-              <p className="text-sm text-stone leading-relaxed mb-5">{allStudios.shortDescription}</p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <Link
-                  href={allStudios.downloads.macAppleSilicon}
-                  className="btn-primary justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> macOS Apple Silicon (arm64)
-                </Link>
-                <Link
-                  href={allStudios.downloads.macIntel}
-                  className="btn-outline justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> macOS Intel (x64)
-                </Link>
-                <Link
-                  href={allStudios.downloads.windows}
-                  className="btn-outline justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> Windows (x64)
-                </Link>
-              </div>
-            </article>
-          </div>
-        </section>
-      )}
+              <span className="inline-flex items-center rounded-full bg-caribbean-green text-rich-black text-[11px] font-semibold px-3 py-1">Recommended</span>
+            </div>
+            <p className="text-sm md:text-base text-stone leading-relaxed mb-6">One app with quick access to Content, Creative, Campaign, Video Frame, and News Frame studios.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                href={ALL_STUDIOS_LINKS.macAppleSilicon}
+                className="group rounded-2xl border border-caribbean-green/30 bg-gradient-to-br from-caribbean-green to-mountain-meadow text-rich-black px-5 py-4 min-h-[84px] flex flex-col items-start justify-center gap-1 shadow-[0_10px_30px_rgba(0,223,129,0.35)] transition-transform duration-300 hover:-translate-y-0.5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="inline-flex items-center gap-2 font-semibold text-sm">
+                  <Icon name="download" className="msym-sm" /> macOS Apple Silicon
+                </span>
+                <span className="text-xs opacity-90">ARM64 (.dmg)</span>
+              </Link>
+              <Link
+                href={ALL_STUDIOS_LINKS.macIntel}
+                className="group rounded-2xl border border-bangladesh-green/25 bg-anti-flash-white px-5 py-4 min-h-[84px] flex flex-col items-start justify-center gap-1 transition-transform duration-300 hover:-translate-y-0.5 hover:border-bangladesh-green/45"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="inline-flex items-center gap-2 font-semibold text-sm text-rich-black">
+                  <Icon name="download" className="msym-sm" /> macOS Intel
+                </span>
+                <span className="text-xs text-stone">x64 (.dmg)</span>
+              </Link>
+              <Link
+                href={ALL_STUDIOS_LINKS.windows}
+                className="group rounded-2xl border border-bangladesh-green/25 bg-anti-flash-white px-5 py-4 min-h-[84px] flex flex-col items-start justify-center gap-1 transition-transform duration-300 hover:-translate-y-0.5 hover:border-bangladesh-green/45"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="inline-flex items-center gap-2 font-semibold text-sm text-rich-black">
+                  <Icon name="download" className="msym-sm" /> Windows
+                </span>
+                <span className="text-xs text-stone">x64 (.exe)</span>
+              </Link>
+            </div>
+          </article>
 
-      <section className="section-light py-12 md:py-14">
-        <div className="max-w-6xl mx-auto px-5 mb-5">
-          <p className="text-xs tracking-[0.2em] text-stone font-semibold">INDIVIDUAL STUDIO INSTALLERS</p>
-        </div>
-        <div className="max-w-6xl mx-auto px-5 grid md:grid-cols-2 gap-5">
-          {studioOnly.map((product) => (
-            <article key={product.key} className="glass-card-light glass-highlight p-6 border border-bangladesh-green/10">
-              <h2 className="font-heading text-h3 text-rich-black mb-2">{product.name}</h2>
-              <p className="text-sm text-stone leading-relaxed mb-5">{product.shortDescription}</p>
-
-              <div className="grid grid-cols-1 gap-3">
-                <Link
-                  href={product.downloads.macAppleSilicon}
-                  className="btn-primary justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> macOS Apple Silicon (arm64)
-                </Link>
-                <Link
-                  href={product.downloads.macIntel}
-                  className="btn-outline justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> macOS Intel (x64)
-                </Link>
-                <Link
-                  href={product.downloads.windows}
-                  className="btn-outline justify-center w-full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="download" className="msym-sm" /> Windows (x64)
-                </Link>
+          <article className="mt-6 rounded-3xl border border-bangladesh-green/15 bg-white p-6 md:p-8 shadow-[0_16px_60px_rgba(2,46,40,0.08)]">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+              <div>
+                <h2 className="font-heading text-[1.5rem] md:text-[2rem] text-rich-black">All Zelvoo Studios Included for Mobile</h2>
+                <p className="text-sm text-stone mt-1">Use Zelvoo on Android phones.</p>
               </div>
-            </article>
-          ))}
+              <span className="inline-flex items-center rounded-full bg-caribbean-green text-rich-black text-[11px] font-semibold px-3 py-1">Mobile Ready</span>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <Link
+                href="/downloads/mobile/android"
+                className="group rounded-2xl border border-bangladesh-green/25 bg-anti-flash-white px-5 py-4 min-h-[84px] flex flex-col items-start justify-center gap-1 transition-transform duration-300 hover:-translate-y-0.5 hover:border-bangladesh-green/45"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="inline-flex items-center gap-2 font-semibold text-sm text-rich-black">
+                  <Icon name="download" className="msym-sm" /> Android Phone
+                </span>
+                <span className="text-xs text-stone">Download APK</span>
+              </Link>
+            </div>
+          </article>
         </div>
       </section>
     </div>
