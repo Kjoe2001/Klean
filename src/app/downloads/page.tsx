@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import MarketingNav from '@/components/MarketingNav';
 import { Icon } from '@/components/Icon';
-import { desktopDownloadProducts, desktopDownloadSource, desktopRelease } from '@/lib/desktopDownloads';
+import { desktopDownloadProducts, desktopRelease } from '@/lib/desktopDownloads';
 
 export const metadata: Metadata = {
   title: 'Desktop Downloads | Zelvoo',
@@ -15,26 +15,26 @@ export default function DownloadsPage() {
   const studioOnly = desktopDownloadProducts.filter((product) => product.key !== 'shared');
 
   return (
-    <div className="section-light min-h-screen">
+    <div className="section-light min-h-screen relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(0,223,129,0.18),transparent_46%),radial-gradient(circle_at_82%_14%,rgba(3,113,93,0.16),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,252,251,1))]" />
       <div className="orb-fixed-light animate-orb" />
       <MarketingNav />
 
-      <section className="section-white border-b border-bangladesh-green/10">
-        <div className="max-w-6xl mx-auto px-5 pt-14 pb-12 md:pt-18 md:pb-14">
-          <p className="eyebrow mb-4">Desktop Installers</p>
-          <h1 className="font-heading text-h2 md:text-[2.5rem] mb-4 text-rich-black">
-            Download Standalone Zelvoo Apps
-          </h1>
-          <p className="text-stone text-body max-w-3xl leading-relaxed">
-            Choose your product and operating system. These links point to {desktopDownloadSource === 'supabase' ? 'Supabase Storage assets' : 'GitHub Release assets'} for tag
-            <span className="font-medium text-rich-black"> {desktopRelease.tag}</span>.
-          </p>
-          <p className="text-sm text-bangladesh-green mt-3 font-medium">
-            Want one file with every studio option? Download Zelvo Desktop (All Studios) below.
-          </p>
-          <p className="text-xs text-stone mt-3">
-            Source: {desktopDownloadSource === 'supabase' ? 'Supabase public bucket' : `GitHub repo ${desktopRelease.repo}`} · Version: {desktopRelease.version}
-          </p>
+      <section className="relative pt-12 pb-8 md:pt-16 md:pb-10">
+        <div className="max-w-6xl mx-auto px-5">
+          <div className="rounded-3xl border border-caribbean-green/20 bg-white/80 backdrop-blur-xl shadow-[0_25px_80px_rgba(3,113,93,0.12)] p-7 md:p-10">
+            <p className="eyebrow mb-4">Desktop Installers</p>
+            <h1 className="font-heading text-[2rem] leading-tight md:text-[3rem] mb-4 text-rich-black">
+              One Download Hub.<span className="block text-bangladesh-green">All Zelvoo Studios Included.</span>
+            </h1>
+            <p className="text-stone text-body max-w-3xl leading-relaxed">
+              Install once and launch Content, Creative, Campaign, Video Frame, and News Frame studios from one desktop app.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-caribbean-green/15 text-bangladesh-green text-xs font-semibold px-3 py-1">Secure download links</span>
+              <span className="inline-flex items-center rounded-full bg-rich-black/[0.04] text-rich-black/80 text-xs font-semibold px-3 py-1">Version {desktopRelease.version}</span>
+            </div>
+          </div>
         </div>
       </section>
 

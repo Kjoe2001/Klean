@@ -5,8 +5,6 @@ import MarketingNav from '@/components/MarketingNav';
 import { Icon } from '@/components/Icon';
 import { PLANS } from '@/lib/plans';
 import { localCurrency, formatLocal } from '@/lib/currency';
-import AppImage from '@/components/AppImage';
-import { MARKETING_IMAGES } from '@/lib/marketing-images';
 
 const ICON: Record<string, string> = {
   weekly: 'bolt', starter: 'spa', pro: 'rocket_launch', studio: 'apartment',
@@ -34,13 +32,40 @@ export default function Pricing() {
         </div>
 
         <section className="mb-10">
-          <AppImage
-            src={MARKETING_IMAGES.pricingOwner}
-            alt="Small business owner reviewing marketing performance on a laptop"
-            width={1400}
-            height={840}
-            sizes="(max-width: 1024px) 100vw, 980px"
-          />
+          <div className="relative overflow-hidden rounded-[26px] border border-caribbean-green/25 bg-gradient-to-br from-[#ffffff] via-[#f6fffb] to-[#e9fbf3] p-6 md:p-8 shadow-[0_30px_80px_rgba(2,27,26,0.12)]">
+            <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-caribbean-green/20 blur-3xl" />
+            <div className="absolute -left-14 -bottom-20 h-56 w-56 rounded-full bg-mountain-meadow/20 blur-3xl" />
+            <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <p className="eyebrow mb-3">Why Teams Pick Zelvoo</p>
+                <h2 className="font-heading text-h2 text-rich-black leading-tight">One workspace for strategy, content, and delivery.</h2>
+                <p className="mt-3 text-stone text-body max-w-2xl">Every paid plan includes all text-generation tools. Upgrade only when you need more credits, seats, and collaboration controls.</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {['No setup fees', 'No hidden add-ons', 'Cancel anytime'].map((label) => (
+                    <span key={label} className="inline-flex items-center rounded-full border border-bangladesh-green/20 bg-white/85 px-3 py-1 text-[11px] font-medium text-bangladesh-green">{label}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {[['16', 'Content types'], ['5', 'Studios included'], ['50', 'Trial credits'], ['24/7', 'Payment access']].map(([value, label]) => (
+                  <div key={label} className="rounded-2xl border border-bangladesh-green/15 bg-white/90 p-4 text-center">
+                    <p className="font-heading text-[1.7rem] leading-none text-caribbean-green">{value}</p>
+                    <p className="mt-1 text-[12px] text-stone">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative mt-5 rounded-2xl border border-bangladesh-green/15 bg-white/90 p-4">
+              <div className="flex flex-wrap items-center gap-3 text-[12px] text-stone">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-caribbean-green/15 px-2.5 py-1 text-bangladesh-green font-medium">
+                  <Icon name="verified" className="text-[14px]" /> Flutterwave-secured checkout
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-bangladesh-green/10 px-2.5 py-1">
+                  <Icon name="payments" className="text-[14px] text-bangladesh-green" /> Card, MoMo, Bank Transfer
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <div className="max-w-4xl mx-auto grid sm:grid-cols-3 gap-3 mb-9">

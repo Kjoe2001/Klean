@@ -1,7 +1,7 @@
 const FAQS = [
   { q: 'How do credits work?', a: 'Every plan comes with a credit balance that refreshes each billing period. One content generation costs 1 credit. A full campaign pack typically uses 20–25 credits.' },
   { q: 'Can I really pay with Mobile Money?', a: 'Yes. Zelvoo accepts MTN MoMo, Telecel Cash and AirtelTigo Money alongside cards and bank transfer. Prices display in your local currency and are billed in USD.' },
-  { q: 'What do I get in the free trial?', a: 'Free access and 30 credits — enough to generate a complete multi-format content pack. No credit card required.' },
+  { q: 'What do I get in the free trial?', a: 'Free 7-day trial · 50 credits — enough to generate a complete multi-format content pack. No credit card required.' },
   { q: 'What is a Brand Kit?', a: 'Your Brand Kit stores your brand voice, colours, audience and positioning once. Every asset Zelvoo generates follows it automatically so nothing comes out off-brand.' },
   { q: 'Can my team and clients use it?', a: 'Studio plans include 3 team seats and a client portal; Agency plans include 10 seats, approval workflows and white-label exports.' },
   { q: 'Can I cancel anytime?', a: 'Yes — cancel from your Billing page in one click. Refunds within 48 hours of a first paid charge are honoured.' },
