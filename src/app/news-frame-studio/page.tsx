@@ -69,7 +69,7 @@ function NewsFrameStudioContent() {
         isEnterprise ? (
           <div className="min-h-[calc(100vh-8rem)]">
             <iframe
-              src="/news-frame-studio.html"
+              src="/news-frame-joynews.html"
               title="Zelvoo News Frame Studio — Joynews"
               className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
             />

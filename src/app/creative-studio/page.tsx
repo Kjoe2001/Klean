@@ -100,7 +100,7 @@ function CreativeStudioContent() {
     <div className="min-h-[calc(100vh-8rem)]">
       <iframe
         ref={frameRef}
-        src="/creative-studio.html"
+        src="/creative-studio-tool.html"
         title="Zelvoo Creative Studio"
         className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
       />

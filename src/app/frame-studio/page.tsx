@@ -108,7 +108,7 @@ function FrameStudioContent() {
     <div className="min-h-[calc(100vh-8rem)]">
       <iframe
         ref={frameRef}
-        src="/frame-studio.html"
+        src="/video-frame-studio.html"
         title="Zelvoo Video Frame Studio"
         className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
         onLoad={sendBrandingConfig}
