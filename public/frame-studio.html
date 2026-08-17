@@ -850,7 +850,9 @@
       dragTextOff={x:p.x-(S.wmX||0.5),y:p.y-(S.wmY||0.5)};e.preventDefault();return;}
     S.selText='';
   }
-  function pointerMove(e){const p=evtToCanvas(e);
+  function pointerMove(e){
+    if(dragIdx<0&&!dragText)return;
+    const p=evtToCanvas(e);
     if(dragIdx>=0){S.stickers[dragIdx].x=Math.max(0,Math.min(1,p.x-dragOff.x));S.stickers[dragIdx].y=Math.max(0,Math.min(1,p.y-dragOff.y));e.preventDefault();return;}
     if(dragText==='hl'){S.hlX=Math.max(0.05,Math.min(0.95,p.x-dragTextOff.x));S.hlY=Math.max(0.05,Math.min(0.95,p.y-dragTextOff.y));e.preventDefault();return;}
     if(dragText==='cap'){S.capX=Math.max(0.05,Math.min(0.95,p.x-dragTextOff.x));S.capY=Math.max(0.05,Math.min(0.95,p.y-dragTextOff.y));e.preventDefault();return;}

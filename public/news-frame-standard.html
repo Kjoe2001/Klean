@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zelvoo Creative Studio — News Frame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Montserrat:wght@800;900&family=Oswald:wght@600;700&family=Teko:wght@600;700&family=Barlow+Condensed:wght@700;800&family=Staatliches&family=Hanken+Grotesk:wght@400;600;700;800;900&family=Playfair+Display:wght@800;900&family=DM+Serif+Display&family=Merriweather:wght@800;900&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:transparent;font-family:'Hanken Grotesk',Arial,sans-serif;color:#062C24;}
+  .wrap{display:grid;grid-template-columns:1fr 360px;gap:24px;max-width:1180px;margin:0 auto;padding:16px;}
+  @media (max-width:920px){.wrap{grid-template-columns:1fr;}}
+  .left{display:flex;flex-direction:column;align-items:center;}
+  .canvas-shell{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(6,44,36,.12);max-width:420px;width:100%;}
+  canvas{width:100%;height:auto;display:block;cursor:grab;touch-action:none;}
+  .hint{font-size:12px;color:#5b7a6f;margin-top:10px;text-align:center;}
+  .right{display:flex;flex-direction:column;gap:16px;}
+  section{background:#fff;border:1px solid #e3e9e6;border-radius:14px;padding:14px;}
+  .label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#5b7a6f;margin-bottom:10px;}
+  .note{font-size:11px;color:#8a9c94;margin-top:8px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .stack{display:flex;flex-direction:column;gap:8px;}
+  .opt{border:1px solid #d5ddda;background:#fff;border-radius:10px;padding:9px 10px;cursor:pointer;text-align:left;font-family:inherit;color:#062C24;transition:.12s;font-size:12.5px;}
+  .opt b{display:block;font-size:12.5px;}
+  .opt span{display:block;font-size:10.5px;color:#5b7a6f;margin-top:2px;}
+  .opt:hover{border-color:#00DF81;}
+  .opt.on{background:#e9fff5;border-color:#00DF81;box-shadow:0 0 0 1px #00DF81 inset;}
+  .swatch{width:100%;height:34px;border-radius:8px;border:1px solid #d5ddda;cursor:pointer;font-size:11px;font-weight:800;display:grid;place-items:center;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);}
+  .swatch.on{outline:2px solid #062C24;outline-offset:2px;}
+  label{display:block;font-size:11px;font-weight:700;color:#0d3a2e;margin:10px 0 5px;}
+  input[type=text],input:not([type]),textarea{width:100%;border:1px solid #d5ddda;border-radius:9px;padding:9px 10px;font-family:inherit;font-size:13px;color:#062C24;background:#fbfdfc;}
+  textarea{resize:vertical;min-height:52px;}
+  input[type=range]{width:100%;accent-color:#00DF81;}
+  .colorrow{display:flex;gap:8px;align-items:center;}
+  .colorrow input[type=color]{width:38px;height:34px;border:1px solid #d5ddda;border-radius:8px;padding:0;background:none;}
+  .pal{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;}
+  .pal button{width:100%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(0,0,0,.08);cursor:pointer;}
+  .pal button.on{outline:2px solid #062C24;outline-offset:2px;}
+  .chip{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid #d5ddda;border-radius:10px;padding:8px 4px;cursor:pointer;font-size:10.5px;font-weight:700;color:#0d3a2e;background:#fff;}
+  .chip .dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;}
+  .chip.on{border-color:#00DF81;background:#e9fff5;}
+  .fontbtn{padding:12px 8px;}
+  .exportRow{display:flex;gap:8px;margin-top:10px;}
+  #downloadBtn{flex:1;background:#00DF81;border:none;border-radius:10px;padding:11px;font-weight:800;font-size:13px;color:#062C24;cursor:pointer;}
+  #downloadBtn:disabled{opacity:.6;cursor:default;}
+  #resetBtn{background:#fff;border:1px solid #d5ddda;border-radius:10px;padding:11px 14px;font-weight:700;font-size:13px;color:#062C24;cursor:pointer;}
+  .err{font-size:11.5px;color:#e0322d;margin-top:8px;}
+  .toggleRow{display:flex;gap:8px;}
+  .toggleRow .opt{flex:1;text-align:center;}
+  #qrHost{position:absolute;left:-9999px;top:-9999px;}
+</style>
+</head>
+<body>
+<div id="qrHost"></div>
+<div class="wrap">
+  <div class="left">
+    <div class="canvas-shell">
+      <canvas id="cv"></canvas>
+    </div>
+    <p class="hint" id="dragHint">Drag the social bar anywhere on the frame</p>
+    <p class="err" id="errMsg"></p>
+  </div>
+  <div class="right">
+    <section>
+      <div class="label">Template</div>
+      <div class="grid2" id="templateGrid"></div>
+      <div class="note">Each template keeps its own content, colours and logos.</div>
+    </section>
+    <section>
+      <div class="label">Brand Kit</div>
+      <div class="grid2" id="brandGrid"></div>
+      <div class="note">Custom — no kit bound</div>
+    </section>
+    <section id="versionSection">
+      <div class="label">Version</div>
+      <div class="stack" id="versionStack"></div>
+    </section>
+    <section>
+      <div class="label">Format</div>
+      <div class="grid3" id="formatGrid"></div>
+    </section>
+    <section>
+      <div class="label">Media</div>
+      <div class="grid2">
+        <button class="opt" id="photoBtn">Photo</button>
+        <button class="opt" id="logoBtn">Outlet logo</button>
+      </div>
+      <label>Logo position</label>
+      <div class="grid2" id="logoPosGrid"></div>
+      <input type="file" id="photoInput" accept="image/*" hidden />
+      <input type="file" id="logoInput" accept="image/*" hidden />
+    </section>
+    <section>
+      <div class="label">Text</div>
+      <div id="kickerRow"><label>Kicker</label><input id="kicker" maxlength="40" /></div>
+      <div id="sourceRow"><label>Source</label><input id="source" maxlength="24" /></div>
+      <div id="contextRow"><label>Context line</label><input id="contextLine" maxlength="60" /></div>
+      <label id="headlineLabel">Headline / quote</label>
+      <textarea id="headline" maxlength="180"></textarea>
+      <div class="note">Wrap words in *asterisks* to colour them with the highlight colour.</div>
+      <label>Headline size · <span id="hsVal">100%</span></label>
+      <input type="range" id="headlineSize" min="60" max="160" value="100" />
+      <div id="speakerRow">
+        <label>Speaker name</label><input id="speakerName" maxlength="40" />
+        <label>Title, organisation</label><input id="speakerTitle" maxlength="50" />
+      </div>
+      <div id="stampRow"><label>Stamp / location</label><input id="stamp" maxlength="30" /></div>
+      <label>Username</label>
+      <input id="username" maxlength="30" />
+    </section>
+    <section id="detailsSection">
+      <div class="label">Details</div>
+      <div id="dateRow"><label>Date line</label><input id="dateLine" maxlength="30" /></div>
+      <div id="websiteRow">
+        <label>Website</label><input id="website" maxlength="40" />
+        <label>Scan-to-read QR badge</label>
+        <div class="toggleRow">
+          <button class="opt" id="qrShowBtn">Show</button>
+          <button class="opt" id="qrHideBtn">Hide</button>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="label">Socials</div>
+      <div class="grid3" id="socialGrid"></div>
+    </section>
+    <section>
+      <div class="label">Colours</div>
+      <label>Background</label>
+      <div class="colorrow"><input type="color" id="bgColor" /><input type="text" id="bgHex" /></div>
+      <div class="pal" id="bgPal"></div>
+      <label>Accent</label>
+      <div class="colorrow"><input type="color" id="accentColor" /><input type="text" id="accentHex" /></div>
+      <div class="pal" id="accentPal"></div>
+      <label>Text colour</label>
+      <div class="colorrow"><input type="color" id="textColor" /><input type="text" id="textHex" /></div>
+      <label>Highlight colour</label>
+      <div class="colorrow"><input type="color" id="hlColor" /><input type="text" id="hlHex" /></div>
+    </section>
+    <section>
+      <div class="label">Headline font</div>
+      <div class="grid2" id="fontGrid"></div>
+    </section>
+    <section>
+      <div class="label">Export</div>
+      <div class="note">Format (high quality)</div>
+      <div class="grid3" id="fmtGrid"></div>
+      <div class="exportRow">
+        <button id="downloadBtn">Download</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const cv = $('cv');
+  const ctx = cv.getContext('2d');
+  const errMsg = $('errMsg');
+
+  const PALETTE = ['#062C24','#0B0B0B','#E0322D','#10B981','#7C3AED','#EC4899','#0F9D58','#17BEBE'];
+
+  const BRAND_KITS = {
+    zelvoo:      { label: 'Zelvoo',       bg: '#062C24', accent: '#00DF81', text: '#FFFFFF', highlight: '#17BEBE' },
+    breakingred: { label: 'Breaking Red', bg: '#0B0B0F', accent: '#E0322D', text: '#FFFFFF', highlight: '#17BEBE' },
+    broadsheet:  { label: 'Broadsheet',   bg: '#1B1B1B', accent: '#C9A227', text: '#FFFFFF', highlight: '#E0322D' },
+    ocean:       { label: 'Ocean',        bg: '#062C3A', accent: '#0EA5E9', text: '#FFFFFF', highlight: '#38BDF8' },
+  };
+
+  const TEMPLATES = [
+    { id: 'f1', name: 'News Frame 1', sub: '4 versions' },
+    { id: 'f2', name: 'News Frame 2', sub: 'QR · serif' },
+    { id: 'f3', name: 'News Frame 3', sub: 'Wire · source' },
+    { id: 'f4', name: 'News Frame 4', sub: 'Light card' },
+    { id: 'f5', name: 'News Frame 5', sub: 'Quote card' },
+  ];
+
+  const VERSIONS = [
+    { id: 'breaking', name: 'Breaking', sub: 'Bold band + kicker pill' },
+    { id: 'bulletin', name: 'Bulletin', sub: 'Gradient overlay + ticker' },
+    { id: 'minimal',  name: 'Minimal',  sub: 'Full-bleed + clean card' },
+    { id: 'custom',   name: 'Custom',   sub: 'Freeform — your own layout' },
+  ];
+
+  const FORMATS = [
+    { id: 'ig', label: 'Instagram', sub: '4:5', w: 1080, h: 1350 },
+    { id: 'fb', label: 'Facebook',  sub: '3:4', w: 1080, h: 1440 },
+    { id: 'tt', label: 'TikTok',    sub: '9:16', w: 1080, h: 1920 },
+  ];
+
+  const SOCIALS = [
+    { id: 'facebook',  label: 'Facebook',  glyph: 'f', color: '#1877F2' },
+    { id: 'instagram', label: 'Instagram', glyph: '▣', color: '#D62976' },
+    { id: 'tiktok',    label: 'Tiktok',    glyph: '♪', color: '#111111' },
+    { id: 'youtube',   label: 'Youtube',   glyph: '▶', color: '#FF0000' },
+    { id: 'x',         label: 'X',         glyph: '✕', color: '#111111' },
+  ];
+
+  const FONTS = ['Unbounded','Anton','Bebas Neue','Archivo Black','Montserrat','Oswald','Teko','Barlow Condensed','Staatliches','Hanken Grotesk','Georgia','Playfair Display','DM Serif Display','Merriweather'];
+
+  const SERIF_FONTS = new Set(['Georgia','Playfair Display','DM Serif Display','Merriweather']);
+
+  const S = {
+    template: 'f1',
+    version: 'breaking',
+    format: 'ig',
+    logoPos: 'topright',
+    kicker: 'BREAKING NEWS',
+    source: 'Reuters',
+    contextLine: 'ADD A CONTEXT LINE FOR THE QUOTE',
+    headline: 'Type your headline here — keep it short and loud',
+    headlineSize: 100,
+    speakerName: 'Speaker Name',
+    speakerTitle: 'Title, Organisation',
+    stamp: 'LIVE · ACCRA',
+    dateLine: '13TH AUGUST, 2026',
+    website: 'www.yoursite.com',
+    qrShow: true,
+    username: '@youroutlet',
+    socials: { facebook: true, instagram: true, tiktok: true, youtube: true, x: true },
+    bg: '#062C24',
+    accent: '#00DF81',
+    text: '#FFFFFF',
+    highlight: '#17BEBE',
+    font: 'Anton',
+    exportFormat: 'png',
+    photo: null,
+    logo: null,
+    sbX: 0.06,
+    sbY: null,
+    qrPos: {},
+  };
+
+  const QR_DEFAULTS = {
+    f2: { x: 0.145, y: 0.11 },
+    f4: { x: 0.145, y: 0.43 },
+    f5: { x: 0.92, y: 0.48 },
+  };
+  function getQRPos(){ return S.qrPos[S.template] || QR_DEFAULTS[S.template] || { x: 0.86, y: 0.1 }; }
+
+  function fmtDef(){ return FORMATS.find(f => f.id === S.format); }
+  function setCanvasSize(){ const f = fmtDef(); cv.width = f.w; cv.height = f.h; }
+
+  // ---------- QR generation (via qrcode.js -> offscreen canvas) ----------
+  let qrCache = { text: null, size: null, canvas: null };
+  function getQR(text, size){
+    if (!window.QRCode) return null;
+    if (qrCache.text === text && qrCache.size === size && qrCache.canvas) return qrCache.canvas;
+    const host = $('qrHost');
+    host.innerHTML = '';
+    try {
+      new QRCode(host, { text: text || 'https://zelvoo.app', width: size, height: size, correctLevel: QRCode.CorrectLevel.M });
+      const inner = host.querySelector('canvas') || host.querySelector('img');
+      qrCache = { text, size, canvas: inner };
+      return inner;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ---------- helpers ----------
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function parseHighlight(str){
+    const parts = [];
+    const re = /\*([^*]+)\*/g;
+    let last = 0, m;
+    while ((m = re.exec(str))) {
+      if (m.index > last) parts.push({ t: str.slice(last, m.index), hl: false });
+      parts.push({ t: m[1], hl: true });
+      last = re.lastIndex;
+    }
+    if (last < str.length) parts.push({ t: str.slice(last), hl: false });
+    return parts.length ? parts : [{ t: str, hl: false }];
+  }
+
+  function wrapHighlightedText(parts, maxWidth, fontPx, fontFamily, weight){
+    const words = [];
+    parts.forEach(p => { p.t.split(/(\s+)/).forEach(tok => { if (tok.length) words.push({ tok, hl: p.hl }); }); });
+    ctx.font = `${weight||900} ${fontPx}px "${fontFamily}"`;
+    const lines = [[]];
+    let lineWidth = 0;
+    words.forEach(w => {
+      const width = ctx.measureText(w.tok).width;
+      if (/^\s+$/.test(w.tok)) {
+        if (lineWidth + width > maxWidth) { lines.push([]); lineWidth = 0; }
+        else { lines[lines.length-1].push(w); lineWidth += width; }
+        return;
+      }
+      if (lineWidth + width > maxWidth && lineWidth > 0) { lines.push([]); lineWidth = 0; }
+      lines[lines.length-1].push(w);
+      lineWidth += width;
+    });
+    return lines.map(l => {
+      while (l.length && /^\s+$/.test(l[0].tok)) l.shift();
+      while (l.length && /^\s+$/.test(l[l.length-1].tok)) l.pop();
+      return l;
+    }).filter(l => l.length);
+  }
+
+  function drawWrappedLine(line, x, y, fontPx, fontFamily, weight, baseColor, hlColor, align){
+    align = align || 'left';
+    let totalWidth = 0;
+    if (align === 'center') { line.forEach(w => { ctx.font = `${weight||900} ${fontPx}px "${fontFamily}"`; totalWidth += ctx.measureText(w.tok).width; }); }
+    let cx = align === 'center' ? x - totalWidth/2 : x;
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+    line.forEach(w => {
+      ctx.font = `${weight||900} ${fontPx}px "${fontFamily}"`;
+      ctx.fillStyle = w.hl ? hlColor : baseColor;
+      ctx.fillText(w.tok, cx, y);
+      cx += ctx.measureText(w.tok).width;
+    });
+  }
+
+  function drawSocialBar(x, y, h, opts){
+    opts = opts || {};
+    const active = SOCIALS.filter(s => S.socials[s.id]);
+    const r = h * 0.42;
+    let cx = x + r;
+    active.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(cx, y + h/2, r, 0, Math.PI*2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = `700 ${Math.round(r*1.05)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(s.glyph, cx, y + h/2 + r*0.05);
+      cx += r * 2 + h*0.16;
+    });
+    if (S.username) {
+      ctx.fillStyle = opts.color || S.text;
+      ctx.font = `800 ${Math.round(h*0.42)}px "Hanken Grotesk"`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(S.username, cx + h*0.12, y + h/2);
+      cx += h*0.12 + ctx.measureText(S.username).width;
+    }
+    return { x, y, w: cx - x, h };
+  }
+
+  function drawQRBadge(cx, cy, size, label){
+    const img = getQR(S.website, Math.round(size*0.72));
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    roundRect(cx - size/2, cy - size/2, size, size, size*0.12);
+    ctx.fill();
+    if (img) {
+      const pad = size*0.14;
+      try { ctx.drawImage(img, cx-size/2+pad, cy-size/2+pad, size-pad*2, size-pad*2*(label?1.55:1)); } catch(e){}
+    }
+    if (label) {
+      ctx.fillStyle = '#0B0B0B';
+      ctx.font = `800 ${Math.round(size*0.11)}px "Hanken Grotesk"`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      const words = label.split('\n');
+      words.forEach((w,i) => ctx.fillText(w, cx, cy + size*0.30 + i*size*0.13));
+    }
+    ctx.restore();
+    return { x: cx-size/2, y: cy-size/2, w: size, h: size };
+  }
+
+  let lastSocialBox = null, lastQRBox = null;
+
+  // ---------- per-template draw ----------
+  function drawLogoBadge(W, H, pad){
+    const h = H*0.045;
+    const onLeft = S.logoPos === 'topleft';
+    if (S.logo) {
+      const lw = h * (S.logo.width/S.logo.height);
+      const x = onLeft ? pad : W - pad - lw;
+      ctx.drawImage(S.logo, x, pad*0.9, lw, h);
+    } else {
+      ctx.font = `800 ${Math.round(W*0.026)}px "Hanken Grotesk"`;
+      ctx.fillStyle = S.text;
+      ctx.textAlign = onLeft ? 'left' : 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('LOGO', onLeft ? pad : W - pad, pad*0.9 + h/2);
+    }
+  }
+
+  function drawT1(W,H,pad){
+    const photoTop = H*0.16;
+    const photoBottom = S.version === 'minimal' ? H*0.98 : H*0.68;
+    drawPhoto(pad, photoTop, W-pad*2, photoBottom-photoTop);
+
+    if (S.version !== 'minimal' && S.kicker) {
+      ctx.font = `800 ${Math.round(W*0.032)}px "Hanken Grotesk"`;
+      const tw = ctx.measureText(S.kicker.toUpperCase()).width;
+      const pillW = tw + W*0.07, pillH = H*0.045;
+      ctx.fillStyle = S.accent;
+      roundRect(pad, pad*0.9, pillW, pillH, pillH*0.28);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(S.kicker.toUpperCase(), pad + pillW/2, pad*0.9 + pillH/2 + pillH*0.04);
+    }
+    if (S.version !== 'minimal') {
+      const h = H*0.045, onLeft = S.logoPos === 'topleft';
+      if (S.logo) { const lw = h*(S.logo.width/S.logo.height); ctx.drawImage(S.logo, onLeft?pad:W-pad-lw, pad*0.9, lw, h); }
+      else {
+        ctx.font = `800 ${Math.round(W*0.028)}px "Hanken Grotesk"`;
+        const tw = ctx.measureText('LOGO').width, pillW = tw+W*0.06;
+        const x = onLeft ? pad : W-pad-pillW;
+        ctx.fillStyle = 'rgba(255,255,255,.12)';
+        roundRect(x, pad*0.9, pillW, h, h*0.28); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('LOGO', x+pillW/2, pad*0.9+h/2+h*0.04);
+      }
+    }
+
+    const bandTop = S.version === 'minimal' ? photoBottom - H*0.28 : photoBottom;
+    const bandH = H - bandTop;
+    if (S.version === 'bulletin') {
+      const grad = ctx.createLinearGradient(0, bandTop-H*0.15, 0, H);
+      grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(1,S.accent);
+      ctx.fillStyle = grad; ctx.fillRect(0, bandTop-H*0.15, W, H-(bandTop-H*0.15));
+    } else if (S.version === 'minimal') {
+      ctx.fillStyle = 'rgba(255,255,255,.98)';
+      roundRect(pad, bandTop, W-pad*2, bandH-pad, W*0.02); ctx.fill();
+    } else {
+      ctx.fillStyle = S.accent; ctx.fillRect(0, bandTop, W, bandH);
+    }
+
+    const textColor = S.version === 'minimal' ? '#0B0B0B' : S.text;
+    const fontPx = Math.round(W*0.062*(S.headlineSize/100));
+    const textPad = pad*1.05, maxW = W - textPad*2;
+    const parts = parseHighlight(S.headline||'');
+    const lines = wrapHighlightedText(parts, maxW, fontPx, S.font, 900).slice(0,4);
+    let ly = bandTop + fontPx*1.15 + pad*0.5;
+    lines.forEach(l => { drawWrappedLine(l, textPad, ly, fontPx, S.font, 900, textColor, S.highlight); ly += fontPx*1.12; });
+
+    if (S.stamp) {
+      ctx.font = `700 ${Math.round(W*0.024)}px "Hanken Grotesk"`;
+      ctx.fillStyle = S.version==='minimal' ? 'rgba(11,11,11,.55)' : 'rgba(255,255,255,.75)';
+      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      ctx.fillText(S.stamp.toUpperCase(), textPad, ly + pad*0.25);
+      ly += H*0.03;
+    }
+    const barY = (S.sbY==null ? (ly+pad*0.3) : S.sbY*H);
+    lastSocialBox = drawSocialBar(S.sbX*W, barY, H*0.045, { color: textColor });
+    lastQRBox = null;
+  }
+
+  function drawT2(W,H,pad){
+    const photoTop = H*0.02, photoBottom = H*0.62;
+    drawPhoto(pad*0.6, photoTop, W-pad*1.2, photoBottom-photoTop, W*0.03);
+    drawLogoBadge(W,H,pad);
+
+    if (S.qrShow) { const qp = getQRPos(); lastQRBox = drawQRBadge(qp.x*W, qp.y*H, W*0.15, 'SCAN\nTO\nREAD'); }
+
+    const textPad = pad*1.05;
+    if (S.dateLine) {
+      ctx.font = `700 ${Math.round(W*0.026)}px "Hanken Grotesk"`;
+      ctx.fillStyle = S.text; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      ctx.fillText(S.dateLine.toUpperCase(), textPad, photoBottom + H*0.05);
+    }
+    const fontPx = Math.round(W*0.052*(S.headlineSize/100));
+    const maxW = W - textPad*2;
+    const parts = parseHighlight(S.headline||'');
+    const fontFam = S.font;
+    const lines = wrapHighlightedText(parts, maxW, fontPx, fontFam, 800).slice(0,5);
+    let ly = photoBottom + H*0.1;
+    lines.forEach(l => { drawWrappedLine(l, textPad, ly, fontPx, fontFam, 800, S.text, S.highlight); ly += fontPx*1.18; });
+
+    const barY = H*0.94;
+    lastSocialBox = drawSocialBar(textPad, barY - H*0.02, H*0.032);
+    if (S.website) {
+      ctx.font = `800 ${Math.round(H*0.028)}px "Hanken Grotesk"`;
+      ctx.fillStyle = S.text; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(S.website, W - textPad, barY - H*0.02 + H*0.016);
+    }
+  }
+
+  function drawT3(W,H,pad){
+    const photoTop = H*0.02, photoBottom = H*0.66;
+    drawPhoto(pad*0.6, photoTop, W-pad*1.2, photoBottom-photoTop, W*0.03);
+
+    ctx.font = `700 ${Math.round(W*0.03)}px "Hanken Grotesk"`;
+    ctx.fillStyle = S.text; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(S.source || '', pad, pad*1.3);
+    drawLogoBadge(W,H,pad);
+
+    const textPad = pad*1.05;
+    if (S.kicker) {
+      ctx.font = `800 ${Math.round(W*0.028)}px "Hanken Grotesk"`;
+      const tw = ctx.measureText(S.kicker.toUpperCase()).width;
+      const pillW = tw + W*0.05, pillH = H*0.038;
+      const py = photoBottom + H*0.04;
+      ctx.fillStyle = S.accent; roundRect(textPad, py, pillW, pillH, pillH*0.25); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(S.kicker.toUpperCase(), textPad+pillW/2, py+pillH/2+pillH*0.04);
+    }
+    const fontPx = Math.round(W*0.058*(S.headlineSize/100));
+    const maxW = W - textPad*2;
+    const parts = parseHighlight(S.headline||'');
+    const lines = wrapHighlightedText(parts, maxW, fontPx, S.font, 800).slice(0,4);
+    let ly = photoBottom + H*0.13;
+    lines.forEach(l => { drawWrappedLine(l, textPad, ly, fontPx, S.font, 800, S.text, S.highlight); ly += fontPx*1.14; });
+
+    lastSocialBox = drawSocialBar(S.sbX*W, S.sbY==null ? ly+pad*0.4 : S.sbY*H, H*0.04);
+    lastQRBox = null;
+  }
+
+  function drawT4(W,H,pad){
+    const photoTop = 0, photoBottom = H*0.52;
+    drawPhoto(0, photoTop, W, photoBottom, 0);
+    drawLogoBadge(W,H,pad);
+    if (S.qrShow) { const qp = getQRPos(); lastQRBox = drawQRBadge(qp.x*W, qp.y*H, W*0.13, 'SCAN\nTO\nREAD'); }
+
+    // light content panel
+    const panelTop = photoBottom, panelH = H - panelTop;
+    ctx.fillStyle = '#F4EEF7';
+    ctx.fillRect(0, panelTop, W, panelH);
+
+    const textPad = pad*1.05;
+    let ly = panelTop + H*0.06;
+    if (S.dateLine) {
+      ctx.font = `700 ${Math.round(W*0.026)}px "Hanken Grotesk"`;
+      ctx.fillStyle = '#5b4b63'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      ctx.fillText(S.dateLine.toUpperCase(), textPad, ly);
+      ly += H*0.045;
+    }
+    const fontPx = Math.round(W*0.05*(S.headlineSize/100));
+    const maxW = W - textPad*2;
+    const parts = parseHighlight(S.headline||'');
+    const lines = wrapHighlightedText(parts, maxW, fontPx, S.font, 800).slice(0,4);
+    lines.forEach(l => { drawWrappedLine(l, textPad, ly, fontPx, S.font, 800, '#1a1320', S.accent); ly += fontPx*1.2; });
+
+    ly += H*0.03;
+    ctx.font = `700 ${Math.round(W*0.022)}px "Hanken Grotesk"`;
+    ctx.fillStyle = '#3d2f45'; ctx.textAlign='left'; ctx.textBaseline='middle';
+    let cx = textPad;
+    if (S.website) { ctx.fillText(S.website, cx, ly); cx += ctx.measureText(S.website).width + W*0.02; }
+    lastSocialBox = drawSocialBar(cx, ly - H*0.016, H*0.032, { color: '#3d2f45' });
+
+    // sponsor banner
+    const bannerH = H*0.055;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(textPad, H - bannerH - pad*0.6, W - textPad*2, bannerH);
+    ctx.strokeStyle = '#e3d9ea'; ctx.strokeRect(textPad, H - bannerH - pad*0.6, W - textPad*2, bannerH);
+    ctx.font = `700 ${Math.round(W*0.018)}px "Hanken Grotesk"`;
+    ctx.fillStyle = '#5b4b63'; ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText('THIS NEWSCARD IS BROUGHT TO YOU IN ASSOCIATION WITH', textPad + W*0.02, H - bannerH/2 - pad*0.6);
+  }
+
+  function drawT5(W,H,pad){
+    const photoTop = 0, photoBottom = H*0.5;
+    drawPhoto(0, photoTop, W, photoBottom, 0);
+
+    ctx.font = `900 ${Math.round(W*0.09)}px Georgia`;
+    ctx.fillStyle = '#fff'; ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillText('“', pad*0.7, pad*0.5);
+
+    if (S.dateLine) {
+      ctx.font = `800 ${Math.round(W*0.024)}px "Hanken Grotesk"`;
+      const tw = ctx.measureText(S.dateLine.toUpperCase()).width, pillW = tw + W*0.05, pillH = H*0.035;
+      const px = W - pad - pillW, py = pad*0.7;
+      ctx.fillStyle = '#fff'; roundRect(px, py, pillW, pillH, pillH*0.25); ctx.fill();
+      ctx.fillStyle = '#0B0B0B'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(S.dateLine.toUpperCase(), px+pillW/2, py+pillH/2+pillH*0.03);
+    }
+    if (S.qrShow) { const qp = getQRPos(); lastQRBox = drawQRBadge(qp.x*W, qp.y*H, W*0.14, null); }
+
+    const textPad = pad*1.05;
+    let ly = photoBottom + H*0.02;
+    if (S.contextLine) {
+      ctx.font = `800 ${Math.round(W*0.024)}px "Hanken Grotesk"`;
+      const bandH = H*0.04;
+      ctx.fillStyle = S.accent; ctx.fillRect(textPad, ly, W - textPad*2, bandH);
+      ctx.fillStyle = '#fff'; ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillText(S.contextLine.toUpperCase(), textPad + W*0.02, ly + bandH/2 + bandH*0.03);
+      ly += bandH + H*0.02;
+    }
+    const fontPx = Math.round(W*0.052*(S.headlineSize/100));
+    const maxW = W - textPad*2;
+    const parts = parseHighlight(S.headline||'');
+    const lines = wrapHighlightedText(parts, maxW, fontPx, S.font, 800).slice(0,4);
+    lines.forEach(l => { drawWrappedLine(l, textPad, ly + fontPx, fontPx, S.font, 800, S.text, S.highlight); ly += fontPx*1.18; });
+
+    ly += H*0.04;
+    ctx.font = `800 ${Math.round(W*0.026)}px "Hanken Grotesk"`;
+    ctx.fillStyle = S.accent; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.fillText(S.speakerName || '', textPad, ly);
+    ly += H*0.028;
+    ctx.font = `600 ${Math.round(W*0.02)}px "Hanken Grotesk"`;
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.fillText(S.speakerTitle || '', textPad, ly);
+
+    const bannerH = H*0.045;
+    ctx.fillStyle = S.accent; ctx.fillRect(0, H - bannerH, W, bannerH);
+    ctx.font = `800 ${Math.round(W*0.02)}px "Hanken Grotesk"`;
+    ctx.fillStyle = '#062C24'; ctx.textAlign='left'; ctx.textBaseline='middle';
+    const followTxt = `FOLLOW US FOR MORE UPDATES  |  ${S.website||''}`;
+    ctx.fillText(followTxt, textPad, H - bannerH/2);
+    lastSocialBox = null;
+  }
+
+  function drawPhoto(x,y,w,h,r){
+    r = r==null ? 0 : r;
+    if (S.photo) {
+      const img = S.photo;
+      const scale = Math.max(w/img.width, h/img.height);
+      const iw = img.width*scale, ih = img.height*scale;
+      ctx.save();
+      if (r) { roundRect(x,y,w,h,r); ctx.clip(); }
+      ctx.drawImage(img, x-(iw-w)/2, y-(ih-h)/2, iw, ih);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,.06)';
+      if (r) { roundRect(x,y,w,h,r); ctx.fill(); } else ctx.fillRect(x,y,w,h);
+      ctx.fillStyle = 'rgba(255,255,255,.45)';
+      ctx.font = `600 ${Math.round(cv.width*0.032)}px "Hanken Grotesk"`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('Add a photo', x+w/2, y+h/2);
+    }
+  }
+
+  function draw(){
+    const W = cv.width, H = cv.height;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = S.bg;
+    ctx.fillRect(0,0,W,H);
+    const pad = W*0.045;
+    lastQRBox = null;
+    if (S.template==='f1') drawT1(W,H,pad);
+    else if (S.template==='f2') drawT2(W,H,pad);
+    else if (S.template==='f3') drawT3(W,H,pad);
+    else if (S.template==='f4') drawT4(W,H,pad);
+    else if (S.template==='f5') drawT5(W,H,pad);
+  }
+
+  // ---------- drag (social bar + QR badge) ----------
+  let dragTarget = null, dragOff = {x:0,y:0};
+  function evtToCanvas(e){
+    const rect = cv.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    const scaleX = cv.width/rect.width, scaleY = cv.height/rect.height;
+    return { x: (p.clientX-rect.left)*scaleX, y: (p.clientY-rect.top)*scaleY };
+  }
+  function pointerDown(e){
+    const p = evtToCanvas(e);
+    if (lastQRBox && p.x>=lastQRBox.x-10 && p.x<=lastQRBox.x+lastQRBox.w+10 && p.y>=lastQRBox.y-10 && p.y<=lastQRBox.y+lastQRBox.h+10) {
+      dragTarget = 'qr'; dragOff = { x: p.x-(lastQRBox.x+lastQRBox.w/2), y: p.y-(lastQRBox.y+lastQRBox.h/2) }; e.preventDefault(); return;
+    }
+    if (lastSocialBox && p.x>=lastSocialBox.x-10 && p.x<=lastSocialBox.x+lastSocialBox.w+10 && p.y>=lastSocialBox.y-14 && p.y<=lastSocialBox.y+lastSocialBox.h+14) {
+      dragTarget = 'social'; dragOff = { x: p.x-lastSocialBox.x, y: p.y-lastSocialBox.y }; e.preventDefault();
+    }
+  }
+  function pointerMove(e){
+    if (!dragTarget) return;
+    const p = evtToCanvas(e);
+    if (dragTarget === 'social') {
+      S.sbX = Math.max(0.02, Math.min(0.92, (p.x-dragOff.x)/cv.width));
+      S.sbY = Math.max(0.03, Math.min(0.96, (p.y-dragOff.y)/cv.height));
+    } else if (dragTarget === 'qr') {
+      S.qrPos[S.template] = {
+        x: Math.max(0.08, Math.min(0.92, (p.x-dragOff.x)/cv.width)),
+        y: Math.max(0.06, Math.min(0.9, (p.y-dragOff.y)/cv.height)),
+      };
+    }
+    draw(); e.preventDefault();
+  }
+  function pointerUp(){ dragTarget = null; }
+  cv.addEventListener('mousedown', pointerDown);
+  window.addEventListener('mousemove', (e) => { if (dragTarget) pointerMove(e); });
+  window.addEventListener('mouseup', pointerUp);
+  cv.addEventListener('touchstart', pointerDown, { passive:false });
+  cv.addEventListener('touchmove', (e) => { if (dragTarget) pointerMove(e); }, { passive:false });
+  cv.addEventListener('touchend', pointerUp);
+
+  // ---------- field visibility per template ----------
+  function updateFieldVisibility(){
+    const t = S.template;
+    $('versionSection').style.display = t === 'f1' ? '' : 'none';
+    $('kickerRow').style.display = (t==='f1'||t==='f3') ? '' : 'none';
+    $('sourceRow').style.display = t==='f3' ? '' : 'none';
+    $('contextRow').style.display = t==='f5' ? '' : 'none';
+    $('speakerRow').style.display = t==='f5' ? '' : 'none';
+    $('stampRow').style.display = t==='f1' ? '' : 'none';
+    $('dateRow').style.display = (t==='f2'||t==='f4'||t==='f5') ? '' : 'none';
+    $('websiteRow').style.display = (t==='f2'||t==='f4'||t==='f5') ? '' : 'none';
+    $('detailsSection').style.display = (t==='f2'||t==='f4'||t==='f5') ? '' : 'none';
+    $('headlineLabel').textContent = t==='f5' ? 'Quote' : 'Headline / quote';
+    $('dragHint').textContent = (t==='f2'||t==='f4'||t==='f5') ? 'Drag the QR badge on the frame to reposition it' : 'Drag the social bar anywhere on the frame';
+  }
+
+  // ---------- UI builders ----------
+  function buildOptionGrid(container, items, key, extra){
+    container.innerHTML = '';
+    items.forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'opt' + (S[key] === it.id ? ' on' : '');
+      b.innerHTML = `<b>${it.name || it.label}</b><span>${it.sub || ''}</span>`;
+      b.addEventListener('click', () => { S[key] = it.id; if (extra) extra(it); render(); draw(); });
+      container.appendChild(b);
+    });
+  }
+
+  function render(){
+    buildOptionGrid($('templateGrid'), TEMPLATES, 'template');
+    // Brand Kit buttons apply a color preset but don't track a persistent "selected" state (matches production).
+    const brandGrid = $('brandGrid');
+    brandGrid.innerHTML = '';
+    Object.entries(BRAND_KITS).forEach(([id,k]) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.innerHTML = `<b>${k.label}</b>`;
+      b.addEventListener('click', () => { S.bg=k.bg; S.accent=k.accent; S.text=k.text; S.highlight=k.highlight; syncColorInputs(); render(); draw(); });
+      brandGrid.appendChild(b);
+    });
+
+    buildOptionGrid($('versionStack'), VERSIONS, 'version');
+    buildOptionGrid($('formatGrid'), FORMATS.map(f => ({ id:f.id, name:f.label, sub:f.sub })), 'format', () => setCanvasSize());
+    buildOptionGrid($('logoPosGrid'), [{id:'topleft',name:'Top left'},{id:'topright',name:'Top right'}], 'logoPos');
+    buildOptionGrid($('fmtGrid'), [{id:'png',name:'PNG'},{id:'jpeg',name:'JPEG'},{id:'svg',name:'SVG'}], 'exportFormat');
+
+    $('qrShowBtn').className = 'opt' + (S.qrShow ? ' on' : '');
+    $('qrHideBtn').className = 'opt' + (!S.qrShow ? ' on' : '');
+
+    const sg = $('socialGrid'); sg.innerHTML = '';
+    SOCIALS.forEach(s => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (S.socials[s.id] ? ' on' : '');
+      b.innerHTML = `<span class="dot" style="background:${s.color}">${s.glyph}</span>${s.label}`;
+      b.addEventListener('click', () => { S.socials[s.id] = !S.socials[s.id]; render(); draw(); });
+      sg.appendChild(b);
+    });
+
+    const fg = $('fontGrid'); fg.innerHTML = '';
+    FONTS.forEach(f => {
+      const b = document.createElement('button');
+      b.className = 'opt fontbtn' + (S.font === f ? ' on' : '');
+      b.style.fontFamily = `"${f}"`;
+      b.textContent = f;
+      b.addEventListener('click', () => { S.font = f; render(); draw(); });
+      fg.appendChild(b);
+    });
+
+    buildPalette($('bgPal'), 'bg');
+    buildPalette($('accentPal'), 'accent');
+    updateFieldVisibility();
+  }
+
+  function buildPalette(container, key){
+    container.innerHTML = '';
+    PALETTE.forEach(c => {
+      const b = document.createElement('button');
+      b.style.background = c;
+      if (S[key].toLowerCase() === c.toLowerCase()) b.classList.add('on');
+      b.addEventListener('click', () => { S[key] = c; syncColorInputs(); draw(); buildPalette(container, key); });
+      container.appendChild(b);
+    });
+  }
+
+  function syncColorInputs(){
+    $('bgColor').value = S.bg; $('bgHex').value = S.bg;
+    $('accentColor').value = S.accent; $('accentHex').value = S.accent;
+    $('textColor').value = S.text; $('textHex').value = S.text;
+    $('hlColor').value = S.highlight; $('hlHex').value = S.highlight;
+  }
+  function wireColor(colorId, hexId, key){
+    $(colorId).addEventListener('input', (e) => { S[key] = e.target.value; $(hexId).value = e.target.value; draw(); });
+    $(hexId).addEventListener('change', (e) => {
+      let v = e.target.value.trim(); if (!/^#/.test(v)) v = '#'+v;
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) { S[key] = v; $(colorId).value = v; draw(); }
+    });
+  }
+  wireColor('bgColor','bgHex','bg');
+  wireColor('accentColor','accentHex','accent');
+  wireColor('textColor','textHex','text');
+  wireColor('hlColor','hlHex','highlight');
+
+  $('qrShowBtn').addEventListener('click', () => { S.qrShow = true; render(); draw(); });
+  $('qrHideBtn').addEventListener('click', () => { S.qrShow = false; render(); draw(); });
+
+  // ---------- text fields ----------
+  $('kicker').addEventListener('input', e => { S.kicker = e.target.value; draw(); });
+  $('source').addEventListener('input', e => { S.source = e.target.value; draw(); });
+  $('contextLine').addEventListener('input', e => { S.contextLine = e.target.value; draw(); });
+  $('headline').addEventListener('input', e => { S.headline = e.target.value; draw(); });
+  $('speakerName').addEventListener('input', e => { S.speakerName = e.target.value; draw(); });
+  $('speakerTitle').addEventListener('input', e => { S.speakerTitle = e.target.value; draw(); });
+  $('stamp').addEventListener('input', e => { S.stamp = e.target.value; draw(); });
+  $('dateLine').addEventListener('input', e => { S.dateLine = e.target.value; draw(); });
+  $('website').addEventListener('input', e => { S.website = e.target.value; qrCache.text = null; draw(); });
+  $('username').addEventListener('input', e => { S.username = e.target.value; draw(); });
+  $('headlineSize').addEventListener('input', e => { S.headlineSize = Number(e.target.value); $('hsVal').textContent = S.headlineSize+'%'; draw(); });
+
+  // ---------- media upload ----------
+  function loadImageFile(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Could not read that file.'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('That file could not be loaded as an image.'));
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  $('photoBtn').addEventListener('click', () => $('photoInput').click());
+  $('logoBtn').addEventListener('click', () => $('logoInput').click());
+  $('photoInput').addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0]; if (!file) return;
+    try { S.photo = await loadImageFile(file); draw(); errMsg.textContent=''; }
+    catch (err) { errMsg.textContent = err.message; }
+  });
+  $('logoInput').addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0]; if (!file) return;
+    try { S.logo = await loadImageFile(file); draw(); errMsg.textContent=''; }
+    catch (err) { errMsg.textContent = err.message; }
+  });
+
+  // ---------- export ----------
+  let exporting = false;
+  $('downloadBtn').addEventListener('click', () => {
+    if (exporting) return;
+    exporting = true;
+    $('downloadBtn').disabled = true; $('resetBtn').disabled = true;
+    try {
+      const fmt = S.exportFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
+      const url = cv.toDataURL(fmt, 0.95);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `news-frame.${S.exportFormat === 'jpeg' ? 'jpg' : 'png'}`;
+      a.click();
+      errMsg.textContent = '';
+    } catch (err) {
+      console.error('Export failed', err);
+      errMsg.textContent = 'Export failed. Please try again — if it keeps happening, reload the page.';
+    } finally {
+      exporting = false;
+      $('downloadBtn').disabled = false; $('resetBtn').disabled = false;
+    }
+  });
+
+  $('resetBtn').addEventListener('click', () => {
+    Object.assign(S, {
+      template: 'f1', version: 'breaking', format: 'ig', logoPos: 'topright',
+      kicker: 'BREAKING NEWS', source: 'Reuters', contextLine: 'ADD A CONTEXT LINE FOR THE QUOTE',
+      headline: 'Type your headline here — keep it short and loud', headlineSize: 100,
+      speakerName: 'Speaker Name', speakerTitle: 'Title, Organisation',
+      stamp: 'LIVE · ACCRA', dateLine: '13TH AUGUST, 2026', website: 'www.yoursite.com', qrShow: true,
+      username: '@youroutlet',
+      socials: { facebook: true, instagram: true, tiktok: true, youtube: true, x: true },
+      bg: BRAND_KITS.zelvoo.bg, accent: '#E0322D', text: BRAND_KITS.zelvoo.text, highlight: BRAND_KITS.zelvoo.highlight,
+      font: 'Anton', exportFormat: 'png', photo: null, logo: null, sbX: 0.06, sbY: null, qrPos: {},
+    });
+    syncFieldsFromState();
+    syncColorInputs();
+    setCanvasSize();
+    render();
+    draw();
+  });
+
+  function syncFieldsFromState(){
+    $('kicker').value = S.kicker; $('source').value = S.source; $('contextLine').value = S.contextLine;
+    $('headline').value = S.headline; $('speakerName').value = S.speakerName; $('speakerTitle').value = S.speakerTitle;
+    $('stamp').value = S.stamp; $('dateLine').value = S.dateLine; $('website').value = S.website;
+    $('username').value = S.username; $('headlineSize').value = S.headlineSize; $('hsVal').textContent = S.headlineSize+'%';
+  }
+
+  // ---------- init ----------
+  syncFieldsFromState();
+  syncColorInputs();
+  setCanvasSize();
+  render();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(draw).catch(() => {}); }
+  draw();
+  window.addEventListener('resize', draw);
+})();
+</script>
+</body>
+</html>
