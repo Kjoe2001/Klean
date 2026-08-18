@@ -55,7 +55,7 @@ export default function Dashboard() {
     ['/content-studio','auto_awesome','Generate content','16 types, parallel, scored'],
     ['/campaign-builder','ads_click','Build a campaign','Strategy → media plan → KPIs'],
     ['/frame-studio','movie','Video Frame Studio','Format, style, captions, stickers, export'],
-    ['/news-frame-studio','article','News Frame Studio','Build branded news cards with templates, QR, and export'],
+    ['/news-frame','article','News Frame Studio','Build branded news cards with templates, QR, and export'],
     ['/trends','trending_up','Discover trends','Ghana · Africa · Global · live'],
   ];
   const starterSteps = [

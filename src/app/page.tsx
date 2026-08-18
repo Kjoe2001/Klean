@@ -263,7 +263,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
             {[
               { msym: 'movie', name: 'Video Frame Studio', desc: 'Create short-form video frame scripts, hooks, and scene-ready concepts in minutes.', href: '/frame-studio?standalone=1&desktopProduct=frame' },
-              { msym: 'feed', name: 'News Frame Studio', desc: 'Turn trends and headlines into fast response content your audience can act on.', href: '/news-frame-studio?standalone=1&desktopProduct=news' },
+              { msym: 'feed', name: 'News Frame Studio', desc: 'Turn trends and headlines into fast response content your audience can act on.', href: '/news-frame?standalone=1&desktopProduct=news' },
               { msym: 'campaign', name: 'Campaign Builder', desc: 'Plan full campaigns with goals, channels, timeline, and execution checkpoints.', href: '/campaign-builder?standalone=1&desktopProduct=campaign' },
               { msym: 'edit_square', name: 'Content Studio', desc: 'Generate social posts, ad copy, blog angles, and messaging tailored to your brand voice.', href: '/content-studio?standalone=1&desktopProduct=content' },
               { msym: 'palette', name: 'Creative Studio', desc: 'Build visual directions and creative assets ready for client or team approval.', href: '/creative-studio?standalone=1&desktopProduct=creative' },

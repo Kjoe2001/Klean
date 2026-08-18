@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const PRODUCTS = [
   { msym: 'movie', name: 'Video Frame Studio', desc: 'Build short-form video frames, hooks, and scene-ready concepts fast.', href: '/frame-studio?standalone=1&desktopProduct=frame' },
-  { msym: 'feed', name: 'News Frame Studio', desc: 'Turn trends and news moments into quick-response marketing content.', href: '/news-frame-studio?standalone=1&desktopProduct=news' },
+  { msym: 'feed', name: 'News Frame Studio', desc: 'Turn trends and news moments into quick-response marketing content.', href: '/news-frame?standalone=1&desktopProduct=news' },
   { msym: 'campaign', name: 'Campaign Builder', desc: 'Create multi-week plans with channels, tasks, and asset output in sync.', href: '/campaign-builder?standalone=1&desktopProduct=campaign' },
   { msym: 'edit_square', name: 'Content Studio', desc: 'Generate social copy, ads, email sequences, and blog drafts from one brief.', href: '/content-studio?standalone=1&desktopProduct=content' },
   { msym: 'palette', name: 'Creative Studio', desc: 'Shape visual direction and campaign-ready creative assets quickly.', href: '/creative-studio?standalone=1&desktopProduct=creative' },

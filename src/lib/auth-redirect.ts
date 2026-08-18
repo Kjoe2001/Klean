@@ -25,7 +25,7 @@ export function getStandaloneDefaultPath(search?: string | URLSearchParams | nul
 
   const map: Record<string, string> = {
     frame: '/frame-studio',
-    news: '/news-frame-studio',
+    news: '/news-frame',
     campaign: '/campaign-builder',
     content: '/content-studio',
     creative: '/creative-studio',
