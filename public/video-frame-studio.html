@@ -1237,11 +1237,18 @@
     };
     const request=normalizeFmt(fmt);
     const candidates=byFmt[request]||byFmt.webm;
-    const chosen=candidates.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t));
+    const supported=t=>!!(window.MediaRecorder&&MediaRecorder.isTypeSupported(t));
+    const chosen=candidates.find(supported);
     if(chosen)return { requested:request, actual:request, mime:chosen, fallback:false };
-    const webmFallback=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
-      .find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||'video/webm';
-    return { requested:request, actual:'webm', mime:webmFallback, fallback:true };
+    // Nothing in the requested format's own list works in this browser (e.g. Safari has no
+    // webm encoder at all). Try every encoder we know the browser could plausibly have —
+    // each candidate is verified with isTypeSupported, never assumed.
+    const universal=[
+      'video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm',
+      'video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4',
+    ].find(supported);
+    if(universal)return { requested:request, actual:universal.startsWith('video/mp4')?'mp4':'webm', mime:universal, fallback:true };
+    return { requested:request, actual:null, mime:null, fallback:true };
   }
   function restorePreview(){
     video.loop=true;video.playbackRate=S.speed;video.currentTime=S.trimS;
@@ -1295,62 +1302,91 @@
 
   function closeReview(){$('#review').classList.add('hidden');const rv=$('#reviewVid');rv.pause();rv.src='';}
   $('#reEdit').addEventListener('click',()=>{closeReview();if(reviewURL){URL.revokeObjectURL(reviewURL);reviewURL=null;}lastBlob=null;status('Back to editing — tweak anything and render again.');});
-  $('#saveVid').addEventListener('click',async ()=>{if(!lastBlob)return;
-    status('Charging 5 credits...');
-    const charge=await requestSaveCharge();
-    if(!charge||!charge.ok){
-      if(charge&&charge.error==='insufficient_credits'){status('Need 5 credits to save this video.');}
-      else if(charge&&charge.error==='unauthorized'){status('Please log in again to save this video.');}
-      else if(charge&&charge.error==='billing_bridge_missing'){status('Open Video Frame Studio inside Zelvoo to save videos.');}
-      else{status('Could not verify credits. Please try again.');}
-      return;
+  let saving=false;
+  $('#saveVid').addEventListener('click',async ()=>{
+    if(!lastBlob||saving)return;
+    saving=true;const saveBtn=$('#saveVid');saveBtn.disabled=true;
+    try{
+      status('Charging 5 credits...');
+      const charge=await requestSaveCharge();
+      if(!charge||!charge.ok){
+        if(charge&&charge.error==='insufficient_credits'){status('Need 5 credits to save this video.');}
+        else if(charge&&charge.error==='unauthorized'){status('Please log in again to save this video.');}
+        else if(charge&&charge.error==='billing_bridge_missing'){status('Open Video Frame Studio inside Zelvoo to save videos.');}
+        else{status('Could not verify credits. Please try again.');}
+        return;
+      }
+      const saveFmt=normalizeFmt(S.fmt);
+      const dlURL=URL.createObjectURL(lastBlob);
+      const a=document.createElement('a');a.download='zelvoo-framed-'+Date.now()+'.'+extForFmt(saveFmt);a.href=dlURL;a.rel='noopener';
+      document.body.appendChild(a);a.click();
+      setTimeout(()=>{try{URL.revokeObjectURL(dlURL);}catch(e){}a.remove();},4000);
+      closeReview();
+      const bal=(charge&&typeof charge.balance==='number')?(' · Balance: '+charge.balance+' credits'):'';
+      const note=(saveFmt!==lastRenderMeta.actual)?(' · Encoded as '+labelForFmt(lastRenderMeta.actual)):'';
+      status('Saved '+(lastBlob.size/1048576).toFixed(1)+' MB · 5 credits used'+bal+note+' — check your downloads folder if the file didn\'t appear automatically.');
+    }catch(err){
+      status('Could not save — '+(err&&err.message?err.message:'please try again.'));
+    }finally{
+      saving=false;saveBtn.disabled=false;
     }
-    const saveFmt=normalizeFmt(S.fmt);
-    const dlURL=URL.createObjectURL(lastBlob);
-    const a=document.createElement('a');a.download='zelvoo-framed-'+Date.now()+'.'+extForFmt(saveFmt);a.href=dlURL;a.rel='noopener';
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{try{URL.revokeObjectURL(dlURL);}catch(e){}a.remove();},4000);
-    closeReview();
-    const bal=(charge&&typeof charge.balance==='number')?(' · Balance: '+charge.balance+' credits'):'';
-    const note=(saveFmt!==lastRenderMeta.actual)?(' · Encoded as '+labelForFmt(lastRenderMeta.actual)):'';
-    status('Saved '+(lastBlob.size/1048576).toFixed(1)+' MB · 5 credits used'+bal+note);
   });
 
+  function resetRenderUI(){recording=false;exportBtn.disabled=false;exportBtn.textContent='Render & preview';}
+
   async function renderVideo(){
+    const enc=pickMime(S.fmt);
+    if(!enc.mime){
+      status('This browser cannot record video here. Please try the latest Chrome, Firefox, or Safari.');
+      return;
+    }
     recording=true;exportBtn.disabled=true;exportBtn.textContent='Rendering…';status('Rendering — playing trimmed clip…',true);
     musicEl.pause();
-    const enc=pickMime(S.fmt);
     if(enc.fallback){status('Rendering in '+labelForFmt(enc.actual)+' (selected '+labelForFmt(enc.requested)+' not supported here).',true);}
     let mode=S.audioMode;if(mode!=='keep'&&!musicBuffer)mode='keep';
     const wantOriginal=(mode==='keep'||mode==='mix');
     const wantMusic=(mode==='mix'||mode==='replace')&&musicBuffer;
 
-    const g=ensureGraph();try{await g.ac.resume();}catch(e){}
-    g.elGain.gain.value=wantOriginal?1:0;
-    g.musicGain.gain.value=wantMusic?(S.musVol/100):0;
-    video.muted=false;
-    let musicNode=null;
-    if(wantMusic){musicNode=g.ac.createBufferSource();musicNode.buffer=musicBuffer;musicNode.connect(g.musicGain);}
+    let musicNode=null,cStream=null;
+    try{
+      const g=ensureGraph();try{await g.ac.resume();}catch(e){}
+      g.elGain.gain.value=wantOriginal?1:0;
+      g.musicGain.gain.value=wantMusic?(S.musVol/100):0;
+      video.muted=false;
+      if(wantMusic){musicNode=g.ac.createBufferSource();musicNode.buffer=musicBuffer;musicNode.connect(g.musicGain);}
 
-    const cStream=canvas.captureStream(30);
-    g.dest.stream.getAudioTracks().forEach(t=>cStream.addTrack(t));
-    const rec=new MediaRecorder(cStream,{mimeType:enc.mime,videoBitsPerSecond:S.q>=1440?12e6:S.q>=1080?9e6:6e6});
-    const chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
-    rec.onstop=()=>{const blob=new Blob(chunks,{type:enc.mime});
+      cStream=canvas.captureStream(30);
+      g.dest.stream.getAudioTracks().forEach(t=>cStream.addTrack(t));
+      const rec=new MediaRecorder(cStream,{mimeType:enc.mime,videoBitsPerSecond:S.q>=1440?12e6:S.q>=1080?9e6:6e6});
+      const chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+      rec.onstop=()=>{const blob=new Blob(chunks,{type:enc.mime});
+        try{if(musicNode)musicNode.stop();}catch(e){}
+        try{cStream.getTracks().forEach(t=>t.stop());}catch(e){}
+        restorePreview();
+        resetRenderUI();
+        if(!blob.size){status('Render produced an empty file — please try again.');return;}
+        status('Preview ready — review before saving.');openReview(blob,enc);};
+      rec.onerror=()=>{
+        try{if(musicNode)musicNode.stop();}catch(e){}
+        try{cStream.getTracks().forEach(t=>t.stop());}catch(e){}
+        restorePreview();resetRenderUI();
+        status('Rendering failed partway through — please try again.');
+      };
+
+      video.loop=false;video.pause();video.currentTime=S.trimS;
+      const cleanup=()=>video.removeEventListener('timeupdate',tick);
+      const tick=()=>{if(video.duration){const p=Math.round(((video.currentTime-S.trimS)/Math.max(0.1,S.trimE-S.trimS))*100);
+        status('Rendering — '+Math.max(0,Math.min(100,p))+'%',true);}
+        if(video.currentTime>=S.trimE-0.02){cleanup();setTimeout(()=>rec.stop(),100);}};
+      video.addEventListener('timeupdate',tick);
+      video.addEventListener('ended',()=>{cleanup();if(recording)setTimeout(()=>rec.stop(),100);},{once:true});
+      await video.play().catch(()=>{});video.playbackRate=S.speed;if(musicNode)musicNode.start();rec.start();
+    }catch(err){
       try{if(musicNode)musicNode.stop();}catch(e){}
-      try{cStream.getTracks().forEach(t=>t.stop());}catch(e){}
-      restorePreview();
-      recording=false;exportBtn.disabled=false;exportBtn.textContent='Render & preview';
-      status('Preview ready — review before saving.');openReview(blob,enc);};
-
-    video.loop=false;video.pause();video.currentTime=S.trimS;
-    const cleanup=()=>video.removeEventListener('timeupdate',tick);
-    const tick=()=>{if(video.duration){const p=Math.round(((video.currentTime-S.trimS)/Math.max(0.1,S.trimE-S.trimS))*100);
-      status('Rendering — '+Math.max(0,Math.min(100,p))+'%',true);}
-      if(video.currentTime>=S.trimE-0.02){cleanup();setTimeout(()=>rec.stop(),100);}};
-    video.addEventListener('timeupdate',tick);
-    video.addEventListener('ended',()=>{cleanup();if(recording)setTimeout(()=>rec.stop(),100);},{once:true});
-    await video.play().catch(()=>{});video.playbackRate=S.speed;if(musicNode)musicNode.start();rec.start();
+      try{if(cStream)cStream.getTracks().forEach(t=>t.stop());}catch(e){}
+      restorePreview();resetRenderUI();
+      status('Could not start recording — '+(err&&err.message?err.message:'please try again.'));
+    }
   }
 })();
 </script>
