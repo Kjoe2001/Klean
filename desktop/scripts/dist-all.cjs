@@ -2,7 +2,7 @@ const { spawnSync } = require('child_process');
 const path = require('path');
 
 const projectRoot = path.resolve(__dirname, '..');
-const flavors = ['frame', 'campaign', 'content', 'creative'];
+const flavors = ['frame', 'news', 'campaign', 'content', 'creative'];
 
 for (const flavor of flavors) {
   const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
@@ -18,4 +18,4 @@ for (const flavor of flavors) {
   }
 }
 
-console.log('Built standalone installers for frame, campaign, content, and creative.');
+console.log('Built standalone installers for frame, news, campaign, content, and creative.');

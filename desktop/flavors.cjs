@@ -1,6 +1,7 @@
 const ROUTES = {
   dashboard: '/dashboard',
   frame: '/frame-studio',
+  news: '/news-frame',
   campaign: '/campaign-builder',
   content: '/content-studio',
   creative: '/creative-studio',
@@ -23,6 +24,15 @@ const FLAVORS = {
     executableName: 'Zelvo Frame Studio',
     iconSet: 'frame',
     defaultRoute: ROUTES.frame,
+    standalone: true,
+  },
+  news: {
+    key: 'news',
+    appId: 'app.zelvo.news',
+    productName: 'Zelvo News Frame Studio',
+    executableName: 'Zelvo News Frame Studio',
+    iconSet: 'news',
+    defaultRoute: ROUTES.news,
     standalone: true,
   },
   campaign: {

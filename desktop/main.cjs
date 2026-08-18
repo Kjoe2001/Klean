@@ -9,6 +9,7 @@ const flavor = getFlavor();
 const PROTOCOL_BY_FLAVOR = {
   shared: 'zelvo',
   frame: 'zelvo-frame',
+  news: 'zelvo-news',
   campaign: 'zelvo-campaign',
   content: 'zelvo-content',
   creative: 'zelvo-creative',
@@ -17,6 +18,7 @@ const PROTOCOL_BY_FLAVOR = {
 const FLAVOR_ACCENT = {
   shared: '#00DF81',
   frame: '#00DF81',
+  news: '#FF7A5C',
   campaign: '#0EA5E9',
   content: '#F97316',
   creative: '#A855F7',
@@ -54,6 +56,7 @@ function routeFromDeepLink(input) {
     const known = [
       ROUTES.dashboard,
       ROUTES.frame,
+      ROUTES.news,
       ROUTES.campaign,
       ROUTES.content,
       ROUTES.creative,
@@ -75,6 +78,7 @@ function routeFromArgv() {
   if (flavor.standalone) return flavor.defaultRoute;
   const argv = process.argv.join(' ').toLowerCase();
   if (argv.includes('--product=frame')) return ROUTES.frame;
+  if (argv.includes('--product=news')) return ROUTES.news;
   if (argv.includes('--product=campaign')) return ROUTES.campaign;
   if (argv.includes('--product=content')) return ROUTES.content;
   if (argv.includes('--product=creative')) return ROUTES.creative;

@@ -16,6 +16,7 @@ if (!fs.existsSync(sourceSvgPath)) {
 const flavorColors = {
   shared: { start: '#00DF81', end: '#01935A' },
   frame: { start: '#47E3FF', end: '#007EA7' },
+  news: { start: '#FF7A5C', end: '#C1361B' },
   campaign: { start: '#FFB84D', end: '#F26A1B' },
   content: { start: '#7FE36A', end: '#2E9B1F' },
   creative: { start: '#FF7AA8', end: '#C13A7B' },
