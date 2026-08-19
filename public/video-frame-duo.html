@@ -1178,14 +1178,37 @@ function requestSaveCharge(){
   });
 }
 
-// ---- Export (records the canvas + sequenced audio, then transcodes) ----
+// ---- Export (records the canvas + sequenced audio) ----
+// Prefers recording directly in the target codec via the browser's own
+// encoder — same approach as the Standard tab, and just as fast/smooth.
+// ffmpeg.wasm (slow: ~30MB WASM download + software encoding) is only used
+// as a fallback when the browser genuinely has no native MP4 encoder.
+function pickRecorderMime(fmt){
+  const supported=t=>!!(window.MediaRecorder&&MediaRecorder.isTypeSupported(t));
+  const webmCandidates=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+  if(fmt==='webm'){
+    const m=webmCandidates.find(supported);
+    return m ? {mime:m, needsTranscode:false, ext:'webm'} : null;
+  }
+  const mp4=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4'].find(supported);
+  if(mp4) return {mime:mp4, needsTranscode:false, ext: fmt==='mov'?'mov':'mp4'};
+  const webmFallback=webmCandidates.find(supported);
+  if(webmFallback) return {mime:webmFallback, needsTranscode:true, ext: fmt==='mov'?'mov':'mp4'};
+  return null;
+}
+
 let exporting=false;
 async function startExport(){
   if(exporting) return;
+  const metaEl=document.getElementById('exportMeta');
+  const rec=pickRecorderMime(exportFormat);
+  if(!rec){
+    metaEl.innerHTML=`<b>This browser can't record video here.</b> Try the latest Chrome, Firefox, or Safari.`;
+    return;
+  }
   exporting=true;
   const exportBtnEl=document.getElementById('exportBtn');
   exportBtnEl.disabled=true;
-  const metaEl=document.getElementById('exportMeta');
   try{
     metaEl.innerHTML='Charging 5 credits...';
     const charge=await requestSaveCharge();
@@ -1197,7 +1220,7 @@ async function startExport(){
       metaEl.innerHTML=`<b>${msg}</b>`;
       return;
     }
-    await runExport(charge);
+    await runExport(charge, rec);
   }catch(err){
     metaEl.innerHTML=`<b>Export failed</b> — ${err&&err.message?err.message:'please try again.'}`;
   }finally{
@@ -1206,7 +1229,7 @@ async function startExport(){
   }
 }
 
-function runExport(charge){
+function runExport(charge, rec){
   return new Promise((resolve) => {
     const d = dims[platform];
     canvas.width = d.w; canvas.height = d.h;
@@ -1228,28 +1251,29 @@ function runExport(charge){
     const bal=(charge&&typeof charge.balance==='number')?(' · Balance: '+charge.balance+' credits'):'';
 
     chunks = [];
-    recorder = new MediaRecorder(stream, {mimeType:'video/webm;codecs=vp9,opus', videoBitsPerSecond: 8_000_000});
+    recorder = new MediaRecorder(stream, {mimeType:rec.mime, videoBitsPerSecond: 8_000_000});
     recorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
 
     recorder.onstop = async () => {
-      const webmBlob = new Blob(chunks, {type:'video/webm'});
+      const recordedBlob = new Blob(chunks, {type:rec.mime});
 
-      if(exportFormat === 'webm'){
-        downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
-        document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.webm downloaded · 5 credits used${bal}`;
+      if(!rec.needsTranscode){
+        // Recorded directly in the target codec — same fast path as Standard, no ffmpeg involved.
+        downloadBlob(recordedBlob, `duo-frame-${platform}.${rec.ext}`);
+        document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.${rec.ext} downloaded · 5 credits used${bal}`;
         resolve();
         return;
       }
 
-      document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Converting to ${exportFormat.toUpperCase()}… (first export loads the encoder, ~10-15s)`;
+      document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>This browser can't record ${exportFormat.toUpperCase()} directly — converting… (first time loads the encoder, ~10-15s)`;
       try{
-        const outBlob = await transcode(webmBlob, exportFormat);
+        const outBlob = await transcode(recordedBlob, exportFormat);
         const ext = exportFormat === 'mov' ? 'mov' : 'mp4';
         downloadBlob(outBlob, `duo-frame-${platform}.${ext}`);
         document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.${ext} downloaded · 5 credits used${bal}`;
       } catch(err){
         console.error('[duo-frame] MP4/MOV conversion failed:', err);
-        downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
+        downloadBlob(recordedBlob, `duo-frame-${platform}.webm`);
         const reason = (err && err.message) ? err.message : 'unknown error';
 
         if(window.location.protocol === 'file:'){
