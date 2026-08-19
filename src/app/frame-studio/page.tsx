@@ -8,6 +8,7 @@ type Tab = 'standard' | 'duo';
 
 function FrameStudioContent() {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const duoFrameRef = useRef<HTMLIFrameElement>(null);
   const { profile, loading } = useProfile();
   const [tab, setTab] = useState<Tab>('standard');
 
@@ -37,13 +38,19 @@ function FrameStudioContent() {
 
     const onMessage = async (e: MessageEvent) => {
       if (e.origin !== window.location.origin) return;
-      if (e.source !== frameRef.current?.contentWindow) return;
+      const sourceWindow = e.source as Window | null;
+      const isStandardFrame = sourceWindow === frameRef.current?.contentWindow;
+      const isDuoFrame = sourceWindow === duoFrameRef.current?.contentWindow;
+      if (!isStandardFrame && !isDuoFrame) return;
 
       const d = e.data;
       if (!d || d.ns !== 'zelvoo-frame') return;
 
+      const reply = (msg: Record<string, any>) =>
+        sourceWindow?.postMessage({ ns: 'zelvoo-frame', ...msg }, window.location.origin);
+
       if (d.type === 'frameReady') {
-        sendBrandingConfig();
+        if (isStandardFrame) sendBrandingConfig();
         return;
       }
 
@@ -57,7 +64,7 @@ function FrameStudioContent() {
         const token = await getAccessToken();
         if (cancelled) return;
         if (!token) {
-          post({ type: 'chargeForSaveResult', reqId, ok: false, error: 'unauthorized' });
+          reply({ type: 'chargeForSaveResult', reqId, ok: false, error: 'unauthorized' });
           return;
         }
 
@@ -70,7 +77,7 @@ function FrameStudioContent() {
 
         const payload = await res.json().catch(() => ({}));
         if (!res.ok || !payload?.ok) {
-          post({
+          reply({
             type: 'chargeForSaveResult',
             reqId,
             ok: false,
@@ -82,7 +89,7 @@ function FrameStudioContent() {
         }
 
         window.dispatchEvent(new Event('credits:changed'));
-        post({ type: 'chargeForSaveResult', reqId, ok: true, balance: payload.balance, spent: payload.spent });
+        reply({ type: 'chargeForSaveResult', reqId, ok: true, balance: payload.balance, spent: payload.spent });
       }
     };
 
@@ -145,6 +152,7 @@ function FrameStudioContent() {
       {tab === 'duo' && (
         <div className="min-h-[calc(100vh-8rem)]">
           <iframe
+            ref={duoFrameRef}
             src="/video-frame-duo.html"
             title="Zelvoo Video Frame Studio — Duo"
             className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"

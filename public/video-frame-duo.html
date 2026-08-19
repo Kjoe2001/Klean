@@ -523,10 +523,14 @@ async function getFFmpeg(){
   if(ffmpegLoading) return ffmpegLoading;
 
   ffmpegLoading = (async () => {
-    // v0.12 ESM API loaded via dynamic import — the core JS and WASM are
-    // fetched as blobs first (toBlobURL) rather than referenced by remote
-    // URL directly, which is what actually fixes cross-origin worker
-    // loading failures in the older corePath-based setup.
+    // v0.12 ESM API loaded via dynamic import — the core JS, WASM, AND the
+    // ffmpeg package's own worker.js all have to be fetched as blobs
+    // (toBlobURL) rather than referenced by remote URL directly. A `new
+    // Worker(url, {type:'module'})` is subject to the same-origin policy
+    // regardless of CORS headers on the remote script, so leaving
+    // classWorkerURL unset makes FFmpeg#load() try to spin up
+    // unpkg.com/.../worker.js directly and the browser rejects it
+    // ("cannot be accessed from origin ..."). Blobifying it sidesteps that.
     const { FFmpeg } = await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
     const { toBlobURL } = await import('https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js');
 
@@ -534,9 +538,11 @@ async function getFFmpeg(){
     ff.on('log', ({message}) => console.log('[ffmpeg]', message));
 
     const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+    const ffmpegBaseURL = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm';
     await ff.load({
       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
       wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+      classWorkerURL: await toBlobURL(`${ffmpegBaseURL}/worker.js`, 'text/javascript'),
     });
 
     ffmpegInstance = ff;
@@ -1148,73 +1154,130 @@ function tick(){
   rafId = requestAnimationFrame(tick);
 }
 
+// ---- Credit-charge bridge (mirrors video-frame-studio.html's protocol) ----
+const BRIDGE_NS='zelvoo-frame';
+let saveReqSeq=0;
+const pendingSaveCharges=new Map();
+window.addEventListener('message',e=>{if(e.origin!==location.origin)return;const d=e.data;
+  if(!d||d.ns!==BRIDGE_NS)return;
+  if(d.type==='chargeForSaveResult'&&d.reqId){
+    const done=pendingSaveCharges.get(d.reqId);if(done){pendingSaveCharges.delete(d.reqId);done(d);}return;
+  }
+});
+if(window.parent!==window){window.parent.postMessage({ns:BRIDGE_NS,type:'frameReady'},location.origin);}
+
+function requestSaveCharge(){
+  if(window.parent===window){
+    return Promise.resolve({ok:false,error:'billing_bridge_missing'});
+  }
+  const reqId='duo-save-'+Date.now()+'-'+(++saveReqSeq);
+  return new Promise(resolve=>{
+    const t=setTimeout(()=>{pendingSaveCharges.delete(reqId);resolve({ok:false,error:'timeout'});},12000);
+    pendingSaveCharges.set(reqId,p=>{clearTimeout(t);resolve(p);});
+    window.parent.postMessage({ns:BRIDGE_NS,type:'chargeForSave',reqId},location.origin);
+  });
+}
+
 // ---- Export (records the canvas + sequenced audio, then transcodes) ----
-function startExport(){
-  const d = dims[platform];
-  canvas.width = d.w; canvas.height = d.h;
-
-  const stream = canvas.captureStream(30);
-
-  const audioCtx = new AudioContext();
-  const destA = audioCtx.createMediaElementSource(vidA);
-  const destB = audioCtx.createMediaElementSource(vidB);
-  const merger = audioCtx.createMediaStreamDestination();
-  const gainA = audioCtx.createGain();
-  const gainB = audioCtx.createGain();
-  destA.connect(gainA).connect(merger);
-  destB.connect(gainB).connect(merger);
-  gainA.gain.value = 1; gainB.gain.value = 0;
-
-  merger.stream.getAudioTracks().forEach(t => stream.addTrack(t));
-
-  chunks = [];
-  recorder = new MediaRecorder(stream, {mimeType:'video/webm;codecs=vp9,opus', videoBitsPerSecond: 8_000_000});
-  recorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
-
-  recorder.onstop = async () => {
-    const webmBlob = new Blob(chunks, {type:'video/webm'});
-
-    if(exportFormat === 'webm'){
-      downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
-      document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.webm downloaded`;
+let exporting=false;
+async function startExport(){
+  if(exporting) return;
+  exporting=true;
+  const exportBtnEl=document.getElementById('exportBtn');
+  exportBtnEl.disabled=true;
+  const metaEl=document.getElementById('exportMeta');
+  try{
+    metaEl.innerHTML='Charging 5 credits...';
+    const charge=await requestSaveCharge();
+    if(!charge||!charge.ok){
+      const msg = charge&&charge.error==='insufficient_credits' ? 'Need 5 credits to export this video.'
+        : charge&&charge.error==='unauthorized' ? 'Please log in again to export this video.'
+        : charge&&charge.error==='billing_bridge_missing' ? 'Open Video Frame Studio inside Zelvoo to export videos.'
+        : 'Could not verify credits. Please try again.';
+      metaEl.innerHTML=`<b>${msg}</b>`;
       return;
     }
+    await runExport(charge);
+  }catch(err){
+    metaEl.innerHTML=`<b>Export failed</b> — ${err&&err.message?err.message:'please try again.'}`;
+  }finally{
+    exporting=false;
+    exportBtnEl.disabled=false;
+  }
+}
 
-    document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Converting to ${exportFormat.toUpperCase()}… (first export loads the encoder, ~10-15s)`;
-    try{
-      const outBlob = await transcode(webmBlob, exportFormat);
-      const ext = exportFormat === 'mov' ? 'mov' : 'mp4';
-      downloadBlob(outBlob, `duo-frame-${platform}.${ext}`);
-      document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.${ext} downloaded`;
-    } catch(err){
-      console.error('[duo-frame] MP4/MOV conversion failed:', err);
-      downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
-      const reason = (err && err.message) ? err.message : 'unknown error';
+function runExport(charge){
+  return new Promise((resolve) => {
+    const d = dims[platform];
+    canvas.width = d.w; canvas.height = d.h;
 
-      if(window.location.protocol === 'file:'){
-        document.getElementById('exportMeta').innerHTML =
-          `<b>MP4 needs a real server</b> — downloaded .webm instead. You're opening this file directly ` +
-          `(file://…), and browsers block the video encoder from running there. Serve it locally ` +
-          `(<code>python3 -m http.server</code> in this folder, then open localhost:8000) or test it ` +
-          `once it's live inside Zelvoo — MP4 export will work normally on either.`;
-      } else {
-        document.getElementById('exportMeta').innerHTML =
-          `<b>Conversion failed</b> — downloaded .webm instead. (${reason}) Check the browser console ` +
-          `for details, or try again — the encoder occasionally needs a second attempt on first load.`;
+    const stream = canvas.captureStream(30);
+
+    const audioCtx = new AudioContext();
+    const destA = audioCtx.createMediaElementSource(vidA);
+    const destB = audioCtx.createMediaElementSource(vidB);
+    const merger = audioCtx.createMediaStreamDestination();
+    const gainA = audioCtx.createGain();
+    const gainB = audioCtx.createGain();
+    destA.connect(gainA).connect(merger);
+    destB.connect(gainB).connect(merger);
+    gainA.gain.value = 1; gainB.gain.value = 0;
+
+    merger.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+
+    const bal=(charge&&typeof charge.balance==='number')?(' · Balance: '+charge.balance+' credits'):'';
+
+    chunks = [];
+    recorder = new MediaRecorder(stream, {mimeType:'video/webm;codecs=vp9,opus', videoBitsPerSecond: 8_000_000});
+    recorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+
+    recorder.onstop = async () => {
+      const webmBlob = new Blob(chunks, {type:'video/webm'});
+
+      if(exportFormat === 'webm'){
+        downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
+        document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.webm downloaded · 5 credits used${bal}`;
+        resolve();
+        return;
       }
-    }
-  };
 
-  const gainWatcher = setInterval(()=>{
-    gainA.gain.value = phase===1 ? 1 : 0;
-    gainB.gain.value = phase===2 ? 1 : 0;
-    if(phase===3){ clearInterval(gainWatcher); }
-  }, 100);
+      document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Converting to ${exportFormat.toUpperCase()}… (first export loads the encoder, ~10-15s)`;
+      try{
+        const outBlob = await transcode(webmBlob, exportFormat);
+        const ext = exportFormat === 'mov' ? 'mov' : 'mp4';
+        downloadBlob(outBlob, `duo-frame-${platform}.${ext}`);
+        document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.${ext} downloaded · 5 credits used${bal}`;
+      } catch(err){
+        console.error('[duo-frame] MP4/MOV conversion failed:', err);
+        downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
+        const reason = (err && err.message) ? err.message : 'unknown error';
 
-  resetPlayback();
-  recorder.start();
-  startPlayback();
-  document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Recording export…`;
+        if(window.location.protocol === 'file:'){
+          document.getElementById('exportMeta').innerHTML =
+            `<b>MP4 needs a real server</b> — downloaded .webm instead. You're opening this file directly ` +
+            `(file://…), and browsers block the video encoder from running there. Serve it locally ` +
+            `(<code>python3 -m http.server</code> in this folder, then open localhost:8000) or test it ` +
+            `once it's live inside Zelvoo — MP4 export will work normally on either.`;
+        } else {
+          document.getElementById('exportMeta').innerHTML =
+            `<b>Conversion failed</b> — downloaded .webm instead. (${reason}) Check the browser console ` +
+            `for details, or try again — the encoder occasionally needs a second attempt on first load.`;
+        }
+      }
+      resolve();
+    };
+
+    const gainWatcher = setInterval(()=>{
+      gainA.gain.value = phase===1 ? 1 : 0;
+      gainB.gain.value = phase===2 ? 1 : 0;
+      if(phase===3){ clearInterval(gainWatcher); }
+    }, 100);
+
+    resetPlayback();
+    recorder.start();
+    startPlayback();
+    document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Recording export…`;
+  });
 }
 
 function downloadBlob(blob, filename){
