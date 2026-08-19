@@ -1,12 +1,15 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useProfile } from '@/components/useProfile';
 import AppShell from '@/components/AppShell';
 
+type Tab = 'standard' | 'duo';
+
 function FrameStudioContent() {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const { profile, loading } = useProfile();
+  const [tab, setTab] = useState<Tab>('standard');
 
   const post = (msg: Record<string, any>) => {
     frameRef.current?.contentWindow?.postMessage({ ns: 'zelvoo-frame', ...msg }, window.location.origin);
@@ -91,8 +94,8 @@ function FrameStudioContent() {
   }, [loading, profile]);
 
   useEffect(() => {
-    sendBrandingConfig();
-  }, [loading, profile]);
+    if (tab === 'standard') sendBrandingConfig();
+  }, [loading, profile, tab]);
 
   if (loading) {
     return (
@@ -104,21 +107,50 @@ function FrameStudioContent() {
 
   if (!profile) return null;
 
-  const shellContent = (
-    <div className="min-h-[calc(100vh-8rem)]">
-      <iframe
-        ref={frameRef}
-        src="/video-frame-studio.html"
-        title="Zelvoo Video Frame Studio"
-        className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
-        onLoad={sendBrandingConfig}
-      />
-    </div>
-  );
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'standard', label: 'Standard' },
+    { id: 'duo', label: 'Duo' },
+  ];
 
   return (
     <AppShell title="Video Frame Studio" subtitle="Create and export your product assets from your account">
-      {shellContent}
+      <div className="flex flex-wrap gap-2 mb-5">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`rounded-full px-4 py-2 text-sm font-heading font-medium transition ${
+              tab === t.id
+                ? 'bg-caribbean-green text-rich-black'
+                : 'border border-bangladesh-green/25 text-bangladesh-green hover:bg-bangladesh-green/10'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'standard' && (
+        <div className="min-h-[calc(100vh-8rem)]">
+          <iframe
+            ref={frameRef}
+            src="/video-frame-studio.html"
+            title="Zelvoo Video Frame Studio — Standard"
+            className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
+            onLoad={sendBrandingConfig}
+          />
+        </div>
+      )}
+
+      {tab === 'duo' && (
+        <div className="min-h-[calc(100vh-8rem)]">
+          <iframe
+            src="/video-frame-duo.html"
+            title="Zelvoo Video Frame Studio — Duo"
+            className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
+          />
+        </div>
+      )}
     </AppShell>
   );
 }

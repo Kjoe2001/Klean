@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Duo Frame Studio — Zelvoo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+  --caribbean:#00DF81;
+  --deep-green:#01935A;
+  --forest:#062C24;
+  --mint:#4DF0A8;
+  --white:#F2F3F4;
+  --line: rgba(6,44,36,0.12);
+  --radius: 14px;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Hanken Grotesk', sans-serif;
+  background: var(--white);
+  color: var(--forest);
+  min-height:100vh;
+}
+.wrap{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+.top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom: 22px;
+}
+.logo{
+  width:34px;height:34px;border-radius:9px;
+  background: linear-gradient(135deg, var(--caribbean), var(--mint));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded';font-weight:700;color:var(--forest);font-size:16px;
+}
+.brand-name{
+  font-family:'Unbounded';font-weight:600;font-size:15px;letter-spacing:.2px;
+}
+.studio-tag{
+  font-size:12px;color:rgba(6,44,36,0.55);
+  border-left:1px solid var(--line);
+  padding-left:12px;margin-left:2px;
+}
+h1{
+  font-family:'Unbounded';
+  font-weight:600;
+  font-size: 26px;
+  line-height:1.25;
+  margin: 6px 0 6px;
+}
+.sub{
+  color: rgba(6,44,36,0.6);
+  font-size: 14.5px;
+  margin-bottom: 28px;
+  max-width: 620px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: 340px 1fr;
+  gap: 22px;
+}
+@media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+.panel{
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.panel + .panel{ margin-top: 18px; }
+
+.label{
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: rgba(6,44,36,0.55);
+  margin-bottom: 10px;
+  display:block;
+}
+
+.slot{
+  border: 1.5px dashed rgba(6,44,36,0.25);
+  border-radius: 12px;
+  padding: 16px;
+  text-align:center;
+  cursor:pointer;
+  transition: border-color .15s, background .15s;
+  position:relative;
+  overflow:hidden;
+}
+.slot:hover{ border-color: var(--caribbean); background: rgba(0,223,129,0.05); }
+.slot.filled{ border-style: solid; border-color: var(--caribbean); }
+.slot input{ display:none; }
+.slot-icon{
+  width:36px;height:36px;border-radius:9px;margin:0 auto 10px;
+  background: var(--forest);
+  display:flex;align-items:center;justify-content:center;
+  color: var(--caribbean); font-size:16px; font-weight:700;
+}
+.slot-text{ font-size: 13px; font-weight: 600; }
+.slot-sub{ font-size: 11.5px; color: rgba(6,44,36,0.5); margin-top:3px; }
+.slot video{
+  width:100%; max-height:120px; border-radius:8px; margin-top:10px; display:block;
+}
+.slot-order{
+  position:absolute; top:8px; left:8px;
+  background: var(--forest); color: var(--caribbean);
+  font-family:'Unbounded'; font-size:10px; font-weight:700;
+  width:20px;height:20px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.gap{height:16px;}
+
+.opt-row{ display:flex; gap:8px; }
+.opt{
+  flex:1;
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  padding: 10px 8px;
+  text-align:center;
+  font-size:12.5px;
+  font-weight:600;
+  cursor:pointer;
+  background:#fff;
+  color: var(--forest);
+  transition: all .15s;
+}
+.opt.active{
+  border-color: var(--forest);
+  background: var(--forest);
+  color: var(--white);
+}
+.opt small{ display:block; font-weight:500; opacity:.65; font-size:10.5px; margin-top:2px; }
+
+.platform-row{ display:flex; flex-wrap:wrap; gap:8px; }
+.plat{
+  border:1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size:12.5px;
+  font-weight:600;
+  cursor:pointer;
+  background:#fff;
+}
+.plat.active{
+  background: var(--caribbean);
+  border-color: var(--caribbean);
+  color: var(--forest);
+}
+
+.preview-col{ display:flex; flex-direction:column; gap:16px; }
+.stage{
+  background: var(--forest);
+  border-radius: var(--radius);
+  padding: 22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.canvas-shell{
+  position:relative;
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  background:#000;
+}
+canvas{ display:block; }
+
+.timeline{
+  width:100%;
+  max-width: 340px;
+  margin-top:16px;
+}
+.tl-track{
+  height:8px;
+  border-radius:5px;
+  background: rgba(255,255,255,0.12);
+  overflow:hidden;
+  display:flex;
+}
+.tl-a{ background: var(--caribbean); height:100%; }
+.tl-b{ background: var(--mint); height:100%; }
+.tl-playhead{
+  position:relative;
+  height:0;
+}
+.tl-dot{
+  position:absolute; top:-14px;
+  width:2px; height:16px;
+  background:#fff;
+  border-radius:2px;
+}
+.tl-labels{
+  display:flex; justify-content:space-between;
+  font-size:10.5px; color: rgba(255,255,255,0.55);
+  margin-top:6px; font-family:'Hanken Grotesk';
+}
+
+.controls{ display:flex; gap:10px; align-items:center; margin-top:18px; }
+.btn{
+  border:none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family:'Hanken Grotesk';
+  font-weight:700;
+  font-size: 13.5px;
+  cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-primary{ background: var(--caribbean); color: var(--forest); }
+.btn-primary:hover{ background: var(--mint); }
+.btn-ghost{
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: var(--white);
+}
+.btn-ghost:hover{ border-color: var(--caribbean); color: var(--caribbean); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+.status-row{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:12px; color: rgba(6,44,36,0.55);
+}
+.rec-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#e74c3c; display:inline-block; margin-right:6px;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse{ 50%{opacity:.3;} }
+
+.export-panel{
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:12px;
+}
+.export-meta{ font-size:12px; color: rgba(6,44,36,0.55); }
+.export-meta b{ color: var(--forest); }
+
+.hint{
+  font-size:11.5px;
+  color: rgba(6,44,36,0.45);
+  margin-top:10px;
+  line-height:1.5;
+}
+
+.logo-row{ display:flex; align-items:center; gap:12px; }
+.logo-preview{
+  width:44px;height:44px;border-radius:10px;
+  background: var(--forest);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  border: 1.5px solid var(--line);
+}
+.logo-preview img{ width:100%;height:100%;object-fit:cover; }
+.logo-fallback{
+  font-family:'Unbounded'; font-weight:700; font-size:17px;
+  color: var(--caribbean);
+}
+.logo-actions{ display:flex; flex-direction:column; gap:6px; }
+.logo-actions input{ display:none; }
+.mini-btn{
+  border:1.5px solid var(--forest);
+  background: var(--forest);
+  color: var(--white);
+  font-family:'Hanken Grotesk'; font-weight:600; font-size:12px;
+  padding: 7px 12px; border-radius:8px; cursor:pointer;
+  text-align:left;
+}
+.mini-btn.mini-ghost{
+  background:#fff; color: var(--forest);
+}
+.mini-btn:hover{ opacity:.85; }
+
+#captionInput{
+  width:100%;
+  min-height: 74px;
+  resize: vertical;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family:'Hanken Grotesk';
+  font-size: 13.5px;
+  color: var(--forest);
+  background:#fff;
+}
+#captionInput:focus{ outline:none; border-color: var(--caribbean); }
+#captionInput::placeholder{ color: rgba(6,44,36,0.4); }
+
+.size-row{
+  display:flex; align-items:center; gap:10px;
+  margin-top: 12px;
+}
+.size-label{ font-size:12px; font-weight:700; color: var(--forest); flex-shrink:0; }
+.size-row input[type=range]{
+  flex:1;
+  accent-color: var(--caribbean);
+}
+.size-val{ font-size:11.5px; color: rgba(6,44,36,0.55); width:38px; text-align:right; flex-shrink:0; }
+
+.color-row{ display:flex; gap:16px; margin-top:14px; }
+.color-field{ display:flex; align-items:center; gap:8px; }
+.color-field label{ font-size:12px; font-weight:600; color: rgba(6,44,36,0.7); }
+.color-field input[type=color]{
+  width:30px; height:30px; padding:0; border:1.5px solid var(--line);
+  border-radius:8px; cursor:pointer; background:none;
+}
+
+.canvas-shell{ cursor: default; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="logo">Z</div>
+    <div class="brand-name">zelvoo</div>
+    <div class="studio-tag">Video Frame Studio</div>
+  </div>
+
+  <h1>Duo Frame</h1>
+  <div class="sub">Merge two clips into one split-screen frame. Video 1 plays first in its half, then Video 2 takes over — built for TikTok, Instagram Reels, and Facebook Reels/Stories.</div>
+
+  <div class="grid">
+
+    <!-- LEFT: controls -->
+    <div>
+      <div class="panel">
+        <label class="label">01 · Add your clips</label>
+
+        <div class="slot" id="slotA" onclick="document.getElementById('fileA').click()">
+          <div class="slot-order">1</div>
+          <input type="file" id="fileA" accept="video/*" onchange="loadClip(event,'A')">
+          <div class="slot-icon">▶</div>
+          <div class="slot-text">Video 1 — plays first</div>
+          <div class="slot-sub">Tap to upload</div>
+        </div>
+
+        <div class="gap"></div>
+
+        <div class="slot" id="slotB" onclick="document.getElementById('fileB').click()">
+          <div class="slot-order">2</div>
+          <input type="file" id="fileB" accept="video/*" onchange="loadClip(event,'B')">
+          <div class="slot-icon">▶</div>
+          <div class="slot-text">Video 2 — plays after</div>
+          <div class="slot-sub">Tap to upload</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <label class="label">02 · Split layout</label>
+        <div class="opt-row">
+          <div class="opt active" id="layoutStack" onclick="setLayout('stack')">
+            Stacked<small>Top / Bottom</small>
+          </div>
+          <div class="opt" id="layoutSide" onclick="setLayout('side')">
+            Side by side<small>Left / Right</small>
+          </div>
+        </div>
+        <div class="hint">Stacked reads best in-frame for 9:16 vertical formats. Side by side works well for a "vs." or comparison feel.</div>
+      </div>
+
+      <div class="panel">
+        <label class="label">03 · Logo watermark</label>
+        <div class="logo-row">
+          <div class="logo-preview" id="logoPreview"></div>
+          <div class="logo-actions">
+            <button class="mini-btn" onclick="document.getElementById('logoFile').click()">Upload logo</button>
+            <input type="file" id="logoFile" accept="image/*" onchange="loadLogo(event)">
+            <button class="mini-btn mini-ghost" id="resetLogoBtn" onclick="resetLogo()">Use Zelvoo default</button>
+          </div>
+        </div>
+        <div class="opt-row" style="margin-top:12px;">
+          <div class="opt active" data-corner="tr" onclick="setLogoCorner('tr')">Top right</div>
+          <div class="opt" data-corner="tl" onclick="setLogoCorner('tl')">Top left</div>
+          <div class="opt" data-corner="br" onclick="setLogoCorner('br')">Bottom right</div>
+        </div>
+        <div class="hint">Every export carries a logo badge. Users can swap in their own — it defaults back to Zelvoo if none is uploaded.</div>
+      </div>
+
+      <div class="panel">
+        <label class="label">04 · Add text</label>
+        <textarea id="captionInput" placeholder='e.g. POV: They called us "brown soldiers".. so we reported for duty.' oninput="setCaption(this.value)"></textarea>
+
+        <div class="opt-row" style="margin-top:12px;">
+          <div class="opt active" data-cstyle="card" onclick="setCaptionStyle('card')">Caption card</div>
+          <div class="opt" data-cstyle="outline" onclick="setCaptionStyle('outline')">Bold outline</div>
+          <div class="opt" data-cstyle="minimal" onclick="setCaptionStyle('minimal')">Minimal</div>
+        </div>
+
+        <div class="opt-row" style="margin-top:8px;">
+          <div class="opt active" data-cpos="top" onclick="setCaptionPosition('top')">Top</div>
+          <div class="opt" data-cpos="middle" onclick="setCaptionPosition('middle')">Middle</div>
+          <div class="opt" data-cpos="bottom" onclick="setCaptionPosition('bottom')">Bottom</div>
+        </div>
+
+        <div class="size-row">
+          <span class="size-label">Size</span>
+          <input type="range" id="captionSizeSlider" min="3" max="13" step="0.5" value="5.8" oninput="setCaptionSizeSlider(this.value)">
+          <span class="size-val" id="captionSizeVal">5.8%</span>
+        </div>
+
+        <div class="color-row">
+          <div class="color-field">
+            <label>Text colour</label>
+            <input type="color" id="captionColorInput" value="#111111" oninput="setCaptionColor(this.value)">
+          </div>
+          <div class="color-field">
+            <label>Background</label>
+            <input type="color" id="captionBgColorInput" value="#ffffff" oninput="setCaptionBgColor(this.value)">
+          </div>
+        </div>
+
+        <div class="hint">Drag the caption directly on the preview to reposition it anywhere. The Top/Middle/Bottom buttons are quick starting points — background colour only shows on the "Caption card" style.</div>
+      </div>
+
+      <div class="panel">
+        <label class="label">05 · Export for</label>
+        <div class="platform-row">
+          <div class="plat active" data-p="tiktok" onclick="setPlatform('tiktok')">TikTok</div>
+          <div class="plat" data-p="reels" onclick="setPlatform('reels')">IG Reels</div>
+          <div class="plat" data-p="fbreels" onclick="setPlatform('fbreels')">FB Reels</div>
+          <div class="plat" data-p="story" onclick="setPlatform('story')">Stories</div>
+        </div>
+        <div class="hint" id="platformHint">1080 × 1920 · 9:16 vertical — native TikTok upload spec.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: preview + export -->
+    <div class="preview-col">
+      <div class="stage">
+        <div class="canvas-shell">
+          <canvas id="stageCanvas" width="270" height="480"></canvas>
+        </div>
+
+        <div class="timeline">
+          <div class="tl-track">
+            <div class="tl-a" id="tlA" style="width:50%"></div>
+            <div class="tl-b" id="tlB" style="width:50%"></div>
+          </div>
+          <div class="tl-playhead"><div class="tl-dot" id="tlDot" style="left:0%"></div></div>
+          <div class="tl-labels">
+            <span id="lblA">Clip 1</span>
+            <span id="lblB">Clip 2</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="playBtn" onclick="togglePlay()" disabled>▶ Preview</button>
+          <button class="btn btn-ghost" onclick="resetPlayback()" disabled id="resetBtn">Restart</button>
+        </div>
+      </div>
+
+      <div class="panel export-panel">
+        <div class="status-row" style="width:100%;">
+          <div class="export-meta" id="exportMeta"><b>Ready to export</b> — add both clips to enable</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="platform-row" style="gap:6px;">
+              <div class="plat active" data-fmt="mp4" onclick="setFormat('mp4')">MP4</div>
+              <div class="plat" data-fmt="webm" onclick="setFormat('webm')">WebM</div>
+              <div class="plat" data-fmt="mov" onclick="setFormat('mov')">MOV</div>
+            </div>
+            <button class="btn btn-primary" id="exportBtn" onclick="startExport()" disabled>⬇ Export video</button>
+          </div>
+        </div>
+        <div class="hint" id="exportHint">MP4 (H.264) — universal upload format for TikTok, IG, and Facebook.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<video id="vidA" style="display:none" playsinline></video>
+<video id="vidB" style="display:none" playsinline></video>
+
+<script>
+let layout = 'stack';
+let platform = 'tiktok';
+const dims = {
+  tiktok:  {w:1080,h:1920,label:'1080 × 1920 · 9:16 vertical — native TikTok upload spec.'},
+  reels:   {w:1080,h:1920,label:'1080 × 1920 · 9:16 vertical — Instagram Reels spec.'},
+  fbreels: {w:1080,h:1920,label:'1080 × 1920 · 9:16 vertical — Facebook Reels spec.'},
+  story:   {w:1080,h:1920,label:'1080 × 1920 · 9:16 vertical — Stories spec (IG / FB).'}
+};
+
+const vidA = document.getElementById('vidA');
+const vidB = document.getElementById('vidB');
+const canvas = document.getElementById('stageCanvas');
+const ctx = canvas.getContext('2d');
+
+let clipA = null, clipB = null;
+let thumbs = { A: null, B: null };
+let phase = 0; // 0 = idle, 1 = playing A, 2 = playing B, 3 = done
+let playing = false;
+let rafId = null;
+let recorder = null, chunks = [];
+let exportFormat = 'mp4';
+let ffmpegInstance = null;
+let ffmpegLoading = null;
+
+const FORMAT_HINTS = {
+  mp4: 'MP4 (H.264) — universal upload format for TikTok, IG, and Facebook.',
+  webm: 'WebM (VP9) — smaller file, best for web preview or re-editing. Not accepted by TikTok upload.',
+  mov: 'MOV (H.264, QuickTime container) — good for AirDrop/iOS handoff before posting.'
+};
+
+function setFormat(f){
+  exportFormat = f;
+  document.querySelectorAll('[data-fmt]').forEach(el=>el.classList.toggle('active', el.dataset.fmt===f));
+  document.getElementById('exportHint').textContent = FORMAT_HINTS[f];
+}
+
+async function getFFmpeg(){
+  if(ffmpegInstance) return ffmpegInstance;
+  if(ffmpegLoading) return ffmpegLoading;
+
+  ffmpegLoading = (async () => {
+    // v0.12 ESM API loaded via dynamic import — the core JS and WASM are
+    // fetched as blobs first (toBlobURL) rather than referenced by remote
+    // URL directly, which is what actually fixes cross-origin worker
+    // loading failures in the older corePath-based setup.
+    const { FFmpeg } = await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+    const { toBlobURL } = await import('https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+    const ff = new FFmpeg();
+    ff.on('log', ({message}) => console.log('[ffmpeg]', message));
+
+    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+    await ff.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+    });
+
+    ffmpegInstance = ff;
+    return ff;
+  })();
+
+  try{
+    return await ffmpegLoading;
+  } catch(err){
+    ffmpegInstance = null;   // allow a retry on the next export instead of caching a dead instance
+    throw err;
+  } finally {
+    ffmpegLoading = null;
+  }
+}
+
+async function transcode(webmBlob, targetFormat){
+  const ff = await getFFmpeg();
+  const inputBytes = new Uint8Array(await webmBlob.arrayBuffer());
+  await ff.writeFile('input.webm', inputBytes);
+
+  const outName = targetFormat === 'mov' ? 'output.mov' : 'output.mp4';
+  await ff.exec([
+    '-i', 'input.webm',
+    '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-preset', 'fast',
+    '-c:a', 'aac', '-b:a', '192k',
+    '-movflags', '+faststart',
+    outName
+  ]);
+
+  const data = await ff.readFile(outName);
+  await ff.deleteFile('input.webm');
+  await ff.deleteFile(outName);
+  const mime = targetFormat === 'mov' ? 'video/quicktime' : 'video/mp4';
+  return new Blob([data.buffer], { type: mime });
+}
+
+// ---- Logo watermark ----
+// Production note: point ZELVOO_LOGO_SRC at the real brand asset in your repo
+// (e.g. /assets/zelvoo-logomark.png). If it fails to load — as it will in this
+// sandboxed preview with no such asset — a canvas-drawn stand-in badge is used
+// instead, purely so the tool has a visible default. Swap in the real mark
+// before shipping; never redraw the logo itself in production.
+const ZELVOO_LOGO_SRC = '/assets/zelvoo-logomark.png';
+let logoImg = null;
+let logoIsDefault = true;
+let logoCorner = 'tr';
+
+// ---- Caption / text overlay ----
+let captionText = '';
+let captionStyle = 'card';       // card | outline | minimal
+let captionPosition = 'top';     // top | middle | bottom | custom
+let captionSizeFrac = 0.058;     // font size as a fraction of canvas width
+let captionColor = '#111111';
+let captionBgColor = '#ffffff';
+let captionXFrac = 0.5;
+let captionYFrac = 0.28;
+let lastCaptionBox = null;       // hit box for dragging, in canvas pixel space
+
+function setCaption(v){ captionText = v; drawIdleFrame(); }
+function setCaptionStyle(s){
+  captionStyle = s;
+  document.querySelectorAll('[data-cstyle]').forEach(el=>el.classList.toggle('active', el.dataset.cstyle===s));
+  drawIdleFrame();
+}
+function setCaptionPosition(p){
+  captionPosition = p;
+  document.querySelectorAll('[data-cpos]').forEach(el=>el.classList.toggle('active', el.dataset.cpos===p));
+  drawIdleFrame();
+}
+function setCaptionSizeSlider(v){
+  captionSizeFrac = parseFloat(v)/100;
+  document.getElementById('captionSizeVal').textContent = parseFloat(v).toFixed(1)+'%';
+  drawIdleFrame();
+}
+function setCaptionColor(v){ captionColor = v; drawIdleFrame(); }
+function setCaptionBgColor(v){ captionBgColor = v; drawIdleFrame(); }
+
+function wrapText(text, maxWidth){
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  words.forEach(word=>{
+    const test = line ? line + ' ' + word : word;
+    if(ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  });
+  if(line) lines.push(line);
+  return lines;
+}
+
+function measureBlockWidth(lines){
+  let maxW = 0;
+  lines.forEach(l => { const w = ctx.measureText(l).width; if(w > maxW) maxW = w; });
+  return maxW;
+}
+
+function drawCaption(){
+  lastCaptionBox = null;
+  if(!captionText || !captionText.trim()) return;
+
+  const fontSize = canvas.width * captionSizeFrac;
+  const weight = captionStyle === 'minimal' ? 500 : 700;
+  ctx.font = `${weight} ${fontSize}px 'Hanken Grotesk', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+
+  const maxWidth = canvas.width * 0.86;
+  const lines = wrapText(captionText.trim(), maxWidth);
+  const lineHeight = fontSize * 1.28;
+  const blockHeight = lines.length * lineHeight;
+  const blockWidth = measureBlockWidth(lines);
+
+  const topClearance = canvas.width * 0.22;   // clears the logo lockup when it sits top-corner
+  const bottomClearance = canvas.height * 0.06;
+
+  let centerX, blockTop;
+  if(captionPosition === 'custom'){
+    centerX = captionXFrac * canvas.width;
+    blockTop = captionYFrac * canvas.height - blockHeight/2;
+  } else {
+    centerX = canvas.width/2;
+    if(captionPosition === 'top'){ blockTop = topClearance; }
+    else if(captionPosition === 'bottom'){ blockTop = canvas.height - bottomClearance - blockHeight; }
+    else { blockTop = canvas.height/2 - blockHeight/2; }
+  }
+
+  const startY = blockTop + fontSize;
+
+  lines.forEach((line, i) => {
+    const y = startY + i*lineHeight;
+
+    if(captionStyle === 'card'){
+      const textW = ctx.measureText(line).width;
+      const padX = fontSize*0.5, padY = fontSize*0.32;
+      const boxW = textW + padX*2, boxH = fontSize + padY*1.6;
+      const boxX = centerX - boxW/2;
+      const boxY = y - fontSize*0.82 - padY*0.2;
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.18)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 2;
+      ctx.fillStyle = captionBgColor;
+      roundRect(boxX, boxY, boxW, boxH, boxH*0.22);
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = captionColor;
+      ctx.fillText(line, centerX, y);
+    } else if(captionStyle === 'outline'){
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = fontSize * 0.11;
+      ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+      ctx.strokeText(line, centerX, y);
+      ctx.fillStyle = captionColor;
+      ctx.fillText(line, centerX, y);
+    } else {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = captionColor;
+      ctx.fillText(line, centerX, y);
+      ctx.restore();
+    }
+  });
+
+  const pad = fontSize*0.5;
+  lastCaptionBox = {
+    x: centerX - blockWidth/2 - pad,
+    y: blockTop - pad*0.6,
+    w: blockWidth + pad*2,
+    h: blockHeight + pad*1.2
+  };
+}
+
+// ---- Drag-to-reposition ----
+let dragging = false;
+let dragOffset = { x:0, y:0 };
+
+function getCanvasPoint(evt){
+  const rect = canvas.getBoundingClientRect();
+  const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+  const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+}
+
+function onDragStart(e){
+  if(!lastCaptionBox) return;
+  const p = getCanvasPoint(e);
+  if(p.x >= lastCaptionBox.x && p.x <= lastCaptionBox.x + lastCaptionBox.w &&
+     p.y >= lastCaptionBox.y && p.y <= lastCaptionBox.y + lastCaptionBox.h){
+    dragging = true;
+    dragOffset.x = p.x - (lastCaptionBox.x + lastCaptionBox.w/2);
+    dragOffset.y = p.y - (lastCaptionBox.y + lastCaptionBox.h/2);
+    canvas.style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+}
+function onDragMove(e){
+  if(!dragging) return;
+  const p = getCanvasPoint(e);
+  captionXFrac = Math.min(1, Math.max(0, (p.x - dragOffset.x) / canvas.width));
+  captionYFrac = Math.min(1, Math.max(0, (p.y - dragOffset.y) / canvas.height));
+  captionPosition = 'custom';
+  document.querySelectorAll('[data-cpos]').forEach(el=>el.classList.remove('active'));
+  drawIdleFrame();
+  e.preventDefault();
+}
+function onDragEnd(){
+  dragging = false;
+  canvas.style.cursor = 'default';
+}
+
+function useFallbackDefaultLogo(){
+  logoImg = null; // null signals "draw fallback badge"
+  logoIsDefault = true;
+  const prev = document.getElementById('logoPreview');
+  prev.innerHTML = '<div class="logo-fallback">Z</div>';
+}
+
+function loadDefaultLogo(){
+  const img = new Image();
+  img.onload = () => {
+    logoImg = img;
+    logoIsDefault = true;
+    const prev = document.getElementById('logoPreview');
+    prev.innerHTML = '';
+    prev.appendChild(img.cloneNode());
+    drawIdleFrame();
+  };
+  img.onerror = useFallbackDefaultLogo;
+  img.src = ZELVOO_LOGO_SRC;
+}
+
+function loadLogo(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    logoImg = img;
+    logoIsDefault = false;
+    const prev = document.getElementById('logoPreview');
+    prev.innerHTML = '';
+    prev.appendChild(img.cloneNode());
+    drawIdleFrame();
+  };
+  img.src = url;
+}
+
+function resetLogo(){
+  loadDefaultLogo();
+  drawIdleFrame();
+}
+
+function setLogoCorner(c){
+  logoCorner = c;
+  document.querySelectorAll('#logoCornerRow .opt, [data-corner]').forEach(el=>{
+    el.classList.toggle('active', el.dataset.corner === c);
+  });
+  drawIdleFrame();
+}
+
+function drawLogo(){
+  const pad = canvas.width * 0.035;
+  if(logoIsDefault){
+    drawDefaultLockup(pad);
+  } else {
+    drawCustomLogo(pad);
+  }
+}
+
+function drawDefaultLockup(pad){
+  const iconSize = canvas.width * 0.09;
+  const innerPadX = iconSize * 0.22;
+  const gap = iconSize * 0.28;
+
+  ctx.font = `600 ${iconSize*0.62}px Unbounded, sans-serif`;
+  const textWidth = ctx.measureText('zelvoo').width;
+  const lockupW = iconSize + gap + textWidth + innerPadX*2;
+  const lockupH = iconSize + innerPadX*1.1;
+
+  let x, y;
+  if(logoCorner === 'tr'){ x = canvas.width - lockupW - pad; y = pad; }
+  else if(logoCorner === 'tl'){ x = pad; y = pad; }
+  else { x = canvas.width - lockupW - pad; y = canvas.height - lockupH - pad; }
+
+  // pill backing for contrast over any footage
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = 'rgba(6,44,36,0.82)';
+  roundRect(x, y, lockupW, lockupH, lockupH/2);
+  ctx.fill();
+  ctx.restore();
+
+  // icon square — real asset if loaded, gradient Z badge as fallback
+  const iconX = x + innerPadX*0.9;
+  const iconY = y + (lockupH - iconSize)/2;
+  const r = iconSize * 0.28;
+
+  if(logoImg){
+    ctx.save();
+    roundRect(iconX, iconY, iconSize, iconSize, r);
+    ctx.clip();
+    ctx.drawImage(logoImg, iconX, iconY, iconSize, iconSize);
+    ctx.restore();
+  } else {
+    const grad = ctx.createLinearGradient(iconX, iconY, iconX+iconSize, iconY+iconSize);
+    grad.addColorStop(0, '#00DF81');
+    grad.addColorStop(1, '#4DF0A8');
+    roundRect(iconX, iconY, iconSize, iconSize, r);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.fillStyle = '#062C24';
+    ctx.font = `700 ${iconSize*0.55}px Unbounded, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Z', iconX+iconSize/2, iconY+iconSize/2+1);
+  }
+
+  // wordmark
+  ctx.fillStyle = '#F2F3F4';
+  ctx.font = `600 ${iconSize*0.62}px Unbounded, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('zelvoo', iconX+iconSize+gap, y+lockupH/2+1);
+}
+
+function drawCustomLogo(pad){
+  if(!logoImg) return;
+  const h = canvas.width * 0.11;
+  const iw = logoImg.naturalWidth || logoImg.width || 1;
+  const ih = logoImg.naturalHeight || logoImg.height || 1;
+  let w = h * (iw/ih);
+  const maxW = canvas.width * 0.44;
+  if(w > maxW){ w = maxW; }
+
+  let x, y;
+  if(logoCorner === 'tr'){ x = canvas.width - w - pad; y = pad; }
+  else if(logoCorner === 'tl'){ x = pad; y = pad; }
+  else { x = canvas.width - w - pad; y = canvas.height - h - pad; }
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  const r = h * 0.22;
+  roundRect(x, y, w, h, r);
+  ctx.fillStyle = 'rgba(6,44,36,0.5)';
+  ctx.fill();
+  ctx.clip();
+  drawContain(logoImg, {x, y, w, h});
+  ctx.restore();
+}
+
+function drawContain(img, rect){
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const rAspect = rect.w/rect.h, iAspect = iw/ih;
+  let dw, dh, dx, dy;
+  if(iAspect > rAspect){ dw = rect.w; dh = rect.w/iAspect; dx = rect.x; dy = rect.y + (rect.h-dh)/2; }
+  else { dh = rect.h; dw = rect.h*iAspect; dy = rect.y; dx = rect.x + (rect.w-dw)/2; }
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+function loadClip(e, which){
+  const file = e.target.files[0];
+  if(!file) return;
+  const url = URL.createObjectURL(file);
+  const vid = which === 'A' ? vidA : vidB;
+  vid.src = url;
+  vid.muted = false;
+  vid.onloadedmetadata = () => {
+    if(which==='A'){ clipA = {url, duration: vid.duration}; renderSlotPreview('slotA', url); }
+    else { clipB = {url, duration: vid.duration}; renderSlotPreview('slotB', url); }
+    updateTimeline();
+    checkReady();
+    captureThumb(vid, which);
+    drawIdleFrame();
+  };
+}
+
+function renderSlotPreview(slotId, url){
+  const slot = document.getElementById(slotId);
+  slot.classList.add('filled');
+  let preview = slot.querySelector('video');
+  if(!preview){
+    preview = document.createElement('video');
+    preview.muted = true; preview.playsInline = true;
+    slot.appendChild(preview);
+  }
+  preview.src = url;
+  const textEl = slot.querySelector('.slot-sub');
+  textEl.textContent = 'Loaded — tap to replace';
+}
+
+function updateTimeline(){
+  if(!clipA || !clipB) return;
+  const total = clipA.duration + clipB.duration;
+  const pctA = (clipA.duration/total)*100;
+  document.getElementById('tlA').style.width = pctA+'%';
+  document.getElementById('tlB').style.width = (100-pctA)+'%';
+  document.getElementById('lblA').textContent = `Clip 1 · ${clipA.duration.toFixed(1)}s`;
+  document.getElementById('lblB').textContent = `Clip 2 · ${clipB.duration.toFixed(1)}s`;
+}
+
+function checkReady(){
+  const ready = clipA && clipB;
+  document.getElementById('playBtn').disabled = !ready;
+  document.getElementById('resetBtn').disabled = !ready;
+  document.getElementById('exportBtn').disabled = !ready;
+  document.getElementById('exportMeta').innerHTML = ready
+    ? `<b>Ready to export</b> — ${dims[platform].w}×${dims[platform].h} · duo frame · ${layout === 'stack' ? 'stacked' : 'side by side'}`
+    : `<b>Ready to export</b> — add both clips to enable`;
+}
+
+function setLayout(l){
+  layout = l;
+  document.getElementById('layoutStack').classList.toggle('active', l==='stack');
+  document.getElementById('layoutSide').classList.toggle('active', l==='side');
+  drawIdleFrame();
+  checkReady();
+}
+
+function setPlatform(p){
+  platform = p;
+  document.querySelectorAll('.plat').forEach(el=>el.classList.toggle('active', el.dataset.p===p));
+  document.getElementById('platformHint').textContent = dims[p].label;
+  checkReady();
+}
+
+// ---- Drawing ----
+function frameRects(){
+  const W = canvas.width, H = canvas.height;
+  if(layout === 'stack'){
+    return {
+      A: {x:0,y:0,w:W,h:H/2},
+      B: {x:0,y:H/2,w:W,h:H/2}
+    };
+  } else {
+    return {
+      A: {x:0,y:0,w:W/2,h:H},
+      B: {x:W/2,y:0,w:W/2,h:H}
+    };
+  }
+}
+
+function drawCover(source, rect){
+  const vw = source.videoWidth || source.width, vh = source.videoHeight || source.height;
+  if(!vw || !vh) return;
+  const rAspect = rect.w/rect.h, vAspect = vw/vh;
+  let sx,sy,sw,sh;
+  if(vAspect > rAspect){
+    sh = vh; sw = vh*rAspect; sx = (vw-sw)/2; sy = 0;
+  } else {
+    sw = vw; sh = vw/rAspect; sx = 0; sy = (vh-sh)/2;
+  }
+  ctx.drawImage(source, sx, sy, sw, sh, rect.x, rect.y, rect.w, rect.h);
+}
+
+function drawUpcoming(rect, num, key){
+  const thumb = thumbs[key];
+  if(thumb){
+    drawCover(thumb, rect);
+    ctx.fillStyle = 'rgba(6,44,36,0.5)';
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    const padX = rect.w*0.05, padY = rect.h*0.06;
+    const pillW = rect.w*0.34, pillH = Math.max(20, rect.h*0.07);
+    ctx.fillStyle = 'rgba(0,223,129,0.9)';
+    roundRect(rect.x+padX, rect.y+padY, pillW, pillH, pillH/2);
+    ctx.fill();
+    ctx.fillStyle = '#062C24';
+    ctx.font = `700 ${pillH*0.5}px Hanken Grotesk, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('UP NEXT', rect.x+padX+pillW/2, rect.y+padY+pillH/2+1);
+  } else {
+    drawPlaceholder(rect, num);
+  }
+}
+
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function captureThumb(video, key){
+  const grab = () => {
+    const off = document.createElement('canvas');
+    off.width = video.videoWidth; off.height = video.videoHeight;
+    off.getContext('2d').drawImage(video, 0, 0);
+    thumbs[key] = off;
+    video.currentTime = 0;
+    drawIdleFrame();
+  };
+  const target = Math.min(0.15, (video.duration || 1) / 4);
+  const onSeeked = () => { video.removeEventListener('seeked', onSeeked); grab(); };
+  video.addEventListener('seeked', onSeeked);
+  video.currentTime = target;
+}
+function drawPlaceholder(rect, num){
+  ctx.fillStyle = '#062C24';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(rect.x+6, rect.y+6, rect.w-12, rect.h-12);
+  ctx.fillStyle = '#00DF81';
+  ctx.font = '600 15px Unbounded, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Clip '+num, rect.x+rect.w/2, rect.y+rect.h/2);
+}
+
+function drawDivider(){
+  const rects = frameRects();
+  ctx.fillStyle = '#062C24';
+  if(layout==='stack'){
+    ctx.fillRect(0, canvas.height/2 - 2, canvas.width, 4);
+  } else {
+    ctx.fillRect(canvas.width/2 - 2, 0, 4, canvas.height);
+  }
+}
+
+function drawIdleFrame(){
+  const rects = frameRects();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(clipA){ vidA.currentTime = 0; drawCover(vidA, rects.A); } else { drawUpcoming(rects.A,1,'A'); }
+  if(clipB){ drawUpcoming(rects.B,2,'B'); } else { drawUpcoming(rects.B,2,'B'); }
+  drawDivider();
+  drawLogo();
+  drawCaption();
+}
+
+function setPlayhead(pct){
+  document.getElementById('tlDot').style.left = pct+'%';
+}
+
+// ---- Playback sequencing ----
+function togglePlay(){
+  if(playing){ pausePlayback(); }
+  else { startPlayback(); }
+}
+
+function startPlayback(){
+  playing = true;
+  document.getElementById('playBtn').textContent = '⏸ Pause';
+  if(phase === 0 || phase === 3){ phase = 1; vidA.currentTime = 0; vidB.currentTime = 0; }
+  if(phase === 1){ vidA.play(); }
+  if(phase === 2){ vidB.play(); }
+  tick();
+}
+
+function pausePlayback(){
+  playing = false;
+  document.getElementById('playBtn').textContent = '▶ Preview';
+  vidA.pause(); vidB.pause();
+  cancelAnimationFrame(rafId);
+}
+
+function resetPlayback(){
+  pausePlayback();
+  phase = 0;
+  vidA.currentTime = 0; vidB.currentTime = 0;
+  setPlayhead(0);
+  drawIdleFrame();
+}
+
+function tick(){
+  if(!playing) return;
+  const rects = frameRects();
+  const total = clipA.duration + clipB.duration;
+
+  if(phase === 1){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawCover(vidA, rects.A);
+    drawUpcoming(rects.B, 2, 'B');
+    drawDivider();
+    drawLogo();
+  drawCaption();
+    setPlayhead((vidA.currentTime/total)*100);
+    if(vidA.ended || vidA.currentTime >= clipA.duration - 0.05){
+      phase = 2;
+      vidB.currentTime = 0;
+      vidB.play();
+    }
+  } else if(phase === 2){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawCover(vidA, rects.A); // frozen last frame of A stays visible
+    drawCover(vidB, rects.B);
+    drawDivider();
+    drawLogo();
+  drawCaption();
+    setPlayhead(((clipA.duration + vidB.currentTime)/total)*100);
+    if(vidB.ended || vidB.currentTime >= clipB.duration - 0.05){
+      phase = 3;
+      playing = false;
+      document.getElementById('playBtn').textContent = '↻ Play again';
+      setPlayhead(100);
+      if(recorder && recorder.state === 'recording'){ recorder.stop(); }
+      return;
+    }
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+// ---- Export (records the canvas + sequenced audio, then transcodes) ----
+function startExport(){
+  const d = dims[platform];
+  canvas.width = d.w; canvas.height = d.h;
+
+  const stream = canvas.captureStream(30);
+
+  const audioCtx = new AudioContext();
+  const destA = audioCtx.createMediaElementSource(vidA);
+  const destB = audioCtx.createMediaElementSource(vidB);
+  const merger = audioCtx.createMediaStreamDestination();
+  const gainA = audioCtx.createGain();
+  const gainB = audioCtx.createGain();
+  destA.connect(gainA).connect(merger);
+  destB.connect(gainB).connect(merger);
+  gainA.gain.value = 1; gainB.gain.value = 0;
+
+  merger.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+
+  chunks = [];
+  recorder = new MediaRecorder(stream, {mimeType:'video/webm;codecs=vp9,opus', videoBitsPerSecond: 8_000_000});
+  recorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+
+  recorder.onstop = async () => {
+    const webmBlob = new Blob(chunks, {type:'video/webm'});
+
+    if(exportFormat === 'webm'){
+      downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
+      document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.webm downloaded`;
+      return;
+    }
+
+    document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Converting to ${exportFormat.toUpperCase()}… (first export loads the encoder, ~10-15s)`;
+    try{
+      const outBlob = await transcode(webmBlob, exportFormat);
+      const ext = exportFormat === 'mov' ? 'mov' : 'mp4';
+      downloadBlob(outBlob, `duo-frame-${platform}.${ext}`);
+      document.getElementById('exportMeta').innerHTML = `<b>Exported</b> — duo-frame-${platform}.${ext} downloaded`;
+    } catch(err){
+      console.error('[duo-frame] MP4/MOV conversion failed:', err);
+      downloadBlob(webmBlob, `duo-frame-${platform}.webm`);
+      const reason = (err && err.message) ? err.message : 'unknown error';
+
+      if(window.location.protocol === 'file:'){
+        document.getElementById('exportMeta').innerHTML =
+          `<b>MP4 needs a real server</b> — downloaded .webm instead. You're opening this file directly ` +
+          `(file://…), and browsers block the video encoder from running there. Serve it locally ` +
+          `(<code>python3 -m http.server</code> in this folder, then open localhost:8000) or test it ` +
+          `once it's live inside Zelvoo — MP4 export will work normally on either.`;
+      } else {
+        document.getElementById('exportMeta').innerHTML =
+          `<b>Conversion failed</b> — downloaded .webm instead. (${reason}) Check the browser console ` +
+          `for details, or try again — the encoder occasionally needs a second attempt on first load.`;
+      }
+    }
+  };
+
+  const gainWatcher = setInterval(()=>{
+    gainA.gain.value = phase===1 ? 1 : 0;
+    gainB.gain.value = phase===2 ? 1 : 0;
+    if(phase===3){ clearInterval(gainWatcher); }
+  }, 100);
+
+  resetPlayback();
+  recorder.start();
+  startPlayback();
+  document.getElementById('exportMeta').innerHTML = `<span class="rec-dot"></span>Recording export…`;
+}
+
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
+window.onload = () => {
+  loadDefaultLogo();
+  drawIdleFrame();
+  canvas.addEventListener('mousedown', onDragStart);
+  canvas.addEventListener('touchstart', onDragStart, {passive:false});
+  window.addEventListener('mousemove', onDragMove);
+  window.addEventListener('touchmove', onDragMove, {passive:false});
+  window.addEventListener('mouseup', onDragEnd);
+  window.addEventListener('touchend', onDragEnd);
+};
+</script>
+</body>
+</html>
