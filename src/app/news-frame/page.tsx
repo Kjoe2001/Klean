@@ -5,7 +5,7 @@ import AppShell from '@/components/AppShell';
 import Locked from '@/components/Locked';
 import { Icon } from '@/components/Icon';
 
-type Tab = 'standard' | 'ai-import' | 'joynews';
+type Tab = 'standard' | 'joynews';
 
 function JoynewsAccessGate({ onUnlocked }: { onUnlocked: () => void }) {
   const [checking, setChecking] = useState(true);
@@ -133,7 +133,6 @@ function NewsFrameStudioContent() {
 
   const tabs: { id: Tab; label: string; locked: boolean }[] = [
     { id: 'standard', label: 'Standard', locked: false },
-    { id: 'ai-import', label: 'AI Import', locked: false },
     { id: 'joynews', label: 'Joynews', locked: !isEnterprise },
   ];
 
@@ -164,16 +163,6 @@ function NewsFrameStudioContent() {
           <iframe
             src="/news-frame-standard.html"
             title="Zelvoo News Frame Studio — Standard"
-            className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
-          />
-        </div>
-      )}
-
-      {tab === 'ai-import' && (
-        <div className="min-h-[calc(100vh-8rem)]">
-          <iframe
-            src="/news-frame-ai-import.html"
-            title="Zelvoo News Frame Studio — AI Card Import"
             className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"
           />
         </div>
