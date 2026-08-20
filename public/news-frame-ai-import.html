@@ -202,6 +202,35 @@
   .batch-strip{margin-top:18px;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
   .batch-strip .mini-card{flex:0 0 auto;}
 
+  #scanImg{display:block;}
+  .frame-thumb{transition:transform .15s;}
+  .frame-thumb:hover{transform:translateY(-2px);}
+
+  .status-msg{
+    font-size:13px;font-weight:600;
+    padding:10px 16px;border-radius:12px;
+    background:rgba(242,243,244,0.08);
+    border:1px solid rgba(242,243,244,0.15);
+    color:var(--white);
+    margin-bottom:18px;
+  }
+  .status-msg.ok{background:rgba(0,223,129,0.12);border-color:rgba(0,223,129,0.4);color:var(--mint);}
+  .status-msg.err{background:rgba(231,76,60,0.14);border-color:rgba(231,76,60,0.4);color:#ff9a8b;}
+
+  .headline-input{
+    width:100%;
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    background:rgba(242,243,244,0.06);
+    border:1px solid rgba(242,243,244,0.18);
+    color:var(--white);
+  }
+  .headline-input::placeholder{color:rgba(242,243,244,0.4);}
+  .headline-input:focus{outline:none;border-color:var(--green);}
+  .batch-textarea{min-height:110px;resize:vertical;font-family:inherit;line-height:1.5;}
+
   footer{margin-top:30px;text-align:center;font-size:11px;color:rgba(242,243,244,0.35);}
 </style>
 </head>
@@ -212,48 +241,43 @@
   <h1>Upload your card once.<br><span>Generate breaking news in seconds.</span></h1>
   <p class="sub">Outlets bring their existing news card design — AI extracts the layout and turns it into a reusable, editable frame inside Zelvoo.</p>
 
+  <div id="statusMsg" class="status-msg" style="display:none"></div>
+
   <div class="steps">
-    <div class="step-pill active"><span class="n">1</span> Upload card</div>
-    <div class="step-pill"><span class="n">2</span> AI extraction</div>
-    <div class="step-pill"><span class="n">3</span> Frame ready</div>
+    <div class="step-pill active" id="pill1"><span class="n">1</span> Upload card</div>
+    <div class="step-pill" id="pill2"><span class="n">2</span> AI extraction</div>
+    <div class="step-pill" id="pill3"><span class="n">3</span> Frame ready</div>
   </div>
 
   <!-- Step 1 -->
   <div class="panel">
     <div class="panel-label">Upload your existing news card <span class="tag">STEP 1</span></div>
-    <div class="panel-desc">PNG, JPG or PDF. One sample is enough — upload a few for a multi-frame set (breaking, feature, sports).</div>
-    <div class="dropzone">
+    <div class="panel-desc">PNG, JPG or WEBP, up to 8MB. Analyzing a card costs 4 credits.</div>
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="cardFile" accept="image/png,image/jpeg,image/webp" style="display:none">
       <div class="icon">↑</div>
-      <div class="cta-text">Drop your card here or browse</div>
+      <div class="cta-text" id="dropCta">Drop your card here or browse</div>
       <div class="hint">e.g. your Joy News, Citi Newsroom or GBC-style card</div>
     </div>
-    <div class="sample-row">
-      <div class="sample-thumb">card_01.png</div>
-      <div class="sample-thumb">card_02.png</div>
-      <div class="sample-thumb">card_03.png</div>
-    </div>
+    <div class="sample-row" id="recentFrames"></div>
   </div>
 
   <!-- Step 2 -->
   <div class="panel">
     <div class="panel-label">AI reads your layout <span class="tag">STEP 2</span></div>
-    <div class="panel-desc">Zones, colors and fonts detected automatically — nothing built from scratch.</div>
+    <div class="panel-desc" id="step2Desc">Upload a card above — Claude reads the zones, colors and font style automatically.</div>
     <div class="extract-grid">
-      <div class="scan-card">
-        <div class="box b1"><span class="box-label">LOGO</span></div>
-        <div class="logo-zone"></div>
-        <div class="box b2"><span class="box-label">HEADLINE</span></div>
-        <div class="headline-zone">
-          <div class="k">BREAKING</div>
-          <div class="h">Sample headline text sits here</div>
-        </div>
+      <div class="scan-card" id="scanCard">
+        <img id="scanImg" style="display:none;width:100%;height:100%;object-fit:cover;" />
+        <div class="box b1" id="boxLogo" style="display:none"><span class="box-label">LOGO</span></div>
+        <div class="box b2" id="boxHeadline" style="display:none"><span class="box-label">HEADLINE</span></div>
       </div>
-      <div class="field-list">
-        <div class="field-row"><span class="name">Headline zone</span><span class="val">bottom · 82% width</span></div>
-        <div class="field-row"><span class="name">Logo position</span><span class="val">top-left · 6%</span></div>
-        <div class="field-row"><span class="name">Brand colors</span><span class="val">#00DF81 · #062C24</span></div>
-        <div class="field-row"><span class="name">Headline font</span><span class="val">Unbounded 700</span></div>
-        <div class="field-row"><span class="name">Export size</span><span class="val">1080×1080</span></div>
+      <div class="field-list" id="fieldList">
+        <div class="field-row"><span class="name">Headline zone</span><span class="val">—</span></div>
+        <div class="field-row"><span class="name">Logo position</span><span class="val">—</span></div>
+        <div class="field-row"><span class="name">Brand colors</span><span class="val">—</span></div>
+        <div class="field-row"><span class="name">Text color</span><span class="val">—</span></div>
+        <div class="field-row"><span class="name">Font style</span><span class="val">—</span></div>
       </div>
     </div>
   </div>
@@ -261,30 +285,344 @@
   <!-- Step 3 -->
   <div class="panel">
     <div class="panel-label">Frame saved to your library <span class="tag">STEP 3</span></div>
-    <div class="panel-desc">Fill headline + photo, export instantly. Paste a list of headlines to batch-generate a full set.</div>
-    <div class="frame-ready">
+    <div class="panel-desc">Type a headline, export instantly. Or paste a list of headlines to batch-generate a full set.</div>
+    <div class="frame-ready" id="frameReady" style="display:none">
       <div class="frame-info">
-        <div class="mini-card"><div class="bar"></div></div>
+        <div class="mini-card" id="miniPreview"><div class="bar"></div></div>
         <div>
-          <div class="frame-name">Your Outlet — Breaking Frame</div>
-          <div class="frame-meta">Ready · WhatsApp Status, 1080×1080, 1200×630</div>
+          <div class="frame-name" id="frameName">Your Outlet — Breaking Frame</div>
+          <div class="frame-meta">Ready · 1080×1080 PNG export</div>
         </div>
       </div>
-      <div class="btn-row">
-        <button class="btn">Quick-fill & export</button>
-        <button class="btn ghost">Batch generate</button>
+    </div>
+    <div id="fillArea" style="display:none">
+      <input type="text" id="headlineInput" placeholder="Type your breaking headline…" class="headline-input">
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn" id="quickFillBtn">Quick-fill & export</button>
+        <button class="btn ghost" id="toggleBatchBtn">Batch generate</button>
+      </div>
+      <div id="batchArea" style="display:none;margin-top:14px;">
+        <textarea id="batchInput" class="headline-input batch-textarea" placeholder="One headline per line…"></textarea>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn" id="batchGenerateBtn">Generate batch (.zip)</button>
+        </div>
       </div>
     </div>
-    <div class="batch-strip">
-      <div class="mini-card"><div class="bar"></div></div>
-      <div class="mini-card"><div class="bar"></div></div>
-      <div class="mini-card"><div class="bar"></div></div>
-      <div class="mini-card"><div class="bar"></div></div>
-      <div class="mini-card"><div class="bar"></div></div>
-    </div>
+    <div class="batch-strip" id="batchStrip"></div>
   </div>
 
   <footer>News Frame Studio — Zelvoo · Enterprise</footer>
 </div>
+
+<canvas id="exportCanvas" style="display:none"></canvas>
+
+<script>
+(function(){
+  const BRIDGE_NS='zelvoo-news-frame-ai-import';
+  const $ = (id) => document.getElementById(id);
+
+  const statusEl = $('statusMsg');
+  function status(msg, tone){
+    statusEl.style.display = msg ? 'block' : 'none';
+    statusEl.textContent = msg || '';
+    statusEl.className = 'status-msg' + (tone ? ' ' + tone : '');
+  }
+
+  function setStep(n){
+    [1,2,3].forEach(i => $('pill' + i).classList.toggle('active', i <= n));
+  }
+
+  // ---- Parent bridge (server calls are proxied through the React shell,
+  // which already holds an authenticated Supabase session) ----
+  let reqSeq = 0;
+  const pending = new Map();
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin) return;
+    const d = e.data;
+    if (!d || d.ns !== BRIDGE_NS || !d.reqId) return;
+    const done = pending.get(d.reqId);
+    if (done) { pending.delete(d.reqId); done(d); }
+  });
+  function callParent(type, payload, timeoutMs){
+    if (window.parent === window) return Promise.resolve({ ok: false, error: 'billing_bridge_missing' });
+    const reqId = type + '-' + Date.now() + '-' + (++reqSeq);
+    return new Promise((resolve) => {
+      const t = setTimeout(() => { pending.delete(reqId); resolve({ ok: false, error: 'timeout' }); }, timeoutMs || 45000);
+      pending.set(reqId, (d) => { clearTimeout(t); resolve(d); });
+      window.parent.postMessage({ ns: BRIDGE_NS, type, reqId, ...payload }, location.origin);
+    });
+  }
+
+  function errorMessage(code){
+    if (code === 'insufficient_credits') return 'Need 4 credits to analyze a card.';
+    if (code === 'trial_expired') return 'Your free trial has ended. Upgrade to keep importing cards.';
+    if (code === 'unauthorized') return 'Please log in again to continue.';
+    if (code === 'billing_bridge_missing') return 'Open News Frame Studio inside Zelvoo to import cards.';
+    return code || 'Something went wrong. Please try again.';
+  }
+
+  const FONT_STACKS = {
+    'bold-sans': (px) => `800 ${px}px 'Hanken Grotesk', sans-serif`,
+    'condensed': (px) => `700 ${px}px 'Unbounded', sans-serif`,
+    'serif':     (px) => `700 ${px}px Georgia, 'Times New Roman', serif`,
+    'elegant':   (px) => `500 ${px}px 'Unbounded', sans-serif`,
+  };
+
+  let currentFrame = null; // { id, name, image_url, headline_zone, logo_zone, colors, text_color, font_category }
+
+  function renderExtraction(frame){
+    $('scanImg').src = frame.image_url;
+    $('scanImg').style.display = 'block';
+
+    const box = (elId, zone) => {
+      const el = $(elId);
+      el.style.display = 'block';
+      el.style.left = zone.x + '%';
+      el.style.top = zone.y + '%';
+      el.style.width = zone.w + '%';
+      el.style.height = zone.h + '%';
+    };
+    box('boxLogo', frame.logo_zone);
+    box('boxHeadline', frame.headline_zone);
+
+    const rows = $('fieldList').querySelectorAll('.field-row .val');
+    rows[0].textContent = `x${frame.headline_zone.x}% y${frame.headline_zone.y}% · ${frame.headline_zone.w}% wide`;
+    rows[1].textContent = `x${frame.logo_zone.x}% y${frame.logo_zone.y}%`;
+    rows[2].textContent = frame.colors.join(' · ');
+    rows[3].textContent = frame.text_color;
+    rows[4].textContent = frame.font_category;
+
+    $('step2Desc').textContent = 'Zones, colors and font style detected — nothing built from scratch.';
+  }
+
+  function showFrameReady(frame){
+    $('frameReady').style.display = 'flex';
+    $('fillArea').style.display = 'block';
+    $('frameName').textContent = frame.name;
+    setStep(3);
+  }
+
+  function addRecentFrameThumb(frame, container){
+    const el = document.createElement('div');
+    el.className = 'sample-thumb frame-thumb';
+    el.style.cssText = 'width:70px;height:88px;padding:0;overflow:hidden;cursor:pointer;background-size:cover;background-position:center;';
+    el.style.backgroundImage = `url(${frame.image_url})`;
+    el.title = frame.name;
+    el.addEventListener('click', () => {
+      currentFrame = frame;
+      renderExtraction(frame);
+      setStep(2);
+      showFrameReady(frame);
+      status('');
+    });
+    container.appendChild(el);
+  }
+
+  function loadRecentFrames(){
+    callParent('listFrames', {}).then((res) => {
+      if (!res.ok || !Array.isArray(res.frames)) return;
+      const container = $('recentFrames');
+      container.innerHTML = '';
+      res.frames.slice(0, 8).forEach((f) => addRecentFrameThumb(f, container));
+    });
+  }
+  loadRecentFrames();
+
+  // ---- Step 1: upload ----
+  const dropzone = $('dropzone');
+  const fileInput = $('cardFile');
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.background = 'rgba(0,223,129,0.08)'; });
+  dropzone.addEventListener('dragleave', () => { dropzone.style.background = ''; });
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.style.background = '';
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  function fileToBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFile(file){
+    const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
+    if (!ALLOWED.includes(file.type)) { status('Please upload a PNG, JPG, or WEBP image.', 'err'); return; }
+    if (file.size > 8 * 1024 * 1024) { status('Image is too large (max 8MB).', 'err'); return; }
+
+    $('dropCta').textContent = 'Analyzing your card…';
+    status('Charging 4 credits and analyzing your card…');
+    setStep(2);
+
+    try {
+      const imageBase64 = await fileToBase64(file);
+      const res = await callParent('analyzeCard', { imageBase64, mediaType: file.type, name: file.name.replace(/\.[a-z0-9]+$/i, '') }, 60000);
+      $('dropCta').textContent = 'Drop your card here or browse';
+
+      if (!res.ok) {
+        status(errorMessage(res.error), 'err');
+        setStep(1);
+        return;
+      }
+
+      currentFrame = res.frame;
+      renderExtraction(currentFrame);
+      showFrameReady(currentFrame);
+      loadRecentFrames();
+      const bal = typeof res.balance === 'number' ? ` · ${res.balance} credits left` : '';
+      status('Card analyzed and saved to your library' + bal + '.', 'ok');
+    } catch (err) {
+      $('dropCta').textContent = 'Drop your card here or browse';
+      status('Could not analyze this card. Please try again.', 'err');
+      setStep(1);
+    }
+  }
+
+  // ---- Step 3: render + export ----
+  function drawFrame(ctx, canvas, img, headline){
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    // cover-fit the source card image
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const rAspect = W / H, iAspect = iw / ih;
+    let sx, sy, sw, sh;
+    if (iAspect > rAspect) { sh = ih; sw = ih * rAspect; sx = (iw - sw) / 2; sy = 0; }
+    else { sw = iw; sh = iw / rAspect; sx = 0; sy = (ih - sh) / 2; }
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+
+    if (!headline) return;
+    const z = currentFrame.headline_zone;
+    const zx = (z.x / 100) * W, zy = (z.y / 100) * H, zw = (z.w / 100) * W, zh = (z.h / 100) * H;
+
+    let fontSize = Math.max(14, Math.floor(zh * 0.32));
+    const stack = FONT_STACKS[currentFrame.font_category] || FONT_STACKS['bold-sans'];
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    function wrap(text, maxWidth){
+      const words = text.split(/\s+/).filter(Boolean);
+      const lines = []; let line = '';
+      words.forEach((w) => {
+        const test = line ? line + ' ' + w : w;
+        if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
+        else line = test;
+      });
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    let lines, lineHeight;
+    do {
+      ctx.font = stack(fontSize);
+      lineHeight = fontSize * 1.22;
+      lines = wrap(headline, zw);
+      if (lines.length * lineHeight <= zh || fontSize <= 12) break;
+      fontSize -= 2;
+    } while (fontSize > 12);
+
+    ctx.fillStyle = currentFrame.text_color;
+    ctx.shadowColor = 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = fontSize * 0.15;
+    lines.slice(0, Math.max(1, Math.floor(zh / lineHeight))).forEach((line, i) => {
+      ctx.fillText(line, zx, zy + i * lineHeight);
+    });
+    ctx.shadowBlur = 0;
+  }
+
+  function loadImage(src){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function canvasToBlob(canvas){
+    return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+  }
+
+  function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  $('quickFillBtn').addEventListener('click', async () => {
+    if (!currentFrame) return;
+    const headline = $('headlineInput').value.trim();
+    if (!headline) { status('Type a headline first.', 'err'); return; }
+    try {
+      const img = await loadImage(currentFrame.image_url);
+      const canvas = $('exportCanvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      drawFrame(ctx, canvas, img, headline);
+      const blob = await canvasToBlob(canvas);
+      downloadBlob(blob, `${(currentFrame.name || 'news-frame').replace(/[^a-z0-9]+/gi, '-')}-${Date.now()}.png`);
+      status('Exported.', 'ok');
+    } catch (err) {
+      status('Export failed — please try again.', 'err');
+    }
+  });
+
+  $('toggleBatchBtn').addEventListener('click', () => {
+    const area = $('batchArea');
+    area.style.display = area.style.display === 'none' ? 'block' : 'none';
+  });
+
+  $('batchGenerateBtn').addEventListener('click', async () => {
+    if (!currentFrame) return;
+    const headlines = $('batchInput').value.split('\n').map((h) => h.trim()).filter(Boolean).slice(0, 30);
+    if (!headlines.length) { status('Paste at least one headline.', 'err'); return; }
+
+    const btn = $('batchGenerateBtn');
+    btn.disabled = true;
+    status(`Generating ${headlines.length} card${headlines.length === 1 ? '' : 's'}…`);
+
+    try {
+      const [{ default: JSZip }] = await Promise.all([
+        import('https://esm.sh/jszip@3.10.1'),
+      ]);
+      const img = await loadImage(currentFrame.image_url);
+      const canvas = $('exportCanvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+
+      const zip = new JSZip();
+      const strip = $('batchStrip');
+      strip.innerHTML = '';
+      for (let i = 0; i < headlines.length; i += 1) {
+        drawFrame(ctx, canvas, img, headlines[i]);
+        const blob = await canvasToBlob(canvas);
+        zip.file(`card-${String(i + 1).padStart(2, '0')}.png`, blob);
+
+        const thumb = document.createElement('div');
+        thumb.className = 'mini-card';
+        thumb.style.cssText = 'background-image:url(' + canvas.toDataURL('image/png') + ');background-size:cover;background-position:center;';
+        strip.appendChild(thumb);
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(zipBlob, `${(currentFrame.name || 'news-frame').replace(/[^a-z0-9]+/gi, '-')}-batch.zip`);
+      status(`Exported ${headlines.length} cards as a zip.`, 'ok');
+    } catch (err) {
+      status('Batch export failed — please try again.', 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
 </body>
 </html>
