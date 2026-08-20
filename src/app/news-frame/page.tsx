@@ -1,6 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useProfile } from '@/components/useProfile';
 import AppShell from '@/components/AppShell';
 import Locked from '@/components/Locked';
@@ -108,74 +107,10 @@ function JoynewsAccessGate({ onUnlocked }: { onUnlocked: () => void }) {
   );
 }
 
-const AI_IMPORT_BRIDGE_NS = 'zelvoo-news-frame-ai-import';
-
 function NewsFrameStudioContent() {
   const { profile, loading, plan } = useProfile();
   const [tab, setTab] = useState<Tab>('standard');
   const [joynewsUnlocked, setJoynewsUnlocked] = useState(false);
-  const aiImportFrameRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const getAccessToken = async () => {
-      let { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token) return session.access_token;
-      await supabase.auth.getUser();
-      ({ data: { session } } = await supabase.auth.getSession());
-      if (session?.access_token) return session.access_token;
-      const refreshed = await supabase.auth.refreshSession();
-      return refreshed.data.session?.access_token || null;
-    };
-
-    // Proxies the ai-import iframe's requests through an authenticated
-    // fetch here in the parent, so the iframe (a plain static HTML file)
-    // never has to handle a Supabase access token itself.
-    const onMessage = async (e: MessageEvent) => {
-      if (e.origin !== window.location.origin) return;
-      if (e.source !== aiImportFrameRef.current?.contentWindow) return;
-
-      const d = e.data;
-      if (!d || d.ns !== AI_IMPORT_BRIDGE_NS) return;
-
-      const reply = (msg: Record<string, any>) =>
-        (e.source as Window)?.postMessage({ ns: AI_IMPORT_BRIDGE_NS, ...msg }, window.location.origin);
-
-      const token = await getAccessToken();
-      if (cancelled) return;
-      if (!token) {
-        reply({ type: `${d.type}Result`, reqId: d.reqId, ok: false, error: 'unauthorized' });
-        return;
-      }
-
-      if (d.type === 'analyzeCard') {
-        const res = await fetch('/api/news-frame/ai-import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ imageBase64: d.imageBase64, mediaType: d.mediaType, name: d.name }),
-        });
-        if (cancelled) return;
-        const payload = await res.json().catch(() => ({}));
-        if (typeof payload?.balance === 'number') window.dispatchEvent(new Event('credits:changed'));
-        reply({ type: 'analyzeCardResult', reqId: d.reqId, ok: res.ok && payload?.ok !== false, ...payload });
-        return;
-      }
-
-      if (d.type === 'listFrames') {
-        const res = await fetch('/api/news-frame/ai-import', { headers: { Authorization: `Bearer ${token}` } });
-        if (cancelled) return;
-        const payload = await res.json().catch(() => ({}));
-        reply({ type: 'listFramesResult', reqId: d.reqId, ok: res.ok, ...payload });
-      }
-    };
-
-    window.addEventListener('message', onMessage);
-    return () => {
-      cancelled = true;
-      window.removeEventListener('message', onMessage);
-    };
-  }, []);
 
   if (loading) {
     return (
@@ -237,7 +172,6 @@ function NewsFrameStudioContent() {
       {tab === 'ai-import' && (
         <div className="min-h-[calc(100vh-8rem)]">
           <iframe
-            ref={aiImportFrameRef}
             src="/news-frame-ai-import.html"
             title="Zelvoo News Frame Studio — AI Card Import"
             className="w-full h-[calc(100vh-8rem)] rounded-[20px] border-0"

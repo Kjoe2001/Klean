@@ -8,7 +8,6 @@ export const CREDIT_COST: Record<string, number> = {
   intel: 1,       // trends / competitor research
   design: 4,      // Creative Studio design save
   frame_video: 5, // Video Frame Studio video save
-  card_import: 4, // News Frame Studio AI card import (vision extraction)
 };
 
 // Pricing updated 2026-08-13 — margin-corrected.
