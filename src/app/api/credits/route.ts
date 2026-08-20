@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { CREDIT_COST, planCredits, PlanKey } from '@/lib/plans';
+import { isTrialExpired } from '@/lib/trial-guard';
 
 /* Server-authoritative credit ledger.
    GET  -> current balance (and tops up on new period)
@@ -85,6 +86,10 @@ export async function POST(req: NextRequest) {
   const plan = (p?.plan || 'trial') as PlanKey;
   let bal = p?.credits;
   if (bal == null) bal = planCredits(plan); // initialise if never set
+
+  if (isTrialExpired(p)) {
+    return NextResponse.json({ ok: false, error: 'trial_expired', balance: bal, needed: cost }, { status: 402 });
+  }
 
   if (bal < cost) {
     return NextResponse.json({ ok: false, error: 'insufficient_credits', balance: bal, needed: cost }, { status: 402 });

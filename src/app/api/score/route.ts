@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 import { CREDIT_COST, planCredits, type PlanKey } from '@/lib/plans';
+import { isTrialExpired } from '@/lib/trial-guard';
 export const maxDuration = 30;
 
 const UNLIMITED_BALANCE = 999999;
@@ -108,7 +109,8 @@ async function spendScoreCredits(db: ReturnType<typeof admin>, user: any) {
 
   const plan = (profile?.plan || 'trial') as PlanKey;
   const balance = profile?.credits ?? planCredits(plan);
-  if (balance < cost) return { ok: false as const, needed: cost, balance };
+  if (isTrialExpired(profile)) return { ok: false as const, error: 'trial_expired' as const, needed: cost, balance };
+  if (balance < cost) return { ok: false as const, error: 'insufficient_credits' as const, needed: cost, balance };
 
   const next = balance - cost;
   const { error: updateError } = await db.from('profiles').update({ credits: next }).eq('id', user.id);
@@ -161,7 +163,7 @@ export async function POST(req: NextRequest) {
 
     const spend = await spendScoreCredits(db, user);
     if (!spend.ok) {
-      return NextResponse.json({ error: 'insufficient_credits', balance: spend.balance, needed: spend.needed }, { status: 402 });
+      return NextResponse.json({ error: spend.error, balance: spend.balance, needed: spend.needed }, { status: 402 });
     }
 
     const { content, brief } = await req.json();

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 import { planCredits, type PlanKey } from '@/lib/plans';
+import { isTrialExpired } from '@/lib/trial-guard';
 
 export const maxDuration = 60;
 
@@ -146,8 +147,11 @@ async function spendOneCredit(db: ReturnType<typeof admin>, user: any, label: st
 
   const plan = (profile?.plan || 'trial') as PlanKey;
   const current = profile?.credits ?? planCredits(plan);
+  if (isTrialExpired(profile)) {
+    return { ok: false, error: 'trial_expired', balance: current, needed: 1 } as const;
+  }
   if (current < 1) {
-    return { ok: false, balance: current, needed: 1 } as const;
+    return { ok: false, error: 'insufficient_credits', balance: current, needed: 1 } as const;
   }
 
   const next = current - 1;
@@ -211,7 +215,7 @@ export async function POST(req: NextRequest) {
 
     const spend = await spendOneCredit(db, user, 'Content generation');
     if ('ok' in spend && spend.ok === false) {
-      return NextResponse.json({ error: 'insufficient_credits', balance: spend.balance, needed: spend.needed }, { status: 402 });
+      return NextResponse.json({ error: spend.error, balance: spend.balance, needed: spend.needed }, { status: 402 });
     }
 
     const brandCtx = brand ? `\nBRAND KIT (follow strictly): tone="${brand.tone||''}", taglines="${brand.taglines||''}", guidelines="${brand.guidelines||''}", colors=${JSON.stringify(brand.colors||[])}` : '';

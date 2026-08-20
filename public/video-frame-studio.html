@@ -1311,6 +1311,7 @@
       const charge=await requestSaveCharge();
       if(!charge||!charge.ok){
         if(charge&&charge.error==='insufficient_credits'){status('Need 5 credits to save this video.');}
+        else if(charge&&charge.error==='trial_expired'){status('Your free trial has ended. Upgrade to keep saving videos.');}
         else if(charge&&charge.error==='unauthorized'){status('Please log in again to save this video.');}
         else if(charge&&charge.error==='billing_bridge_missing'){status('Open Video Frame Studio inside Zelvoo to save videos.');}
         else{status('Could not verify credits. Please try again.');}

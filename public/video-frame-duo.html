@@ -1214,6 +1214,7 @@ async function startExport(){
     const charge=await requestSaveCharge();
     if(!charge||!charge.ok){
       const msg = charge&&charge.error==='insufficient_credits' ? 'Need 5 credits to export this video.'
+        : charge&&charge.error==='trial_expired' ? 'Your free trial has ended. Upgrade to keep exporting videos.'
         : charge&&charge.error==='unauthorized' ? 'Please log in again to export this video.'
         : charge&&charge.error==='billing_bridge_missing' ? 'Open Video Frame Studio inside Zelvoo to export videos.'
         : 'Could not verify credits. Please try again.';
