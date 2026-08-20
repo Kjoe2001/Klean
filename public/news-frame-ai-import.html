@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Frame Studio — AI Card Import</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#00DF81;
+    --green-deep:#01935A;
+    --forest:#062C24;
+    --mint:#4DF0A8;
+    --white:#F2F3F4;
+    --gradient: linear-gradient(90deg,#00DF81,#4DF0A8);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--forest);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(0,223,129,0.16), transparent 45%),
+      radial-gradient(circle at 88% 92%, rgba(77,240,168,0.10), transparent 40%);
+    font-family:'Hanken Grotesk',sans-serif;
+    color:var(--white);
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:960px;margin:0 auto;}
+  .eyebrow{
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mint);font-weight:600;margin-bottom:10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:16px;height:1px;background:var(--mint);}
+  h1{
+    font-family:'Unbounded',sans-serif;
+    font-weight:700;
+    font-size:clamp(26px,4vw,38px);
+    line-height:1.15;
+    margin-bottom:10px;
+  }
+  h1 span{
+    background:var(--gradient);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{color:rgba(242,243,244,0.68);font-size:15px;max-width:520px;margin-bottom:36px;}
+
+  .steps{display:flex;gap:6px;margin-bottom:32px;flex-wrap:wrap;}
+  .step-pill{
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:12px;font-weight:600;
+    padding:7px 12px;border-radius:20px;
+    background:rgba(242,243,244,0.06);
+    border:1px solid rgba(242,243,244,0.12);
+    color:rgba(242,243,244,0.55);
+    display:flex;align-items:center;gap:6px;
+  }
+  .step-pill.active{
+    background:rgba(0,223,129,0.12);
+    border-color:rgba(0,223,129,0.4);
+    color:var(--mint);
+  }
+  .step-pill .n{
+    width:16px;height:16px;border-radius:50%;
+    background:rgba(242,243,244,0.15);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;
+  }
+  .step-pill.active .n{background:var(--green);color:var(--forest);}
+
+  .panel{
+    background:rgba(242,243,244,0.035);
+    border:1px solid rgba(242,243,244,0.1);
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:"";position:absolute;top:-40px;right:-40px;
+    width:160px;height:160px;border-radius:50%;
+    background:radial-gradient(circle,rgba(0,223,129,0.14),transparent 70%);
+  }
+  .panel-label{
+    font-family:'Unbounded',sans-serif;
+    font-size:14px;font-weight:600;
+    margin-bottom:4px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .panel-label .tag{
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:10px;font-weight:700;letter-spacing:.06em;
+    background:var(--gradient);color:var(--forest);
+    padding:2px 8px;border-radius:10px;
+  }
+  .panel-desc{font-size:13px;color:rgba(242,243,244,0.6);margin-bottom:20px;}
+
+  /* Step 1 — Upload */
+  .dropzone{
+    border:1.5px dashed rgba(0,223,129,0.35);
+    border-radius:14px;
+    padding:34px 20px;
+    text-align:center;
+    background:rgba(0,223,129,0.03);
+  }
+  .dropzone .icon{
+    width:44px;height:44px;border-radius:12px;
+    background:var(--gradient);
+    margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--forest);font-size:20px;font-weight:700;
+  }
+  .dropzone .cta-text{font-weight:600;font-size:14px;margin-bottom:4px;}
+  .dropzone .hint{font-size:12px;color:rgba(242,243,244,0.5);}
+  .sample-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+  .sample-thumb{
+    width:70px;height:88px;border-radius:8px;
+    background:linear-gradient(160deg,#0a3b30,#062C24);
+    border:1px solid rgba(242,243,244,0.15);
+    display:flex;align-items:flex-end;padding:6px;
+    font-size:8px;color:rgba(242,243,244,0.4);
+  }
+
+  /* Step 2 — Extraction */
+  .extract-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+  @media(min-width:640px){.extract-grid{grid-template-columns:1fr 1fr;}}
+  .scan-card{
+    aspect-ratio:4/5;border-radius:14px;overflow:hidden;position:relative;
+    background:linear-gradient(165deg,#0d3f33,#062C24 60%);
+    border:1px solid rgba(242,243,244,0.12);
+  }
+  .scan-card .headline-zone{
+    position:absolute;left:10%;right:10%;bottom:16%;
+    background:rgba(242,243,244,0.94);
+    border-radius:6px;padding:10px 12px;
+  }
+  .scan-card .headline-zone .k{
+    font-size:8px;font-weight:700;color:var(--green-deep);letter-spacing:.06em;
+  }
+  .scan-card .headline-zone .h{
+    font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--forest);line-height:1.3;
+  }
+  .scan-card .logo-zone{
+    position:absolute;top:6%;left:6%;
+    width:38px;height:14px;border-radius:4px;
+    background:rgba(242,243,244,0.85);
+  }
+  .scan-card .box{
+    position:absolute;border:1.5px solid var(--mint);border-radius:4px;
+  }
+  .scan-card .box.b1{top:5%;left:4%;width:20%;height:8%;}
+  .scan-card .box.b2{bottom:15%;left:9%;width:82%;height:22%;}
+  .scan-card .box-label{
+    position:absolute;font-size:7px;font-weight:700;color:var(--forest);
+    background:var(--mint);padding:1px 5px;border-radius:3px;
+  }
+  .scan-card .box.b1 .box-label{top:-14px;left:0;}
+  .scan-card .box.b2 .box-label{top:-14px;left:0;}
+
+  .field-list{display:flex;flex-direction:column;gap:10px;}
+  .field-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;border-radius:10px;
+    background:rgba(242,243,244,0.04);
+    border:1px solid rgba(242,243,244,0.08);
+    font-size:13px;
+  }
+  .field-row .name{font-weight:600;}
+  .field-row .val{color:var(--mint);font-size:11px;font-family:monospace;}
+
+  /* Step 3 — Frame ready */
+  .frame-ready{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:16px;
+  }
+  .frame-info{display:flex;align-items:center;gap:14px;}
+  .mini-card{
+    width:54px;height:68px;border-radius:6px;
+    background:linear-gradient(165deg,#0d3f33,#062C24 60%);
+    border:1px solid rgba(0,223,129,0.4);
+    position:relative;
+  }
+  .mini-card .bar{position:absolute;left:8%;right:8%;bottom:14%;height:26%;background:var(--white);border-radius:3px;}
+  .frame-name{font-weight:600;font-size:14px;}
+  .frame-meta{font-size:12px;color:rgba(242,243,244,0.5);}
+  .btn{
+    font-family:'Hanken Grotesk',sans-serif;
+    font-weight:700;font-size:13px;
+    padding:11px 20px;border-radius:10px;
+    background:var(--gradient);color:var(--forest);
+    border:none;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn.ghost{
+    background:transparent;color:var(--white);
+    border:1px solid rgba(242,243,244,0.25);
+  }
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+
+  .batch-strip{margin-top:18px;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+  .batch-strip .mini-card{flex:0 0 auto;}
+
+  footer{margin-top:30px;text-align:center;font-size:11px;color:rgba(242,243,244,0.35);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">News Frame Studio · AI Card Import</div>
+  <h1>Upload your card once.<br><span>Generate breaking news in seconds.</span></h1>
+  <p class="sub">Outlets bring their existing news card design — AI extracts the layout and turns it into a reusable, editable frame inside Zelvoo.</p>
+
+  <div class="steps">
+    <div class="step-pill active"><span class="n">1</span> Upload card</div>
+    <div class="step-pill"><span class="n">2</span> AI extraction</div>
+    <div class="step-pill"><span class="n">3</span> Frame ready</div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="panel">
+    <div class="panel-label">Upload your existing news card <span class="tag">STEP 1</span></div>
+    <div class="panel-desc">PNG, JPG or PDF. One sample is enough — upload a few for a multi-frame set (breaking, feature, sports).</div>
+    <div class="dropzone">
+      <div class="icon">↑</div>
+      <div class="cta-text">Drop your card here or browse</div>
+      <div class="hint">e.g. your Joy News, Citi Newsroom or GBC-style card</div>
+    </div>
+    <div class="sample-row">
+      <div class="sample-thumb">card_01.png</div>
+      <div class="sample-thumb">card_02.png</div>
+      <div class="sample-thumb">card_03.png</div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="panel">
+    <div class="panel-label">AI reads your layout <span class="tag">STEP 2</span></div>
+    <div class="panel-desc">Zones, colors and fonts detected automatically — nothing built from scratch.</div>
+    <div class="extract-grid">
+      <div class="scan-card">
+        <div class="box b1"><span class="box-label">LOGO</span></div>
+        <div class="logo-zone"></div>
+        <div class="box b2"><span class="box-label">HEADLINE</span></div>
+        <div class="headline-zone">
+          <div class="k">BREAKING</div>
+          <div class="h">Sample headline text sits here</div>
+        </div>
+      </div>
+      <div class="field-list">
+        <div class="field-row"><span class="name">Headline zone</span><span class="val">bottom · 82% width</span></div>
+        <div class="field-row"><span class="name">Logo position</span><span class="val">top-left · 6%</span></div>
+        <div class="field-row"><span class="name">Brand colors</span><span class="val">#00DF81 · #062C24</span></div>
+        <div class="field-row"><span class="name">Headline font</span><span class="val">Unbounded 700</span></div>
+        <div class="field-row"><span class="name">Export size</span><span class="val">1080×1080</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="panel">
+    <div class="panel-label">Frame saved to your library <span class="tag">STEP 3</span></div>
+    <div class="panel-desc">Fill headline + photo, export instantly. Paste a list of headlines to batch-generate a full set.</div>
+    <div class="frame-ready">
+      <div class="frame-info">
+        <div class="mini-card"><div class="bar"></div></div>
+        <div>
+          <div class="frame-name">Your Outlet — Breaking Frame</div>
+          <div class="frame-meta">Ready · WhatsApp Status, 1080×1080, 1200×630</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn">Quick-fill & export</button>
+        <button class="btn ghost">Batch generate</button>
+      </div>
+    </div>
+    <div class="batch-strip">
+      <div class="mini-card"><div class="bar"></div></div>
+      <div class="mini-card"><div class="bar"></div></div>
+      <div class="mini-card"><div class="bar"></div></div>
+      <div class="mini-card"><div class="bar"></div></div>
+      <div class="mini-card"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <footer>News Frame Studio — Zelvoo · Enterprise</footer>
+</div>
+</body>
+</html>
