@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zelvoo · Video Download Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#00DF81;--green-dim:#0a7a4c;--green-glow:rgba(0,223,129,.16);
+    --bg0:#07100c;--bg1:#0a1611;--glass:rgba(255,255,255,.045);--glass-2:rgba(255,255,255,.07);
+    --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.14);
+    --ink:#eaf4ee;--muted:#8fa79a;--faint:#5a6b62;
+    --warn:#f0b429;--bad:#e0736a;
+    --disp:"Unbounded",system-ui,sans-serif;
+    --body:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;
+    background:radial-gradient(130% 90% at 85% -10%,rgba(0,223,129,.10),transparent 45%),
+      radial-gradient(100% 80% at 0% 110%,rgba(0,223,129,.06),transparent 50%),
+      linear-gradient(160deg,var(--bg0),var(--bg1))}
+  button,input,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+  .app{display:grid;grid-template-columns:1fr 396px;height:100vh;min-height:0}
+  @media (max-width:980px){.app{grid-template-columns:1fr;grid-template-rows:minmax(230px,48dvh) 1fr;height:100dvh;overflow:hidden}}
+
+  .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;gap:13px;min-width:0;min-height:0;overflow:hidden}
+  @media (max-width:980px){.stage{padding:12px;background:linear-gradient(180deg,rgba(7,16,12,.96),rgba(7,16,12,.88));z-index:3}}
+
+  .srcbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+  .srcchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--glass-2);
+    border-radius:999px;padding:6px 12px 6px 7px;font-size:12.5px;color:var(--muted);cursor:pointer;transition:.15s}
+  .srcchip:hover{border-color:var(--green-dim);color:var(--ink)}
+  .srcchip.on{border-color:var(--green);background:var(--green-glow);color:var(--ink)}
+  .srcchip .pip{width:19px;height:19px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff;flex:0 0 auto}
+
+  .canvas-wrap{display:flex;align-items:center;justify-content:center;flex:1;width:100%;min-height:0}
+  canvas#view{max-width:100%;max-height:100%;border-radius:12px;background:#000;display:block;
+    box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05)}
+
+  .transport{display:flex;align-items:center;gap:13px;width:min(660px,100%);background:var(--glass);
+    border:1px solid var(--line);border-radius:14px;padding:9px 14px;backdrop-filter:blur(14px)}
+  .tbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--glass-2);
+    color:var(--ink);cursor:pointer;font-size:13px;display:grid;place-items:center;flex:0 0 auto;transition:.15s}
+  .tbtn:hover{border-color:var(--green);color:var(--green)}
+  .scrub-wrap{flex:1;display:flex;align-items:center;height:26px}
+  #scrub{width:100%}
+  .time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:86px;text-align:right}
+  .stage-note{font-size:11.5px;color:var(--faint);text-align:center;max-width:58ch;line-height:1.6}
+
+  .rail{background:var(--glass);border-left:1px solid var(--line);backdrop-filter:blur(18px);
+    display:flex;flex-direction:column;min-width:0;min-height:0}
+  @media (max-width:980px){.rail{border-left:none;border-top:1px solid var(--line);overflow-y:auto}}
+
+  .brand{padding:16px 20px 13px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
+  .brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--green),#00b368);
+    display:grid;place-items:center;color:#032414;font-weight:800;font-family:var(--disp);font-size:15px;
+    box-shadow:0 0 18px var(--green-glow);flex:0 0 auto}
+  .brand .name{font-family:var(--disp);font-weight:700;font-size:14.5px;line-height:1.3}
+  .brand .name span{color:var(--green)}
+  .brand .tag{margin-left:auto;font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.16em}
+
+  .tabs{display:flex;padding:10px 12px 0;gap:2px;border-bottom:1px solid var(--line)}
+  .tab{padding:9px 12px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;background:none;border:none;
+    border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{color:var(--green);border-bottom-color:var(--green)}
+  .tab .count{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;margin-left:5px;
+    border-radius:999px;background:var(--green-glow);color:var(--green);font-size:10px;font-weight:700}
+
+  .panels{flex:1;padding:6px 20px 18px;overflow-y:auto;min-height:0}
+  .panel{display:none}
+  .panel.on{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .grp{padding:15px 0;border-bottom:1px solid var(--line)}
+  .grp:last-child{border-bottom:none}
+  .glabel{font-size:10.5px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin:0 0 11px;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1px solid var(--line);background:var(--glass-2);color:var(--ink);padding:7px 12px;border-radius:9px;
+    font-size:12.5px;cursor:pointer;transition:.15s;user-select:none}
+  .chip:hover{border-color:var(--green-dim)}
+  .chip.on{border-color:var(--green);background:var(--green-glow);color:var(--green)}
+
+  .seg{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;background:var(--glass-2);border:1px solid var(--line);
+    border-radius:11px;padding:4px}
+  .seg button{border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;padding:8px 4px;
+    border-radius:8px;cursor:pointer;transition:.15s}
+  .seg button:hover{color:var(--ink)}
+  .seg button.on{background:var(--green);color:#032414}
+
+  textarea,input[type=text]{width:100%;background:var(--glass-2);border:1px solid var(--line-2);color:var(--ink);
+    border-radius:10px;padding:11px 12px;font-size:13px;font-family:var(--body)}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--green)}
+  textarea::placeholder{color:var(--faint)}
+  textarea{resize:vertical;min-height:84px;line-height:1.6}
+
+  .detected{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:0}
+  .dtag{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:4px 9px 4px 5px;border-radius:999px;
+    border:1px solid var(--line);background:var(--glass-2);color:var(--muted)}
+  .dtag .pip{width:16px;height:16px;border-radius:5px;display:grid;place-items:center;font-size:8px;font-weight:800;color:#fff}
+  .dtag.bad{border-color:rgba(224,115,106,.3);color:var(--bad)}
+
+  .terms{display:flex;gap:9px;align-items:flex-start;margin-top:13px;cursor:pointer;user-select:none}
+  .terms .box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line-2);flex:0 0 auto;margin-top:1px;
+    display:grid;place-items:center;font-size:10px;color:#032414;font-weight:800;transition:.15s}
+  .terms.on .box{background:var(--green);border-color:var(--green)}
+  .terms span{font-size:11px;line-height:1.5;color:var(--faint)}
+  .terms.on span{color:var(--muted)}
+
+  .drop{border:1.5px dashed var(--line-2);border-radius:16px;padding:24px 18px;text-align:center;color:var(--muted);
+    cursor:pointer;transition:.18s;background:var(--glass)}
+  .drop:hover,.drop.hot{border-color:var(--green);background:var(--green-glow);color:var(--ink)}
+  .drop .mark{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:19px;color:var(--green);
+    background:var(--green-glow);border:1px solid rgba(0,223,129,.3);margin:0 auto 11px}
+  .drop b{display:block;font-family:var(--disp);font-size:14px;color:var(--ink);margin-bottom:5px}
+  .drop small{font-size:11.5px;line-height:1.5}
+
+  .sld{margin:14px 0}
+  .sld .top{display:flex;justify-content:space-between;margin-bottom:7px}
+  .sld label{font-size:13px}
+  .sld .val{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:var(--line-2);outline:none;margin:0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--green);cursor:pointer;border:2px solid #04160d;box-shadow:0 0 8px var(--green-glow)}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid #04160d}
+
+  .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;user-select:none;margin:12px 0 0}
+  .toggle .tk{width:38px;height:22px;border-radius:12px;background:var(--line-2);position:relative;transition:.18s;flex:0 0 auto}
+  .toggle .tk::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#c9d6ce;top:3px;left:3px;transition:.18s}
+  .toggle.on .tk{background:var(--green)}
+  .toggle.on .tk::after{left:19px;background:#04160d}
+
+  .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:170px}
+  .pos-grid button{aspect-ratio:16/10;border:1px solid var(--line);background:var(--glass-2);border-radius:8px;
+    cursor:pointer;position:relative;transition:.15s}
+  .pos-grid button:hover{border-color:var(--green-dim)}
+  .pos-grid button::after{content:"";position:absolute;width:34%;height:20%;border-radius:3px;background:var(--faint);transition:.15s}
+  .pos-grid button.on{border-color:var(--green);background:var(--green-glow)}
+  .pos-grid button.on::after{background:var(--green)}
+  .pos-grid button[data-pos=tl]::after{top:14%;left:12%}
+  .pos-grid button[data-pos=tr]::after{top:14%;right:12%}
+  .pos-grid button[data-pos=bl]::after{bottom:14%;left:12%}
+  .pos-grid button[data-pos=bc]::after{bottom:14%;left:33%}
+  .pos-grid button[data-pos=br]::after{bottom:14%;right:12%}
+  .pos-grid .spacer{visibility:hidden}
+
+  .hint{font-size:11px;color:var(--faint);line-height:1.55;margin:9px 0 0}
+
+  .plan{margin-top:14px;padding:13px 14px;border-radius:13px;border:1px solid var(--line);background:var(--glass-2)}
+  .plan .row{display:flex;align-items:center;gap:9px}
+  .plan b{font-size:12.5px;font-family:var(--disp);font-weight:700}
+  .plan .pill{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;background:var(--green-glow);color:var(--green);border:1px solid rgba(0,223,129,.3)}
+  .plan p{margin:8px 0 0;font-size:11.5px;color:var(--muted);line-height:1.5}
+  .plan .mini{margin-top:10px}
+
+  .qitem{border:1px solid var(--line);background:var(--glass-2);border-radius:13px;padding:12px;margin-bottom:9px}
+  .qitem .head{display:flex;align-items:center;gap:9px}
+  .qitem .pip{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff;flex:0 0 auto}
+  .qitem .meta{min-width:0;flex:1}
+  .qitem .meta b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qitem .meta small{font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+  .status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 9px;border-radius:999px;flex:0 0 auto}
+  .status.ready{background:var(--green-glow);color:var(--green);border:1px solid rgba(0,223,129,.3)}
+  .status.work{background:rgba(240,180,41,.12);color:var(--warn);border:1px solid rgba(240,180,41,.3)}
+  .status.hold{background:rgba(224,115,106,.1);color:var(--bad);border:1px solid rgba(224,115,106,.28)}
+  .status.idle{background:var(--glass-2);color:var(--muted);border:1px solid var(--line)}
+  .bar{height:3px;border-radius:3px;background:var(--line-2);margin-top:10px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:3px;background:var(--green);transition:width .4s ease}
+  .qitem .foot{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .qitem .foot small{font-size:10.5px;color:var(--faint);flex:1;min-width:0}
+  .mini{border:1px solid var(--line-2);background:var(--glass-2);color:var(--ink);border-radius:8px;padding:6px 11px;
+    font-size:11.5px;font-weight:600;cursor:pointer;transition:.15s}
+  .mini:hover{border-color:var(--green);color:var(--green)}
+  .mini:disabled{opacity:.45;cursor:not-allowed}
+  .empty{text-align:center;color:var(--faint);font-size:12px;padding:26px 10px;line-height:1.6}
+
+  .actions{padding:15px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+  .btn{border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--body)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--green);color:#032414;box-shadow:0 6px 22px var(--green-glow)}
+  .btn.primary:disabled{background:#1c3a2c;color:#5f7a6c;box-shadow:none;cursor:not-allowed}
+  .btn.ghost{background:var(--glass-2);color:var(--ink);border:1px solid var(--line-2)}
+  .btn.ghost:hover{border-color:var(--green-dim)}
+  .msg{font-size:11.5px;color:var(--muted);text-align:center;min-height:16px;line-height:1.5}
+  .msg.good{color:var(--green)}
+  .msg.bad{color:var(--bad)}
+
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="stage">
+    <div class="srcbar" id="srcbar"></div>
+    <div class="canvas-wrap"><canvas id="view" width="720" height="1280"></canvas></div>
+    <div class="transport">
+      <button class="tbtn" id="playBtn" aria-label="Pause preview">&#10074;&#10074;</button>
+      <div class="scrub-wrap"><input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Scrub preview"></div>
+      <span class="time" id="time">0:00 / 0:00</span>
+    </div>
+    <p class="stage-note" id="stageNote">Mark preview. Drop a file to preview against your own footage — for pasted links the mark is composited server-side with these exact settings.</p>
+  </section>
+
+  <aside class="rail">
+    <div class="brand">
+      <div class="dot">Z</div>
+      <div class="name">Zelvoo <span>Video Download Studio</span></div>
+      <div class="tag" id="planTag">&mdash;</div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-tab="source" role="tab">Source</button>
+      <button class="tab" data-tab="brand" role="tab">Brand</button>
+      <button class="tab" data-tab="queue" role="tab">Queue<span class="count" id="qCount">0</span></button>
+    </div>
+
+    <div class="panels">
+      <div class="panel on" data-panel="source">
+        <div class="grp">
+          <p class="glabel">Where it's coming from</p>
+          <div class="seg" id="modeSeg">
+            <button class="on" data-mode="link">Paste links</button>
+            <button data-mode="upload">Upload a file</button>
+          </div>
+
+          <div id="modeLink" style="margin-top:13px">
+            <textarea id="linkInput" rows="4" spellcheck="false" placeholder="Paste one link per line&#8230;"></textarea>
+            <div class="detected" id="detected"></div>
+            <p class="hint">Up to 20 links at once. Private, deleted and age-restricted posts fail at fetch and are refunded automatically.</p>
+          </div>
+
+          <div id="modeUpload" style="margin-top:13px;display:none">
+            <div class="drop" id="dropzone">
+              <div class="mark">&uarr;</div>
+              <b>Drop a video file</b>
+              <small>MP4, MOV or WebM &middot; up to 500&nbsp;MB<br>Previews live against your own footage.</small>
+            </div>
+            <p class="hint" id="uploadName">No file chosen.</p>
+          </div>
+
+          <label class="terms" id="terms"><span class="box">&#10003;</span>
+            <span>I confirm I have the right to reuse this video. Zelvoo records this against my account and answers takedown requests on that basis.</span></label>
+        </div>
+
+        <div class="grp">
+          <p class="glabel">Export format</p>
+          <div class="chips" id="aspectChips">
+            <span class="chip on" data-a="9:16">9:16 Vertical</span>
+            <span class="chip" data-a="1:1">1:1 Square</span>
+            <span class="chip" data-a="4:5">4:5 Feed</span>
+            <span class="chip" data-a="16:9">16:9 Wide</span>
+            <span class="chip" data-a="source">Keep source</span>
+          </div>
+          <p class="glabel" style="margin:16px 0 11px">Quality</p>
+          <div class="chips" id="qualChips">
+            <span class="chip on" data-q="1080p">1080p</span>
+            <span class="chip" data-q="720p">720p</span>
+            <span class="chip" data-q="480p">480p</span>
+            <span class="chip" data-q="audio">Audio only</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="brand">
+        <div class="grp">
+          <p class="glabel">Mark style</p>
+          <div class="chips" id="styleChips">
+            <span class="chip on" data-style="badge">Badge</span>
+            <span class="chip" data-style="wordmark">Wordmark</span>
+            <span class="chip" data-style="icon">Icon only</span>
+          </div>
+        </div>
+        <div class="grp">
+          <p class="glabel">Position</p>
+          <div class="pos-grid" id="posGrid">
+            <button data-pos="tl" aria-label="Top left"></button>
+            <span class="spacer"></span>
+            <button data-pos="tr" class="on" aria-label="Top right"></button>
+            <button data-pos="bl" aria-label="Bottom left"></button>
+            <button data-pos="bc" aria-label="Bottom centre"></button>
+            <button data-pos="br" aria-label="Bottom right"></button>
+          </div>
+          <label class="toggle" id="driftTog"><span class="tk"></span><span>Drift between corners</span></label>
+          <p class="hint">A moving mark survives the crop-and-repost treatment that strips static corner logos.</p>
+        </div>
+        <div class="grp">
+          <p class="glabel">Size &amp; weight</p>
+          <div class="sld"><div class="top"><label for="sizeR">Scale</label><span class="val" id="sizeVal">6.5%</span></div>
+            <input id="sizeR" type="range" min="3" max="14" step="0.5" value="6.5"></div>
+          <div class="sld"><div class="top"><label for="opR">Opacity</label><span class="val" id="opVal">92%</span></div>
+            <input id="opR" type="range" min="20" max="100" value="92"></div>
+          <label class="toggle on" id="safeTog"><span class="tk"></span><span>Keep clear of platform UI</span></label>
+          <p class="hint">Insets the mark past the caption stack and action rail on 9:16 exports.</p>
+        </div>
+        <div class="grp">
+          <p class="glabel">Your logo</p>
+          <div class="chips"><span class="chip" id="logoBtn">Upload PNG</span><span class="chip" id="logoClear">Use Zelvoo mark</span></div>
+          <p class="hint" id="logoName">Using the Zelvoo badge.</p>
+          <div class="plan" id="planBox">
+            <div class="row"><b>Your own mark</b><span class="pill" id="planPill">Pro</span></div>
+            <p id="planCopy">Free and trial exports carry the Zelvoo badge. Paid plans swap it for your own logo.</p>
+            <button class="mini" id="upgradeBtn">See plans</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="queue">
+        <div class="grp" style="padding-top:16px">
+          <div id="queueList"><p class="empty">Nothing queued yet.<br>Paste a link and hit download.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="goBtn" disabled>Brand &amp; download</button>
+      <button class="btn ghost" id="presetBtn">Save as preset</button>
+      <p class="msg" id="msg">&nbsp;</p>
+    </div>
+  </aside>
+</div>
+<input id="logoFile" type="file" accept="image/png,image/svg+xml" hidden>
+<input id="videoFile" type="file" accept="video/*" hidden>
+<script src="/video-download-studio.js"></script>
+</body>
+</html>

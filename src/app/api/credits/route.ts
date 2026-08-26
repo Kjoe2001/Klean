@@ -14,6 +14,7 @@ const LABEL: Record<string, string> = {
   text: 'Content generation', image: 'AI image', campaign: 'Campaign build',
   score: 'AI scoring', intel: 'Trend / competitor intel', design: 'Creative Studio design saved',
   frame_video: 'Video Frame Studio video saved',
+  download_video: 'Video download + branding',
 };
 
 const UNLIMITED_BALANCE = 999999;

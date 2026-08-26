@@ -13,3 +13,5 @@ node_modules
 
 # Desktop build artifacts
 desktop/dist/
+tsconfig.check.json
+worker/_to_delete/
