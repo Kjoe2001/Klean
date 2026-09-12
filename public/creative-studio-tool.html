@@ -2106,7 +2106,7 @@ $('exportBtn').onclick=async()=>{
       const c=await raster(sc,fmt==='png'?null:(AB.bg.t==='solid'?AB.bg.c:'#ffffff'));
       const mime=fmt==='jpg'?'image/jpeg':fmt==='webp'?'image/webp':'image/png';
       dl(c.toDataURL(mime,.94),`${base}@${sc}x.${fmt}`);toast(fmt.toUpperCase()+' exported at '+(AB.w*sc)+'×'+(AB.h*sc));}
-  }catch(err){toast('Export failed — try a smaller scale');}
+  }catch(err){toast('Export failed: '+(err&&err.message?err.message:'unknown error — try a smaller scale'));}
   b.textContent='Download';b.disabled=false;
 };
 
