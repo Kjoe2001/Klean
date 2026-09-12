@@ -28,6 +28,8 @@ export const TEMPLATES = [
     focus: 'A new property listing marketed with captions, a flyer-ready description and a reel script.', types: ['post', 'caption', 'reel'] },
   { id: 't8', title: 'World Cup 2026 Engagement', cat: 'Campaign', uses: '7.8k', tier: 'pro',    icon: '⚽', desc: 'Match-day hooks and reactive content kit.',
     focus: 'Reactive World Cup 2026 match-day content: hooks, posts and ad variants tied to the tournament.', types: ['hooks', 'post', 'adcopy'] },
+  { id: 't9', title: 'Free iPhone Duo Launch Kit', cat: 'Campaign', uses: '0', tier: 'free', icon: '📱', desc: 'Preorder announcement, price card, in-stock card and WhatsApp status.',
+    focus: 'A 4-piece iPhone Duo launch kit: preorder announcement, price card, in-stock card and WhatsApp status. Your logo, your colours, your price — built in Zelvoo Creative Studio, so switching your Brand Kit re-skins all four in one click.', types: ['post', 'caption', 'product'] },
 ];
 
 export const INTEGRATIONS = [
