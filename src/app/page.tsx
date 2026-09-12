@@ -75,15 +75,15 @@ export default function Landing() {
               AI marketing workspace, built for African teams
             </span>
             <h1 className="font-heading text-[2.25rem] sm:text-[3rem] md:text-[4.4rem] leading-[0.94] tracking-tight mb-6 max-w-3xl break-words" style={{ color: '#00DF81' }}>
-              Understand your market. Create faster. Ship consistently.
+              Never run out of content to post.
             </h1>
             <p className="text-base sm:text-body-lg md:text-[1.18rem] text-pistachio max-w-2xl leading-relaxed mb-8">
-              Zelvoo is an AI marketing workspace where you plan campaigns, generate content,
-              and produce client-ready outputs from one brief.
+              Zelvoo turns one brief into weeks of on-brand posts, captions, and ad copy —
+              so you can stop staring at a blank page and start shipping.
             </p>
             <p className="text-sm text-stone max-w-2xl leading-relaxed mb-8">
-              Built for founders, in-house marketing teams, and agencies that need quality output every week
-              without juggling disconnected tools.
+              Built for social media marketers, content creators, and small business owners who need
+              great content out the door every day, not just when inspiration strikes.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
